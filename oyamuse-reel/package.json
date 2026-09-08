@@ -1,0 +1,35 @@
+{
+  "name": "oyamuse-reel",
+  "version": "1.0.0",
+  "description": "Vertical (9:16) beat-synced brand reel for @oyamuse.ma built with Remotion",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render OyamuseReel out/oyamuse-reel.mp4",
+    "still": "remotion still OyamuseReel out/cover.png --frame=250",
+    "build": "remotion bundle",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc",
+    "music": "node scripts/make-music.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.522",
+    "@remotion/fonts": "4.0.522",
+    "@remotion/media": "4.0.522",
+    "@remotion/transitions": "4.0.522",
+    "@remotion/zod-types": "4.0.522",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.522",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config-flat": "4.0.522",
+    "@types/react": "19.2.7",
+    "@types/web": "0.0.166",
+    "eslint": "9.19.0",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  }
+}
