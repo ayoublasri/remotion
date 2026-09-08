@@ -59,7 +59,7 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         schema={nailReelSchema}
         defaultProps={{
-          handle: "@yourstudio",
+          handle: "@oyamuse.ma",
           hook: {
             top: "SAVE THIS",
             middle: "for your next",
@@ -101,7 +101,7 @@ export const RemotionRoot: React.FC = () => {
           defaultProps={{
             set: pinkFlorals,
             index: 1,
-            handle: "@yourstudio",
+            handle: "@oyamuse.ma",
           }}
         />
         <Composition
@@ -118,7 +118,7 @@ export const RemotionRoot: React.FC = () => {
               cta: "comment 1, 2 or 3 👇",
               footer: "follow for weekly nail inspo",
             },
-            handle: "@yourstudio",
+            handle: "@oyamuse.ma",
           }}
         />
       </Folder>
