@@ -1,9 +1,7 @@
 import { z } from "zod";
 
-export const nailSetSchema = z.object({
+export const photoSchema = z.object({
   image: z.string().describe("File name inside public/images"),
-  title: z.string(),
-  descriptor: z.string(),
   focusX: z.number().min(0).max(100),
   focusY: z.number().min(0).max(100),
   sparkles: z.array(z.object({ x: z.number(), y: z.number() })),
@@ -11,39 +9,29 @@ export const nailSetSchema = z.object({
 
 export const oyamuseReelSchema = z.object({
   handle: z.string(),
+  logo: z.string().describe("Logo file inside public/images"),
   hook: z.object({
     line1: z.string(),
     line2: z.string(),
-    line3: z.string(),
-    line4: z.string(),
   }),
-  brand: z.object({
-    name: z.string(),
-    descriptor: z.string(),
+  labels: z.object({
+    nails: z.string(),
+    brows: z.string(),
+    lashes: z.string(),
   }),
-  nails: z.array(nailSetSchema).length(3),
+  nails: z.array(photoSchema).length(6),
   brows: z.object({
     image: z.string(),
-    title: z.string(),
-    descriptor: z.string(),
     beforeLabel: z.string(),
     afterLabel: z.string(),
-    coverTitle: z.string(),
-    coverSubtitle: z.string(),
-    lashImage: z.string(),
-    lashTitle: z.string(),
-    lashDescriptor: z.string(),
   }),
-  services: z.object({
-    title: z.string(),
-    items: z.array(z.string()).length(4),
-    footnote: z.string(),
-  }),
+  lashes: photoSchema,
+  montage: z.array(z.string()).length(8).describe("Image files, one beat each"),
   cta: z.object({
     title1: z.string(),
     title2: z.string(),
+    subtitle: z.string(),
     button: z.string(),
-    footer: z.string(),
   }),
   musicFile: z
     .string()
@@ -51,5 +39,5 @@ export const oyamuseReelSchema = z.object({
     .describe("Audio file inside public/, or null for silent"),
 });
 
-export type NailSet = z.infer<typeof nailSetSchema>;
+export type Photo = z.infer<typeof photoSchema>;
 export type OyamuseReelProps = z.infer<typeof oyamuseReelSchema>;

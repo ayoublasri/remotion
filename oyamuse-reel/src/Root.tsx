@@ -1,32 +1,31 @@
 import { Composition, Folder } from "remotion";
 import { OyamuseReel } from "./OyamuseReel";
-import { BrandScene } from "./scenes/BrandScene";
 import { BrowsScene } from "./scenes/BrowsScene";
 import { CtaScene } from "./scenes/CtaScene";
 import { HookScene } from "./scenes/HookScene";
+import { LashesScene } from "./scenes/LashesScene";
+import { LogoScene } from "./scenes/LogoScene";
+import { MontageScene } from "./scenes/MontageScene";
 import { NailsScene } from "./scenes/NailsScene";
-import { ServicesScene } from "./scenes/ServicesScene";
 import { oyamuseReelSchema } from "./schema";
 
 const handle = "@oyamuse.ma";
+const logo = "logo.jpg";
 
 const hook = {
   line1: "Regardez vos ongles.",
-  line2: "Maintenant.",
-  line3: "Vous voyez ?",
-  line4: "Il est temps.",
+  line2: "Puis regardez ça.",
 };
 
-const brand = {
-  name: "OYAMUSE",
-  descriptor: "Nails · Lashes · Brows",
+const labels = {
+  nails: "NAILS",
+  brows: "BROWS",
+  lashes: "LASHES",
 };
 
 const nails = [
   {
     image: "nails-pearl.jpg",
-    title: "Glazed pearl",
-    descriptor: "Nude nacré · Amande",
     focusX: 50,
     focusY: 38,
     sparkles: [
@@ -36,9 +35,27 @@ const nails = [
     ],
   },
   {
+    image: "nails-ice-blue.jpg",
+    focusX: 55,
+    focusY: 50,
+    sparkles: [
+      { x: 60, y: 40 },
+      { x: 78, y: 48 },
+      { x: 80, y: 66 },
+    ],
+  },
+  {
+    image: "nails-pink-florals.jpg",
+    focusX: 60,
+    focusY: 42,
+    sparkles: [
+      { x: 60, y: 30 },
+      { x: 72, y: 46 },
+      { x: 66, y: 62 },
+    ],
+  },
+  {
     image: "nails-mermaid.jpg",
-    title: "Sirène",
-    descriptor: "Nail art 3D · Perles & coquillages",
     focusX: 50,
     focusY: 45,
     sparkles: [
@@ -49,8 +66,6 @@ const nails = [
   },
   {
     image: "nails-blue-bows.jpg",
-    title: "Bleu royal",
-    descriptor: "Carré · Nœuds argentés",
     focusX: 50,
     focusY: 55,
     sparkles: [
@@ -59,32 +74,51 @@ const nails = [
       { x: 26, y: 66 },
     ],
   },
+  {
+    image: "nails-cherry-red.jpg",
+    focusX: 40,
+    focusY: 40,
+    sparkles: [
+      { x: 30, y: 30 },
+      { x: 18, y: 46 },
+      { x: 24, y: 62 },
+    ],
+  },
 ];
 
 const brows = {
   image: "brows-before-after.jpg",
-  title: "Le regard, sublimé.",
-  descriptor: "Rehaussement de cils · Brow lift",
   beforeLabel: "AVANT",
   afterLabel: "APRÈS",
-  coverTitle: "APRÈS",
-  coverSubtitle: "Résultat en une séance",
-  lashImage: "lash-lift.jpg",
-  lashTitle: "Cils relevés, regard ouvert.",
-  lashDescriptor: "Lash lift · Brow lift",
 };
 
-const services = {
-  title: "Tout, au même endroit.",
-  items: ["Manucure & gel", "Nail art", "Rehaussement de cils", "Brow lift"],
-  footnote: "Sur rendez-vous",
+const lashes = {
+  image: "lashes-collage.jpg",
+  focusX: 50,
+  focusY: 45,
+  sparkles: [
+    { x: 60, y: 52 },
+    { x: 24, y: 34 },
+    { x: 26, y: 78 },
+  ],
 };
+
+const montage = [
+  "nails-cherry-red.jpg",
+  "lashes-collage.jpg",
+  "nails-pearl.jpg",
+  "nails-ice-blue.jpg",
+  "lash-lift.jpg",
+  "nails-pink-florals.jpg",
+  "nails-mermaid.jpg",
+  "nails-blue-bows.jpg",
+];
 
 const cta = {
   title1: "Réservez",
-  title2: "votre moment.",
-  button: "Réservation en DM",
-  footer: "Nails · Lashes · Brows",
+  title2: "votre moment",
+  subtitle: "Ongles · Cils · Sourcils",
+  button: "Lien en bio",
 };
 
 export const RemotionRoot: React.FC = () => {
@@ -93,18 +127,20 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="OyamuseReel"
         component={OyamuseReel}
-        durationInFrames={864}
+        durationInFrames={896}
         fps={30}
         width={1080}
         height={1920}
         schema={oyamuseReelSchema}
         defaultProps={{
           handle,
+          logo,
           hook,
-          brand,
+          labels,
           nails,
           brows,
-          services,
+          lashes,
+          montage,
           cta,
           musicFile: "music/oyamuse-theme.mp3",
         }}
@@ -113,66 +149,65 @@ export const RemotionRoot: React.FC = () => {
         <Composition
           id="Hook"
           component={HookScene}
-          durationInFrames={144}
+          durationInFrames={112}
           fps={30}
           width={1080}
           height={1920}
-          defaultProps={{ hook, image: nails[0].image }}
+          defaultProps={{ hook, photo: nails[0] }}
         />
         <Composition
-          id="Brand"
-          component={BrandScene}
-          durationInFrames={72}
+          id="Logo"
+          component={LogoScene}
+          durationInFrames={56}
           fps={30}
           width={1080}
           height={1920}
-          defaultProps={{ brand, handle }}
+          defaultProps={{ logo, handle }}
         />
         <Composition
           id="Nails"
           component={NailsScene}
-          durationInFrames={216}
+          durationInFrames={336}
           fps={30}
           width={1080}
           height={1920}
-          defaultProps={{ nails }}
+          defaultProps={{ nails, label: labels.nails, logo }}
         />
         <Composition
           id="Brows"
           component={BrowsScene}
-          durationInFrames={216}
+          durationInFrames={112}
           fps={30}
           width={1080}
           height={1920}
-          defaultProps={{ brows }}
+          defaultProps={{ brows, label: labels.brows, logo }}
         />
         <Composition
-          id="Services"
-          component={ServicesScene}
-          durationInFrames={72}
+          id="Lashes"
+          component={LashesScene}
+          durationInFrames={56}
           fps={30}
           width={1080}
           height={1920}
-          defaultProps={{ services }}
+          defaultProps={{ photo: lashes, label: labels.lashes, logo }}
+        />
+        <Composition
+          id="Montage"
+          component={MontageScene}
+          durationInFrames={112}
+          fps={30}
+          width={1080}
+          height={1920}
+          defaultProps={{ images: montage, logo }}
         />
         <Composition
           id="CTA"
           component={CtaScene}
-          durationInFrames={144}
+          durationInFrames={112}
           fps={30}
           width={1080}
           height={1920}
-          defaultProps={{
-            cta,
-            handle,
-            images: [
-              nails[0].image,
-              brows.lashImage,
-              nails[1].image,
-              brows.image,
-              nails[2].image,
-            ],
-          }}
+          defaultProps={{ cta, handle, logo }}
         />
       </Folder>
     </>

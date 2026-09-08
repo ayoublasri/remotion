@@ -3,60 +3,58 @@ import { Grain, Twinkles, Vignette } from "../components/Overlays";
 import { Photo } from "../components/Photo";
 import { PopLine } from "../components/Text";
 import { SERIF } from "../fonts";
-import type { OyamuseReelProps } from "../schema";
+import type { OyamuseReelProps, Photo as PhotoProps } from "../schema";
 
-// Bars 1-2. "Look at your nails. Now." over the pearl set, then "See? It's time."
+// Bars 1-2: "Look at your nails." then "Now look at these." while the music builds.
 export const HookScene: React.FC<{
   readonly hook: OyamuseReelProps["hook"];
-  readonly image: string;
-}> = ({ hook, image }) => {
+  readonly photo: PhotoProps;
+}> = ({ hook, photo }) => {
   const frame = useCurrentFrame();
+  const shake = interpolate(frame, [56, 112], [0, 7], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.in(Easing.quad),
+  });
 
   return (
-    <AbsoluteFill name="Hook scene" style={{ backgroundColor: "#1e130e" }}>
-      <Photo
-        image={image}
-        focusX={50}
-        focusY={40}
-        zoomFrom={1.12}
-        zoomTo={1.26}
-        driftX={0}
-        driftY={-30}
-        pulse
-      />
+    <AbsoluteFill name="Hook scene" style={{ backgroundColor: "#12100e" }}>
+      <AbsoluteFill
+        name="Shake"
+        style={{
+          translate: `${Math.sin(frame * 12.9) * shake}px ${Math.cos(frame * 7.3) * shake}px`,
+        }}
+      >
+        <Photo
+          image={photo.image}
+          focusX={photo.focusX}
+          focusY={photo.focusY}
+          zoomFrom={1.16}
+          zoomTo={1.3}
+          driftX={0}
+          driftY={-30}
+          rotation={0}
+          punch={false}
+          pulse
+        />
+      </AbsoluteFill>
       <AbsoluteFill
         name="Darken"
         style={{
           background:
-            "linear-gradient(180deg, rgba(20,12,8,0.35) 0%, rgba(20,12,8,0.5) 55%, rgba(20,12,8,0.82) 100%)",
+            "linear-gradient(180deg, rgba(12,10,8,0.3) 0%, rgba(12,10,8,0.5) 55%, rgba(12,10,8,0.82) 100%)",
         }}
       />
       <Vignette />
-      <Twinkles
-        points={[
-          { x: 63, y: 24 },
-          { x: 47, y: 31 },
-          { x: 74, y: 55 },
-        ]}
-        color="#fff3e6"
-      />
+      <Twinkles points={photo.sparkles} color="#fff3e6" />
       <AbsoluteFill
-        name="Hook part 1"
+        name="Hook text"
         style={{
           justifyContent: "center",
           alignItems: "center",
           padding: "0 80px",
-          gap: 22,
+          gap: 26,
           textAlign: "center",
-          opacity: interpolate(frame, [70, 78], [1, 0], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-          }),
-          translate: interpolate(frame, [70, 80], ["0px 0px", "0px -50px"], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-            easing: Easing.in(Easing.quad),
-          }),
         }}
       >
         <PopLine
@@ -66,62 +64,24 @@ export const HookScene: React.FC<{
           style={{
             fontFamily: SERIF,
             fontWeight: 700,
-            fontSize: 96,
+            fontSize: 86,
             lineHeight: 1.08,
             color: "#ffffff",
-            textShadow: "0 12px 40px rgba(0,0,0,0.4)",
+            textShadow: "0 12px 40px rgba(0,0,0,0.45)",
           }}
         />
         <PopLine
           name="Hook line 2"
           text={hook.line2}
-          at={36}
+          at={56}
           style={{
             fontFamily: SERIF,
             fontStyle: "italic",
             fontWeight: 500,
-            fontSize: 96,
-            lineHeight: 1.08,
-            color: "#e9c3b6",
-            textShadow: "0 12px 40px rgba(0,0,0,0.4)",
-          }}
-        />
-      </AbsoluteFill>
-      <AbsoluteFill
-        name="Hook part 2"
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "0 80px",
-          gap: 22,
-          textAlign: "center",
-        }}
-      >
-        <PopLine
-          name="Hook line 3"
-          text={hook.line3}
-          at={76}
-          style={{
-            fontFamily: SERIF,
-            fontWeight: 700,
-            fontSize: 96,
-            lineHeight: 1.08,
-            color: "#ffffff",
-            textShadow: "0 12px 40px rgba(0,0,0,0.4)",
-          }}
-        />
-        <PopLine
-          name="Hook line 4"
-          text={hook.line4}
-          at={108}
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 500,
-            fontSize: 104,
+            fontSize: 86,
             lineHeight: 1.08,
             color: "#e6cf9f",
-            textShadow: "0 12px 40px rgba(0,0,0,0.4)",
+            textShadow: "0 12px 40px rgba(0,0,0,0.45)",
           }}
         />
       </AbsoluteFill>
@@ -129,9 +89,9 @@ export const HookScene: React.FC<{
       <AbsoluteFill
         name="Fade in"
         style={{
-          backgroundColor: "#1e130e",
+          backgroundColor: "#12100e",
           pointerEvents: "none",
-          opacity: interpolate(frame, [0, 10], [1, 0], {
+          opacity: interpolate(frame, [0, 8], [1, 0], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),

@@ -1,103 +1,109 @@
 import {
   AbsoluteFill,
   Easing,
-  Img,
   Interactive,
   interpolate,
-  staticFile,
   useCurrentFrame,
 } from "remotion";
-import { Flash, Grain, Twinkles } from "../components/Overlays";
-import { SANS, SERIF } from "../fonts";
+import { LogoBadge } from "../components/Logo";
+import { Flash, Twinkles } from "../components/Overlays";
+import { DISPLAY, SANS } from "../fonts";
 import type { OyamuseReelProps } from "../schema";
 
-// Bars 11-12: a wall of the work behind the booking call to action.
+// Bars 15-16: the one and only invite. Logo, "Réservez votre moment",
+// what for, and where: link in bio.
 export const CtaScene: React.FC<{
   readonly cta: OyamuseReelProps["cta"];
   readonly handle: string;
-  readonly images: string[];
-}> = ({ cta, handle, images }) => {
+  readonly logo: string;
+}> = ({ cta, handle, logo }) => {
   const frame = useCurrentFrame();
-  const tiles = Array.from({ length: 12 }, (_, i) => images[i % images.length]);
 
   return (
     <AbsoluteFill
       name="CTA scene"
-      style={{ backgroundColor: "#1e130e", overflow: "hidden" }}
+      style={{
+        background:
+          "radial-gradient(70% 45% at 50% 40%, #fbf5ea 0%, #f6efe2 55%, #eadfcc 100%)",
+        overflow: "hidden",
+      }}
     >
-      <div
+      <svg
+        viewBox="0 0 100 100"
+        width={1500}
+        height={1500}
         style={{
           position: "absolute",
-          left: -20,
-          top: -80,
-          width: 1120,
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: 14,
-          translate: interpolate(frame, [0, 144], ["0px 0px", "0px -110px"], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-          }),
-          scale: interpolate(frame, [0, 20], [1.08, 1], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-            easing: Easing.bezier(0.16, 1, 0.3, 1),
-          }),
+          left: -210,
+          top: 210,
+          opacity: 0.05,
+          rotate: `${interpolate(frame, [0, 112], [0, 22])}deg`,
         }}
       >
-        {tiles.map((image, i) => (
-          <div
-            key={i}
-            style={{ height: 520, borderRadius: 18, overflow: "hidden" }}
-          >
-            <Img
-              src={staticFile(`images/${image}`)}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </div>
-        ))}
-      </div>
-      <AbsoluteFill
-        name="Darken"
-        style={{
-          background:
-            "radial-gradient(70% 55% at 50% 50%, rgba(30,19,14,0.7) 0%, rgba(30,19,14,0.82) 70%, rgba(30,19,14,0.93) 100%)",
-        }}
-      />
+        <rect
+          x="22"
+          y="22"
+          width="56"
+          height="56"
+          fill="none"
+          stroke="#1f4b3c"
+          strokeWidth="1.2"
+        />
+        <rect
+          x="22"
+          y="22"
+          width="56"
+          height="56"
+          fill="none"
+          stroke="#1f4b3c"
+          strokeWidth="1.2"
+          transform="rotate(45 50 50)"
+        />
+      </svg>
       <Twinkles
         points={[
-          { x: 14, y: 22 },
-          { x: 86, y: 30 },
-          { x: 22, y: 74 },
-          { x: 80, y: 70 },
+          { x: 16, y: 26 },
+          { x: 84, y: 22 },
+          { x: 14, y: 62 },
+          { x: 86, y: 58 },
         ]}
-        color="#e6cf9f"
+        color="#c4a24f"
       />
       <AbsoluteFill
         name="Copy"
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 20,
-          padding: "0 80px",
-        }}
+        style={{ alignItems: "center", padding: "250px 80px 0" }}
       >
+        <div
+          style={{
+            scale: interpolate(frame, [0, 18], [0, 1], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+              easing: Easing.spring({ damping: 11, stiffness: 160, mass: 0.9 }),
+              output: "perceptual-scale",
+            }),
+          }}
+        >
+          <LogoBadge image={logo} size={400} ring />
+        </div>
         <Interactive.Div
           name="CTA title 1"
           style={{
-            fontFamily: SERIF,
+            marginTop: 70,
+            fontFamily: DISPLAY,
             fontWeight: 700,
-            fontSize: 112,
+            fontSize: 92,
             lineHeight: 1,
-            color: "#ffffff",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "#1f4b3c",
             textAlign: "center",
-            scale: interpolate(frame, [0, 18], [0.8, 1], {
+            scale: interpolate(frame, [14, 30], [0.8, 1], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
-              easing: Easing.spring({ damping: 12, stiffness: 170, mass: 0.8 }),
+              easing: Easing.spring({ damping: 12, stiffness: 180, mass: 0.8 }),
               output: "perceptual-scale",
             }),
-            opacity: interpolate(frame, [0, 6], [0, 1], {
+            opacity: interpolate(frame, [14, 20], [0, 1], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
             }),
@@ -108,20 +114,22 @@ export const CtaScene: React.FC<{
         <Interactive.Div
           name="CTA title 2"
           style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 500,
-            fontSize: 100,
+            marginTop: 18,
+            fontFamily: DISPLAY,
+            fontWeight: 700,
+            fontSize: 92,
             lineHeight: 1,
-            color: "#e9c3b6",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "#1f4b3c",
             textAlign: "center",
-            scale: interpolate(frame, [8, 26], [0.8, 1], {
+            scale: interpolate(frame, [21, 37], [0.8, 1], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
-              easing: Easing.spring({ damping: 12, stiffness: 170, mass: 0.8 }),
+              easing: Easing.spring({ damping: 12, stiffness: 180, mass: 0.8 }),
               output: "perceptual-scale",
             }),
-            opacity: interpolate(frame, [8, 14], [0, 1], {
+            opacity: interpolate(frame, [21, 27], [0, 1], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
             }),
@@ -130,34 +138,37 @@ export const CtaScene: React.FC<{
           {cta.title2}
         </Interactive.Div>
         <Interactive.Div
-          name="Handle"
+          name="CTA subtitle"
           style={{
-            marginTop: 30,
-            fontFamily: SANS,
+            marginTop: 34,
+            fontFamily: DISPLAY,
             fontWeight: 600,
-            fontSize: 64,
-            color: "#e6cf9f",
-            letterSpacing: "-0.01em",
-            opacity: interpolate(frame, [18, 28], [0, 1], {
+            fontSize: 38,
+            letterSpacing: "0.34em",
+            paddingLeft: "0.34em",
+            textTransform: "uppercase",
+            color: "#c4a24f",
+            textAlign: "center",
+            opacity: interpolate(frame, [42, 50], [0, 1], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
             }),
-            translate: interpolate(frame, [18, 34], ["0px 30px", "0px 0px"], {
+            translate: interpolate(frame, [42, 56], ["0px 24px", "0px 0px"], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
               easing: Easing.bezier(0.16, 1, 0.3, 1),
             }),
           }}
         >
-          {handle}
+          {cta.subtitle}
         </Interactive.Div>
         <div
           style={{
-            marginTop: 34,
-            scale: interpolate(frame, [36, 52], [0, 1], {
+            marginTop: 64,
+            scale: interpolate(frame, [56, 72], [0, 1], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
-              easing: Easing.spring({ damping: 12, stiffness: 170, mass: 0.8 }),
+              easing: Easing.spring({ damping: 11, stiffness: 170, mass: 0.8 }),
               output: "perceptual-scale",
             }),
           }}
@@ -167,24 +178,38 @@ export const CtaScene: React.FC<{
             style={{
               position: "relative",
               overflow: "hidden",
-              padding: "0 70px",
-              height: 124,
-              borderRadius: 62,
-              backgroundColor: "#e9c3b6",
-              color: "#2a1b14",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 22,
+              padding: "0 76px",
+              height: 130,
+              borderRadius: 65,
+              backgroundColor: "#1f4b3c",
+              color: "#f6efe2",
               fontFamily: SANS,
               fontWeight: 700,
-              fontSize: 46,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 24px 60px rgba(233,195,182,0.35)",
-              scale: interpolate(frame % 18, [0, 3, 14], [1.035, 1.02, 1], {
+              fontSize: 50,
+              boxShadow: "0 26px 60px rgba(31,75,60,0.35)",
+              scale: interpolate(frame % 14, [0, 3, 11], [1.04, 1.025, 1], {
                 extrapolateLeft: "clamp",
                 extrapolateRight: "clamp",
               }),
             }}
           >
+            <svg
+              width="46"
+              height="46"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#f6efe2"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M7 17 17 7" />
+              <path d="M8 7h9v9" />
+            </svg>
             {cta.button}
             <div
               style={{
@@ -195,11 +220,11 @@ export const CtaScene: React.FC<{
                 height: 220,
                 rotate: "20deg",
                 background:
-                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.65) 50%, rgba(255,255,255,0) 100%)",
+                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%)",
                 pointerEvents: "none",
                 translate: interpolate(
                   frame,
-                  [66, 92],
+                  [74, 98],
                   ["-200px 0px", "900px 0px"],
                   {
                     extrapolateLeft: "clamp",
@@ -212,27 +237,23 @@ export const CtaScene: React.FC<{
           </Interactive.Div>
         </div>
         <Interactive.Div
-          name="CTA footer"
+          name="Handle"
           style={{
             marginTop: 40,
             fontFamily: SANS,
-            fontWeight: 500,
-            fontSize: 28,
-            letterSpacing: "0.36em",
-            paddingLeft: "0.36em",
-            textTransform: "uppercase",
-            color: "rgba(255,255,255,0.7)",
-            opacity: interpolate(frame, [54, 66], [0, 1], {
+            fontWeight: 600,
+            fontSize: 42,
+            color: "rgba(31,75,60,0.75)",
+            opacity: interpolate(frame, [70, 80], [0, 1], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
             }),
           }}
         >
-          {cta.footer}
+          {handle}
         </Interactive.Div>
       </AbsoluteFill>
-      <Grain />
-      <Flash at={0} peak={0.5} />
+      <Flash at={0} peak={0.7} />
     </AbsoluteFill>
   );
 };

@@ -7,72 +7,61 @@ import {
   Vignette,
 } from "../components/Overlays";
 import { Photo } from "../components/Photo";
-import { Caption, SectionHeader } from "../components/Text";
-import type { NailSet } from "../schema";
+import { SectionLabel } from "../components/Text";
+import type { Photo as PhotoProps } from "../schema";
 
-const NailShot: React.FC<{ readonly set: NailSet; readonly index: number }> = ({
-  set,
-  index,
-}) => (
-  <AbsoluteFill name="Nail shot">
+const Shot: React.FC<{
+  readonly photo: PhotoProps;
+  readonly index: number;
+  readonly label: string;
+  readonly logo: string;
+}> = ({ photo, index, label, logo }) => (
+  <AbsoluteFill name="Shot">
     <Photo
-      image={set.image}
-      focusX={set.focusX}
-      focusY={set.focusY}
+      image={photo.image}
+      focusX={photo.focusX}
+      focusY={photo.focusY}
       zoomFrom={1.08}
-      zoomTo={1.2}
-      driftX={index % 2 === 0 ? 26 : -26}
-      driftY={-16}
+      zoomTo={1.18}
+      driftX={index % 2 === 0 ? 30 : -30}
+      driftY={index % 3 === 0 ? -20 : 12}
+      rotation={index % 2 === 0 ? -1.5 : 1.5}
+      punch
       pulse
     />
-    <ShineSweep at={6} />
-    <Twinkles points={set.sparkles} color="#fff6ea" />
+    <ShineSweep at={4} />
+    <Twinkles points={photo.sparkles} color="#fff6ea" />
     <AbsoluteFill
       name="Legibility"
       style={{
         background:
-          "linear-gradient(180deg, rgba(20,12,8,0.45) 0%, rgba(20,12,8,0) 24%, rgba(20,12,8,0) 55%, rgba(20,12,8,0.82) 100%)",
+          "linear-gradient(180deg, rgba(12,10,8,0.45) 0%, rgba(12,10,8,0) 26%, rgba(12,10,8,0) 70%, rgba(12,10,8,0.45) 100%)",
         pointerEvents: "none",
       }}
     />
     <Vignette />
-    <AbsoluteFill
-      name="Caption slot"
-      style={{ justifyContent: "flex-end", padding: "0 80px 480px" }}
-    >
-      <Caption
-        title={set.title}
-        descriptor={set.descriptor}
-        at={18}
-        color="#ffffff"
-        accent="#e9c3b6"
-        align="left"
-        titleSize={86}
-      />
-    </AbsoluteFill>
-    <SectionHeader
-      label="NAILS"
-      counter={`0${index + 1} — 03`}
-      color="#ffffff"
-    />
+    <SectionLabel label={label} logo={logo} color="#ffffff" />
     <Grain />
-    <Flash at={0} peak={0.4} />
+    <Flash at={0} peak={0.55} />
   </AbsoluteFill>
 );
 
-// Bars 4-6: one set per bar, cut on the downbeat.
-export const NailsScene: React.FC<{ readonly nails: NailSet[] }> = ({
-  nails,
-}) => (
-  <AbsoluteFill name="Nails scene" style={{ backgroundColor: "#1e130e" }}>
-    <Sequence durationInFrames={72} name="Set 1">
-      <NailShot set={nails[0]} index={0} />
-    </Sequence>
-    <Sequence from={72} durationInFrames={72} name="Set 2">
-      <NailShot set={nails[1]} index={1} />
-    </Sequence>
-    <Sequence from={144} durationInFrames={72} name="Set 3">
-      <NailShot set={nails[2]} index={2} />
-    </Sequence>
+// Bars 4-9: six sets, one bar each, every cut on the downbeat.
+export const NailsScene: React.FC<{
+  readonly nails: PhotoProps[];
+  readonly label: string;
+  readonly logo: string;
+}> = ({ nails, label, logo }) => (
+  <AbsoluteFill name="Nails scene" style={{ backgroundColor: "#12100e" }}>
+    {nails.map((photo, i) => (
+      <Sequence
+        key={photo.image}
+        from={i * 56}
+        durationInFrames={56}
+        name={`Set ${i + 1}`}
+      >
+        <Shot photo={photo} index={i} label={label} logo={logo} />
+      </Sequence>
+    ))}
   </AbsoluteFill>
 );

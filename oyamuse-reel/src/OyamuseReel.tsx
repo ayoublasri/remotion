@@ -7,63 +7,60 @@ import {
   useVideoConfig,
 } from "remotion";
 import "./fonts";
-import { BrandScene } from "./scenes/BrandScene";
 import { BrowsScene } from "./scenes/BrowsScene";
 import { CtaScene } from "./scenes/CtaScene";
 import { HookScene } from "./scenes/HookScene";
+import { LashesScene } from "./scenes/LashesScene";
+import { LogoScene } from "./scenes/LogoScene";
+import { MontageScene } from "./scenes/MontageScene";
 import { NailsScene } from "./scenes/NailsScene";
-import { ServicesScene } from "./scenes/ServicesScene";
 import type { OyamuseReelProps } from "./schema";
 
-// 100 BPM soundtrack: 1 beat = 18 frames, 1 bar = 72 frames (see timing.ts).
-// Every scene starts on a downbeat, so the cuts land on the music:
-//   bars 1-2  Hook        0 - 144
-//   bar  3    Brand     144 - 216   (drums drop)
-//   bars 4-6  Nails     216 - 432   (one set per bar)
-//   bars 7-9  Brows     432 - 648   (before/after, then lashes)
-//   bar  10   Services  648 - 720
-//   bars 11-12 CTA      720 - 864
+// 128.57 BPM soundtrack: 1 beat = 14 frames, 1 bar = 56 frames (timing.ts).
+// Every scene starts on a downbeat:
+//   bars 1-2   Hook       0 - 112   (music builds, snare roll)
+//   bar  3     Logo     112 - 168   (drop + crash)
+//   bars 4-9   Nails    168 - 504   (one set per bar)
+//   bars 10-11 Brows    504 - 616   (before, then after on bar 11)
+//   bar  12    Lashes   616 - 672
+//   bars 13-14 Montage  672 - 784   (one photo per beat, snare build)
+//   bars 15-16 CTA      784 - 896   (second drop: the invite)
 export const OyamuseReel: React.FC<OyamuseReelProps> = ({
   handle,
+  logo,
   hook,
-  brand,
+  labels,
   nails,
   brows,
-  services,
+  lashes,
+  montage,
   cta,
   musicFile,
 }) => {
   const { durationInFrames } = useVideoConfig();
 
   return (
-    <AbsoluteFill style={{ backgroundColor: "#1e130e" }}>
-      <Sequence durationInFrames={144} name="Hook">
-        <HookScene hook={hook} image={nails[0].image} />
+    <AbsoluteFill style={{ backgroundColor: "#12100e" }}>
+      <Sequence durationInFrames={112} name="Hook">
+        <HookScene hook={hook} photo={nails[0]} />
       </Sequence>
-      <Sequence from={144} durationInFrames={72} name="Brand">
-        <BrandScene brand={brand} handle={handle} />
+      <Sequence from={112} durationInFrames={56} name="Logo">
+        <LogoScene logo={logo} handle={handle} />
       </Sequence>
-      <Sequence from={216} durationInFrames={216} name="Nails">
-        <NailsScene nails={nails} />
+      <Sequence from={168} durationInFrames={336} name="Nails">
+        <NailsScene nails={nails} label={labels.nails} logo={logo} />
       </Sequence>
-      <Sequence from={432} durationInFrames={216} name="Brows & lashes">
-        <BrowsScene brows={brows} />
+      <Sequence from={504} durationInFrames={112} name="Brows">
+        <BrowsScene brows={brows} label={labels.brows} logo={logo} />
       </Sequence>
-      <Sequence from={648} durationInFrames={72} name="Services">
-        <ServicesScene services={services} />
+      <Sequence from={616} durationInFrames={56} name="Lashes">
+        <LashesScene photo={lashes} label={labels.lashes} logo={logo} />
       </Sequence>
-      <Sequence from={720} durationInFrames={144} name="CTA">
-        <CtaScene
-          cta={cta}
-          handle={handle}
-          images={[
-            nails[0].image,
-            brows.lashImage,
-            nails[1].image,
-            brows.image,
-            nails[2].image,
-          ]}
-        />
+      <Sequence from={672} durationInFrames={112} name="Montage">
+        <MontageScene images={montage} logo={logo} />
+      </Sequence>
+      <Sequence from={784} durationInFrames={112} name="CTA">
+        <CtaScene cta={cta} handle={handle} logo={logo} />
       </Sequence>
       {musicFile ? (
         <Audio
@@ -72,7 +69,7 @@ export const OyamuseReel: React.FC<OyamuseReelProps> = ({
           volume={(frame) =>
             interpolate(
               frame,
-              [0, 8, durationInFrames - 24, durationInFrames - 1],
+              [0, 6, durationInFrames - 20, durationInFrames - 1],
               [0, 1, 1, 0],
               {
                 extrapolateLeft: "clamp",
