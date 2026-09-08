@@ -182,6 +182,10 @@ export const HookScene: React.FC<{
       style={{
         background:
           "radial-gradient(90% 60% at 50% 30%, #1a5450 0%, #0f3d3a 60%, #0a2d2b 100%)",
+        scale: interpolate(frame, [0, 165], [1, 1.05], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        }),
       }}
     >
       <AbsoluteFill
@@ -189,7 +193,7 @@ export const HookScene: React.FC<{
         style={{
           translate: interpolate(
             frame,
-            [12, 14, 16, 18, 20, 24, 26, 28, 30, 32, 36, 38, 40, 42, 44],
+            [12, 14, 16, 18, 20, 26, 28, 30, 32, 34, 40, 42, 44, 46, 48],
             [
               "0px 0px",
               "5px 0px",
@@ -224,7 +228,7 @@ export const HookScene: React.FC<{
           title="Nouvelle cliente ?"
           subtitle="Appel manqué"
           time="13:47"
-          delay={16}
+          delay={18}
           top={496}
           rotation={1}
           badge={null}
@@ -233,7 +237,7 @@ export const HookScene: React.FC<{
           title="Appel manqué (3)"
           subtitle="Aujourd'hui"
           time="18:05"
-          delay={28}
+          delay={32}
           top={662}
           rotation={-0.6}
           badge={3}
@@ -253,9 +257,9 @@ export const HookScene: React.FC<{
           gap: 16,
         }}
       >
-        <HookLine text={hook.line1} at={46} color="#ffffff" size={84} />
-        <HookLine text={hook.line2} at={56} color="#ffffff" size={84} />
-        <HookLine text={hook.line3} at={68} color="#f47c97" size={84} />
+        <HookLine text={hook.line1} at={56} color="#ffffff" size={84} />
+        <HookLine text={hook.line2} at={74} color="#ffffff" size={84} />
+        <HookLine text={hook.line3} at={96} color="#f47c97" size={84} />
       </Interactive.Div>
     </AbsoluteFill>
   );

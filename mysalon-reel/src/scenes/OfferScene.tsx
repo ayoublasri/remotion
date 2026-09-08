@@ -32,7 +32,7 @@ export const OfferScene: React.FC<{
           right: -320,
           top: -260,
           opacity: 0.05,
-          rotate: `${interpolate(frame, [0, 136], [0, 18])}deg`,
+          rotate: `${interpolate(frame, [0, 180], [0, 18])}deg`,
         }}
       >
         <StarMark size={1000} color="#ffffff" />
@@ -67,13 +67,13 @@ export const OfferScene: React.FC<{
           lineHeight: 1,
           color: "#ffffff",
           letterSpacing: "-0.01em",
-          scale: interpolate(frame, [4, 20], [0, 1], {
+          scale: interpolate(frame, [6, 22], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.spring({ damping: 12, stiffness: 170, mass: 0.8 }),
             output: "perceptual-scale",
           }),
-          opacity: interpolate(frame, [4, 8], [0, 1], {
+          opacity: interpolate(frame, [6, 10], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),
@@ -95,13 +95,13 @@ export const OfferScene: React.FC<{
           lineHeight: 1,
           color: "#f47c97",
           letterSpacing: "-0.01em",
-          scale: interpolate(frame, [10, 26], [0, 1], {
+          scale: interpolate(frame, [14, 30], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.spring({ damping: 12, stiffness: 170, mass: 0.8 }),
             output: "perceptual-scale",
           }),
-          opacity: interpolate(frame, [10, 14], [0, 1], {
+          opacity: interpolate(frame, [14, 18], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),
@@ -124,12 +124,12 @@ export const OfferScene: React.FC<{
           textTransform: "uppercase",
           lineHeight: 1.15,
           rotate: "-9deg",
-          scale: interpolate(frame, [28, 40], [2.6, 1], {
+          scale: interpolate(frame, [34, 46], [2.6, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.spring({ damping: 15, stiffness: 200, mass: 0.7 }),
           }),
-          opacity: interpolate(frame, [28, 33], [0, 0.95], {
+          opacity: interpolate(frame, [34, 39], [0, 0.95], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),
@@ -155,11 +155,11 @@ export const OfferScene: React.FC<{
           fontSize: 40,
           lineHeight: 1.35,
           color: "#a9d8d2",
-          opacity: interpolate(frame, [44, 54], [0, 1], {
+          opacity: interpolate(frame, [52, 62], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),
-          translate: interpolate(frame, [44, 58], ["0px 30px", "0px 0px"], {
+          translate: interpolate(frame, [52, 66], ["0px 30px", "0px 0px"], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.bezier(0.16, 1, 0.3, 1),
@@ -180,7 +180,7 @@ export const OfferScene: React.FC<{
           top: 1040,
           display: "flex",
           justifyContent: "center",
-          scale: interpolate(frame, [58, 74], [0, 1], {
+          scale: interpolate(frame, [70, 86], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.spring({ damping: 12, stiffness: 170, mass: 0.8 }),
@@ -198,6 +198,8 @@ export const OfferScene: React.FC<{
             padding: "0 64px",
             height: 128,
             borderRadius: 64,
+            position: "relative",
+            overflow: "hidden",
             backgroundColor: "#d81b47",
             color: "#ffffff",
             fontFamily: SANS,
@@ -206,14 +208,37 @@ export const OfferScene: React.FC<{
             boxShadow: "0 24px 60px rgba(216,27,71,0.45)",
             scale: interpolate(
               frame,
-              [90, 100, 110, 120, 130, 136],
-              [1, 1.045, 1, 1.045, 1, 1],
+              [120, 130, 140, 150, 160, 170, 180],
+              [1, 1.045, 1, 1.045, 1, 1.045, 1],
               { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
             ),
           }}
         >
           <SendIcon size={48} color="#ffffff" strokeWidth={2.4} />
           {offer.cta}
+          <div
+            style={{
+              position: "absolute",
+              top: -40,
+              left: 0,
+              width: 120,
+              height: 220,
+              rotate: "20deg",
+              background:
+                "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.45) 50%, rgba(255,255,255,0) 100%)",
+              pointerEvents: "none",
+              translate: interpolate(
+                frame,
+                [128, 156],
+                ["-200px 0px", "900px 0px"],
+                {
+                  extrapolateLeft: "clamp",
+                  extrapolateRight: "clamp",
+                  easing: Easing.bezier(0.4, 0, 0.4, 1),
+                },
+              ),
+            }}
+          />
         </Interactive.Div>
       </div>
       <Interactive.Div
@@ -229,11 +254,11 @@ export const OfferScene: React.FC<{
           fontSize: 62,
           color: "#ffffff",
           letterSpacing: "-0.01em",
-          opacity: interpolate(frame, [72, 82], [0, 1], {
+          opacity: interpolate(frame, [86, 96], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),
-          translate: interpolate(frame, [72, 86], ["0px 30px", "0px 0px"], {
+          translate: interpolate(frame, [86, 100], ["0px 30px", "0px 0px"], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.bezier(0.16, 1, 0.3, 1),
@@ -254,7 +279,7 @@ export const OfferScene: React.FC<{
           fontWeight: 500,
           fontSize: 34,
           color: "#a9d8d2",
-          opacity: interpolate(frame, [84, 94], [0, 1], {
+          opacity: interpolate(frame, [100, 110], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),
@@ -275,7 +300,7 @@ export const OfferScene: React.FC<{
           fontSize: 30,
           letterSpacing: "0.06em",
           color: "#7fb8b2",
-          opacity: interpolate(frame, [94, 104], [0, 1], {
+          opacity: interpolate(frame, [112, 122], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),

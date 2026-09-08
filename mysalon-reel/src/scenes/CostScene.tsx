@@ -12,7 +12,8 @@ const LostAmount: React.FC<{
   readonly label: string;
   readonly amount: string;
   readonly at: number;
-}> = ({ label, amount, at }) => {
+  readonly strikeAt: number;
+}> = ({ label, amount, at, strikeAt }) => {
   const frame = useCurrentFrame();
 
   return (
@@ -30,7 +31,7 @@ const LostAmount: React.FC<{
         }),
         translate: interpolate(
           frame,
-          [at + 24, at + 38],
+          [strikeAt + 8, strikeAt + 24],
           ["0px 0px", "0px 34px"],
           {
             extrapolateLeft: "clamp",
@@ -40,7 +41,7 @@ const LostAmount: React.FC<{
         ),
         opacity: interpolate(
           frame,
-          [at, at + 4, at + 24, at + 38],
+          [at, at + 4, strikeAt + 8, strikeAt + 24],
           [0, 1, 1, 0.35],
           { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
         ),
@@ -80,11 +81,16 @@ const LostAmount: React.FC<{
             borderRadius: 4,
             backgroundColor: "#e8365d",
             transformOrigin: "left center",
-            scale: interpolate(frame, [at + 22, at + 30], ["0 1", "1 1"], {
-              extrapolateLeft: "clamp",
-              extrapolateRight: "clamp",
-              easing: Easing.bezier(0.16, 1, 0.3, 1),
-            }),
+            scale: interpolate(
+              frame,
+              [strikeAt, strikeAt + 8],
+              ["0 1", "1 1"],
+              {
+                extrapolateLeft: "clamp",
+                extrapolateRight: "clamp",
+                easing: Easing.bezier(0.16, 1, 0.3, 1),
+              },
+            ),
           }}
         />
       </div>
@@ -104,6 +110,10 @@ export const CostScene: React.FC<{
       style={{
         background:
           "radial-gradient(90% 60% at 50% 35%, #1a5450 0%, #0f3d3a 60%, #0a2d2b 100%)",
+        scale: interpolate(frame, [0, 120], [1, 1.04], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        }),
       }}
     >
       <div
@@ -149,13 +159,13 @@ export const CostScene: React.FC<{
             fontSize: 116,
             lineHeight: 1.05,
             color: "#f47c97",
-            scale: interpolate(frame, [6, 22], [0.7, 1], {
+            scale: interpolate(frame, [8, 24], [0.7, 1], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
               easing: Easing.spring({ damping: 12, stiffness: 170, mass: 0.8 }),
               output: "perceptual-scale",
             }),
-            opacity: interpolate(frame, [6, 12], [0, 1], {
+            opacity: interpolate(frame, [8, 14], [0, 1], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
             }),
@@ -176,9 +186,24 @@ export const CostScene: React.FC<{
           gap: 48,
         }}
       >
-        <LostAmount label="Coupe femme" amount="− 150 DH" at={18} />
-        <LostAmount label="Coloration" amount="− 400 DH" at={24} />
-        <LostAmount label="Soin visage" amount="− 250 DH" at={30} />
+        <LostAmount
+          label="Coupe femme"
+          amount="− 150 DH"
+          at={30}
+          strikeAt={66}
+        />
+        <LostAmount
+          label="Coloration"
+          amount="− 400 DH"
+          at={38}
+          strikeAt={72}
+        />
+        <LostAmount
+          label="Soin visage"
+          amount="− 250 DH"
+          at={46}
+          strikeAt={78}
+        />
       </div>
       <Interactive.Div
         name="Cost footnote"
@@ -192,11 +217,11 @@ export const CostScene: React.FC<{
           fontWeight: 500,
           fontSize: 40,
           color: "#9fcac4",
-          opacity: interpolate(frame, [46, 56], [0, 1], {
+          opacity: interpolate(frame, [84, 94], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),
-          translate: interpolate(frame, [46, 60], ["0px 30px", "0px 0px"], {
+          translate: interpolate(frame, [84, 98], ["0px 30px", "0px 0px"], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.bezier(0.16, 1, 0.3, 1),

@@ -71,7 +71,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="MySalonReel"
         component={MySalonReel}
-        durationInFrames={600}
+        durationInFrames={1077}
         fps={30}
         width={1080}
         height={1920}
@@ -89,7 +89,7 @@ export const RemotionRoot: React.FC = () => {
         <Composition
           id="Hook"
           component={HookScene}
-          durationInFrames={114}
+          durationInFrames={165}
           fps={30}
           width={1080}
           height={1920}
@@ -98,7 +98,7 @@ export const RemotionRoot: React.FC = () => {
         <Composition
           id="Cost"
           component={CostScene}
-          durationInFrames={72}
+          durationInFrames={120}
           fps={30}
           width={1080}
           height={1920}
@@ -107,7 +107,7 @@ export const RemotionRoot: React.FC = () => {
         <Composition
           id="Product"
           component={ProductScene}
-          durationInFrames={296}
+          durationInFrames={630}
           fps={30}
           width={1080}
           height={1920}
@@ -116,7 +116,7 @@ export const RemotionRoot: React.FC = () => {
         <Composition
           id="Offer"
           component={OfferScene}
-          durationInFrames={136}
+          durationInFrames={180}
           fps={30}
           width={1080}
           height={1920}

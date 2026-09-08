@@ -10,8 +10,8 @@ import { ProductScene } from "./scenes/ProductScene";
 import type { MySalonReelProps } from "./schema";
 
 // Timeline (30 fps):
-//   Hook 114 + Cost 72 + Product 296 + Offer 136 = 618 frames
-//   minus push cut 6 and slide 12 = 600 frames (20 s)
+//   Hook 165 + Cost 120 + Product 630 + Offer 180 = 1095 frames
+//   minus push cut 6 and slide 12 = 1077 frames (35.9 s)
 // Keep `durationInFrames` in Root.tsx in sync when changing these values.
 export const MySalonReel: React.FC<MySalonReelProps> = ({
   handle,
@@ -24,17 +24,17 @@ export const MySalonReel: React.FC<MySalonReelProps> = ({
   return (
     <AbsoluteFill style={{ backgroundColor: "#0f3d3a" }}>
       <TransitionSeries>
-        <TransitionSeries.Sequence durationInFrames={114} name="Hook">
+        <TransitionSeries.Sequence durationInFrames={165} name="Hook">
           <HookScene hook={hook} />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
           presentation={pushCut({ flashOpacity: 0.25, flashColor: "#fff3f5" })}
           timing={linearTiming({ durationInFrames: 6 })}
         />
-        <TransitionSeries.Sequence durationInFrames={72} name="Cost">
+        <TransitionSeries.Sequence durationInFrames={120} name="Cost">
           <CostScene cost={cost} />
         </TransitionSeries.Sequence>
-        <TransitionSeries.Sequence durationInFrames={296} name="Product">
+        <TransitionSeries.Sequence durationInFrames={630} name="Product">
           <ProductScene handle={handle} brand={brand} features={features} />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
@@ -44,7 +44,7 @@ export const MySalonReel: React.FC<MySalonReelProps> = ({
             easing: Easing.bezier(0.16, 1, 0.3, 1),
           })}
         />
-        <TransitionSeries.Sequence durationInFrames={136} name="Offer">
+        <TransitionSeries.Sequence durationInFrames={180} name="Offer">
           <OfferScene offer={offer} handle={handle} />
         </TransitionSeries.Sequence>
       </TransitionSeries>

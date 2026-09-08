@@ -1,14 +1,14 @@
 # MySalon.ma Reel
 
-A vertical 9:16 product reel (1080 x 1920, 30 fps, exactly 20 s) for MySalon.ma, built with Remotion.
+A vertical 9:16 product reel (1080 x 1920, 30 fps, ~36 s) for MySalon.ma, built with Remotion.
 It follows a problem → solution → proof → offer structure:
 
-| Frames    | Scene   | What happens                                                                                                                         |
-| --------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| 0 – 114   | Hook    | Three "Appel manqué" notifications pile up (with a phone-buzz shake), then the Darija hook: hands busy, phone ringing, client gone.  |
-| 114 – 180 | Cost    | "Koula appel manqué, client khserto." with three prices struck through and dropping away.                                            |
-| 180 – 470 | Product | Iris reveal of the brand (star, logo, tagline, "Fait au Maroc"), headline, then a phone demo: booking page → tap Réserver → pick 14:30 → confirm → agenda with the new booking → client profile with a one-tap WhatsApp offer. A feature card at the top names each capability (link + QR, 24/7 booking, reminders, live agenda, loyal clients). |
-| 470 – 600 | Offer   | "3 MOIS GRATUITS" with a launch stamp, conditions, the "Écrivez-nous en DM" button, the handle, founder line and footer.              |
+| Frames     | Scene   | What happens                                                                                                                                                                                                                                                                                                                                         |
+| ---------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 – 165    | Hook    | Three "Appel manqué" notifications pile up (with a phone-buzz shake), then the Darija hook line by line: hands busy, phone ringing, client gone.                                                                                                                                                                                                     |
+| 165 – 279  | Cost    | "Koula appel manqué, client khserto." with three prices popping in, then struck through and dropping away.                                                                                                                                                                                                                                           |
+| 279 – 897  | Product | Iris reveal of the brand (star, logo, tagline, "Fait au Maroc"), headline, then a phone demo with ~3.5 s per feature: booking page opened from the link → tap Réserver → pick 14:30 → confirm → reminder notification → agenda with the new booking → client profile with a one-tap WhatsApp offer. A feature card at the top names each capability. |
+| 897 – 1077 | Offer   | "3 MOIS GRATUITS" with a launch stamp, conditions, the "Écrivez-nous en DM" button (with a shine sweep), the handle, founder line and footer.                                                                                                                                                                                                        |
 
 Transitions: a `pushCut()` between hook and cost, a seamless iris into the product scene, and a `slide()` up into the offer.
 The phone UI is real HTML/CSS (no screenshots), so every label, price and name is editable.

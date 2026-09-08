@@ -26,11 +26,11 @@ const BrandReveal: React.FC<{ readonly brand: MySalonReelProps["brand"] }> = ({
       style={{
         alignItems: "center",
         padding: "0 80px",
-        opacity: interpolate(frame, [74, 86], [1, 0], {
+        opacity: interpolate(frame, [100, 112], [1, 0], {
           extrapolateLeft: "clamp",
           extrapolateRight: "clamp",
         }),
-        translate: interpolate(frame, [74, 86], ["0px 0px", "0px -40px"], {
+        translate: interpolate(frame, [100, 112], ["0px 0px", "0px -40px"], {
           extrapolateLeft: "clamp",
           extrapolateRight: "clamp",
           easing: Easing.in(Easing.quad),
@@ -58,11 +58,11 @@ const BrandReveal: React.FC<{ readonly brand: MySalonReelProps["brand"] }> = ({
       <div
         style={{
           marginTop: 26,
-          opacity: interpolate(frame, [18, 26], [0, 1], {
+          opacity: interpolate(frame, [20, 30], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),
-          translate: interpolate(frame, [18, 34], ["0px 40px", "0px 0px"], {
+          translate: interpolate(frame, [20, 38], ["0px 40px", "0px 0px"], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.bezier(0.16, 1, 0.3, 1),
@@ -86,11 +86,11 @@ const BrandReveal: React.FC<{ readonly brand: MySalonReelProps["brand"] }> = ({
           fontSize: 40,
           color: "#b81238",
           textAlign: "center",
-          opacity: interpolate(frame, [32, 40], [0, 1], {
+          opacity: interpolate(frame, [36, 46], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),
-          translate: interpolate(frame, [32, 46], ["0px 30px", "0px 0px"], {
+          translate: interpolate(frame, [36, 52], ["0px 30px", "0px 0px"], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.bezier(0.16, 1, 0.3, 1),
@@ -111,7 +111,7 @@ const BrandReveal: React.FC<{ readonly brand: MySalonReelProps["brand"] }> = ({
           fontWeight: 700,
           fontSize: 28,
           letterSpacing: "0.04em",
-          scale: interpolate(frame, [42, 56], [0, 1], {
+          scale: interpolate(frame, [48, 64], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.spring({ damping: 12, stiffness: 170, mass: 0.8 }),
@@ -132,11 +132,11 @@ const BrandReveal: React.FC<{ readonly brand: MySalonReelProps["brand"] }> = ({
           color: "#1c1c1c",
           textAlign: "center",
           letterSpacing: "-0.01em",
-          opacity: interpolate(frame, [54, 62], [0, 1], {
+          opacity: interpolate(frame, [62, 72], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),
-          translate: interpolate(frame, [54, 70], ["0px 40px", "0px 0px"], {
+          translate: interpolate(frame, [62, 80], ["0px 40px", "0px 0px"], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.bezier(0.16, 1, 0.3, 1),
@@ -155,11 +155,11 @@ const BrandReveal: React.FC<{ readonly brand: MySalonReelProps["brand"] }> = ({
           lineHeight: 1.3,
           color: "#5d5d5d",
           textAlign: "center",
-          opacity: interpolate(frame, [62, 70], [0, 1], {
+          opacity: interpolate(frame, [74, 84], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           }),
-          translate: interpolate(frame, [62, 78], ["0px 30px", "0px 0px"], {
+          translate: interpolate(frame, [74, 92], ["0px 30px", "0px 0px"], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.bezier(0.16, 1, 0.3, 1),
@@ -234,7 +234,7 @@ const PhoneDemo: React.FC = () => {
         }),
         scale: interpolate(
           frame,
-          [0, 28, 66, 82, 136, 152],
+          [0, 28, 120, 140, 290, 310],
           [0.94, 1, 1, 1.08, 1.08, 1],
           {
             extrapolateLeft: "clamp",
@@ -245,14 +245,21 @@ const PhoneDemo: React.FC = () => {
       }}
     >
       <Phone>
-        <Sequence durationInFrames={160} name="Booking page">
-          <BookingPage scrollAt={36} tapAt={66} slotAt={94} confirmAt={104} />
+        <Sequence durationInFrames={330} name="Booking page">
+          <BookingPage
+            urlPulseAt={22}
+            scrollAt={54}
+            tapAt={126}
+            slotAt={168}
+            confirmAt={194}
+            reminderAt={274}
+          />
         </Sequence>
-        <Sequence from={146} durationInFrames={50} name="Agenda">
-          <AgendaScreen newAt={10} />
+        <Sequence from={314} durationInFrames={120} name="Agenda">
+          <AgendaScreen newAt={14} />
         </Sequence>
-        <Sequence from={182} name="Clients">
-          <ClientsScreen tapAt={12} />
+        <Sequence from={414} name="Clients">
+          <ClientsScreen tapAt={26} />
         </Sequence>
       </Phone>
     </div>
@@ -289,28 +296,48 @@ export const ProductScene: React.FC<{
           }}
         />
       </AbsoluteFill>
-      <Sequence durationInFrames={92} layout="none" name="Brand reveal">
+      <Sequence durationInFrames={114} layout="none" name="Brand reveal">
         <BrandReveal brand={brand} />
       </Sequence>
-      <Sequence from={84} layout="none" name="Header">
+      <Sequence from={108} layout="none" name="Header">
         <Header handle={handle} />
       </Sequence>
-      <Sequence from={84} layout="none" name="Phone demo">
+      <Sequence from={106} layout="none" name="Phone demo">
         <PhoneDemo />
       </Sequence>
-      <Sequence from={96} durationInFrames={44} layout="none" name="Feature 1">
+      <Sequence
+        from={120}
+        durationInFrames={100}
+        layout="none"
+        name="Feature 1"
+      >
         <FeatureCard feature={features[0]} step={0} total={5} />
       </Sequence>
-      <Sequence from={140} durationInFrames={46} layout="none" name="Feature 2">
+      <Sequence
+        from={220}
+        durationInFrames={110}
+        layout="none"
+        name="Feature 2"
+      >
         <FeatureCard feature={features[1]} step={1} total={5} />
       </Sequence>
-      <Sequence from={186} durationInFrames={40} layout="none" name="Feature 3">
+      <Sequence from={330} durationInFrames={90} layout="none" name="Feature 3">
         <FeatureCard feature={features[2]} step={2} total={5} />
       </Sequence>
-      <Sequence from={226} durationInFrames={36} layout="none" name="Feature 4">
+      <Sequence
+        from={420}
+        durationInFrames={100}
+        layout="none"
+        name="Feature 4"
+      >
         <FeatureCard feature={features[3]} step={3} total={5} />
       </Sequence>
-      <Sequence from={262} durationInFrames={34} layout="none" name="Feature 5">
+      <Sequence
+        from={520}
+        durationInFrames={110}
+        layout="none"
+        name="Feature 5"
+      >
         <FeatureCard feature={features[4]} step={4} total={5} />
       </Sequence>
     </AbsoluteFill>

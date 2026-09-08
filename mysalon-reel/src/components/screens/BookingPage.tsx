@@ -193,11 +193,13 @@ const ConfirmationLine: React.FC<{
 // scroll -> tap "Réserver" -> pick a slot -> confirm -> success.
 // All frame numbers are relative to the sequence this screen is mounted in.
 export const BookingPage: React.FC<{
+  readonly urlPulseAt: number;
   readonly scrollAt: number;
   readonly tapAt: number;
   readonly slotAt: number;
   readonly confirmAt: number;
-}> = ({ scrollAt, tapAt, slotAt, confirmAt }) => {
+  readonly reminderAt: number;
+}> = ({ urlPulseAt, scrollAt, tapAt, slotAt, confirmAt, reminderAt }) => {
   const frame = useCurrentFrame();
   const sheetIn = tapAt + 6;
   const confirmed = frame >= confirmAt + 6;
@@ -232,7 +234,14 @@ export const BookingPage: React.FC<{
             flexDirection: "row",
             alignItems: "center",
             gap: 10,
+            position: "relative",
             backgroundColor: "#ece6e2",
+            scale: interpolate(
+              frame,
+              [urlPulseAt, urlPulseAt + 10, urlPulseAt + 22],
+              [1, 1.05, 1],
+              { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+            ),
             borderRadius: 14,
             padding: "10px 14px",
             fontFamily: SANS,
@@ -244,6 +253,21 @@ export const BookingPage: React.FC<{
           <LockIcon size={18} color="#0f5c57" />
           <span style={{ flex: 1 }}>mysalon.ma/salon-yasmine</span>
           <QrIcon size={22} color="#0f5c57" />
+          <div
+            style={{
+              position: "absolute",
+              inset: -4,
+              borderRadius: 18,
+              border: "3px solid #0f5c57",
+              pointerEvents: "none",
+              opacity: interpolate(
+                frame,
+                [urlPulseAt, urlPulseAt + 8, urlPulseAt + 30, urlPulseAt + 44],
+                [0, 1, 1, 0],
+                { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+              ),
+            }}
+          />
         </div>
         <div
           style={{
@@ -509,17 +533,17 @@ export const BookingPage: React.FC<{
               <ConfirmationLine
                 icon="mail"
                 text="Confirmation envoyée par email"
-                at={confirmAt + 12}
+                at={confirmAt + 36}
               />
               <ConfirmationLine
                 icon="calendar"
                 text="Ajouté à votre agenda"
-                at={confirmAt + 18}
+                at={confirmAt + 48}
               />
               <ConfirmationLine
                 icon="bell"
                 text="Rappel automatique la veille"
-                at={confirmAt + 24}
+                at={confirmAt + 60}
               />
             </div>
           </div>
@@ -592,6 +616,83 @@ export const BookingPage: React.FC<{
             </div>
           </>
         )}
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          left: 14,
+          right: 14,
+          top: 58,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 12,
+          padding: "14px 16px",
+          borderRadius: 22,
+          backgroundColor: "rgba(255,255,255,0.97)",
+          boxShadow: "0 16px 40px rgba(15,61,58,0.28)",
+          translate: interpolate(
+            frame,
+            [reminderAt, reminderAt + 18],
+            ["0px -180px", "0px 0px"],
+            {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+              easing: Easing.spring({ damping: 200 }),
+            },
+          ),
+          opacity: interpolate(frame, [reminderAt, reminderAt + 6], [0, 1], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          }),
+        }}
+      >
+        <div
+          style={{
+            width: 46,
+            height: 46,
+            borderRadius: 12,
+            backgroundColor: "#0f5c57",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <BellIcon size={26} color="#ffffff" />
+        </div>
+        <div
+          style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              fontFamily: SANS,
+              fontSize: 15,
+              color: "#6b6b6b",
+            }}
+          >
+            <span style={{ fontWeight: 700, color: "#0f5c57" }}>
+              MySalon.ma
+            </span>
+            <span>maintenant</span>
+          </div>
+          <div
+            style={{
+              fontFamily: SANS,
+              fontWeight: 700,
+              fontSize: 19,
+              color: "#1a1a1a",
+            }}
+          >
+            Rappel : RDV demain à 14:30
+          </div>
+          <div style={{ fontFamily: SANS, fontSize: 16, color: "#6b6b6b" }}>
+            Coupe femme avec Yasmine · Salon Yasmine
+          </div>
+        </div>
       </div>
     </div>
   );
