@@ -27,8 +27,8 @@ export const HookScene: React.FC<{ readonly hook: PassReelProps["hook"] }> = ({
       >
         <Backdrop
           image={hook.image}
-          blur={6}
-          tint="rgba(42,12,26,0.5)"
+          blur={0}
+          tint="rgba(42,12,26,0.42)"
           opacity={1}
         />
       </AbsoluteFill>

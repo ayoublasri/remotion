@@ -4,17 +4,17 @@ A vertical 9:16 offer reel (1080 x 1920, 30 fps, 54.1 s) for the New Star Beauty
 sold as the "Pass Njma" (njma = star, after the salon's name and the sparkles in its logo). Built with Remotion, with its own
 royalty-free soundtrack and sound effects. Every cut lands on a downbeat of the music.
 
-| Bars  | Frames      | Scene    | What happens                                                                                                   |
-| ----- | ----------- | -------- | -------------------------------------------------------------------------------------------------------------- |
-| 1–2   | 0 – 112     | Hook     | "Un lissage à 649 DH ?" then "Oui. Ghir f sbah." over a blurred salon photo while the music builds.           |
-| 3–4   | 112 – 224   | Collab   | "En collaboration avec" the New Star Beauty logo, name and "Wifak · Témara", then "nous vous offrons le…".     |
-| 5–7   | 224 – 392   | Title    | The drop: PASS NJMA over a rotating starburst, "Brillez comme une étoile", the Lissage / Ongles / Mar → Ven pills, the mysalon.ma footer, then a bar of hold. |
+| Bars  | Frames      | Scene    | What happens                                                                                                                                                                                                                               |
+| ----- | ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1–2   | 0 – 112     | Hook     | "Un lissage à 649 DH ?" then "Oui. Ghir f sbah." over the sleek-hair photo while the music builds.                                                                                                                                         |
+| 3–4   | 112 – 224   | Collab   | "En collaboration avec" the New Star Beauty logo, name and "Wifak · Témara", then "nous vous offrons le…".                                                                                                                                 |
+| 5–7   | 224 – 392   | Title    | The drop: PASS NJMA over a rotating starburst, "Brillez comme une étoile", the Lissage / Ongles / Mar → Ven pills, the mysalon.ma footer, then a bar of hold.                                                                              |
 | 8–12  | 392 – 672   | Lissage  | Window pill "MAR → VEN · 9h30 → 12h30", three cards stacking one per bar (short, mid-length, long hair icons), old price struck through, new price counting down, "−151 DH" callouts; two bars of hold with "Dernier rendez-vous à 12h30". |
-| 13–17 | 672 – 952   | Ongles   | Window pill "MAR → VEN · 11h30 → 16h30", three cards with drawn nail illustrations: faux ongles + vernis permanent 80 DH, vernis permanent 60 DH, manucure + pédicure 140 DH; two bars of hold. |
-| 18–20 | 952 – 1120  | Validity | "Ces prix sont valables UNIQUEMENT": M M J V light up on the beat, "Mardi → Vendredi", two clocks sweeping the lissage and ongles windows, "Dernier rendez-vous lissage : 12h30". |
-| 21–24 | 1120 – 1344 | How      | "Comment en profiter ? C'est simple." Three steps, one per bar: write to us by DM (chat thread, Payer → Payé), receive the code (typed on a ticket, chime), book online (calendar slot on mysalon.ma); one bar of hold. |
-| 25–26 | 1344 – 1456 | Code     | "Votre code reste valable 45 JOURS" with a ring drawing itself and the number counting up, "pour choisir votre créneau", the windows reminder. |
-| 27–29 | 1456 – 1624 | CTA      | Second drop: logo, "RÉSERVEZ VOTRE PLACE MAINTENANT !", "Du mardi au vendredi", "Pour réserver, c'est par message :", a pulsing "Écrivez-nous en DM" button, the mysalon.ma footer, the conditions. |
+| 13–17 | 672 – 952   | Ongles   | Window pill "MAR → VEN · 11h30 → 16h30", three cards with the nail photos: faux ongles + vernis permanent 80 DH, vernis permanent 60 DH, manucure + pédicure 140 DH; two bars of hold.                                                     |
+| 18–20 | 952 – 1120  | Validity | "Ces prix sont valables UNIQUEMENT": M M J V light up on the beat, "Mardi → Vendredi", two clocks sweeping the lissage and ongles windows, "Dernier rendez-vous lissage : 12h30".                                                          |
+| 21–24 | 1120 – 1344 | How      | "Comment en profiter ? C'est simple." Three steps, one per bar: write to us by DM (chat thread, Payer → Payé), receive the code (typed on a ticket, chime), book online (calendar slot on mysalon.ma); one bar of hold.                    |
+| 25–26 | 1344 – 1456 | Code     | "Votre code reste valable 45 JOURS" with a ring drawing itself and the number counting up, "pour choisir votre créneau", the windows reminder.                                                                                             |
+| 27–29 | 1456 – 1624 | CTA      | Second drop: logo, "RÉSERVEZ VOTRE PLACE MAINTENANT !", "Du mardi au vendredi", "Pour réserver, c'est par message :", a pulsing "Écrivez-nous en DM" button, the mysalon.ma footer, the conditions.                                        |
 
 ## Design
 
@@ -24,12 +24,11 @@ accents in Playfair Display italic, UI copy in Inter.
 
 ## Pictures
 
-The hook backdrop (and the blurred backdrop of the lissage section) is the salon's own hair-treatment post, cut from the
-profile grid screenshot. Everything else is drawn: the lissage cards use a flat hair-length icon (short, mid, long) and
-the ongles cards use flat nail illustrations (`src/components/NailIcons.tsx`: a hand with long blush almond nails, a hand
-with glossy red gel nails and a polish bottle, a hand and a foot for the mani-pedi), all in the logo's palette. To use
-photos instead, set `image` on an offer to a file in `public/images` (and `nail` / `hair` to `null`), or set a section's
-`backdrop` to a photo.
+`public/images` holds generated photos supplied for the reel: `hair-sleek.jpg` (the hook, and blurred behind the lissage
+cards), `nails-pink-almond.jpg`, `nails-red-gel.jpg` and `mani-pedi.jpg` (the three ongles cards; the pink set is also
+blurred behind them). The lissage cards use a drawn hair-length icon (short, mid, long). Any card can switch between a
+photo and a drawn icon: set `image` to a file name, or set it to `null` and pick a `hair` length or a `nail` illustration
+(`almond`, `red`, `manipedi`, drawn in `src/components/NailIcons.tsx`).
 
 ## Remotion Elements used
 

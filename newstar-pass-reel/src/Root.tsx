@@ -14,7 +14,7 @@ const site = "mysalon.ma";
 const logo = "logo.jpg";
 
 const hook = {
-  image: "hair-treatment.jpg",
+  image: "hair-sleek.jpg",
   line1: "Un lissage à 649 DH ?",
   line2: "Oui. Ghir f sbah.",
 };
@@ -39,7 +39,7 @@ const lissage = {
   label: "LISSAGE",
   window: "MAR → VEN · 9h30 → 12h30",
   footer: "Dernier rendez-vous à 12h30",
-  backdrop: "hair-treatment.jpg",
+  backdrop: "hair-sleek.jpg",
   offers: [
     {
       image: null,
@@ -87,15 +87,15 @@ const ongles = {
   label: "ONGLES",
   window: "MAR → VEN · 11h30 → 16h30",
   footer: "Créneaux de 11h30 à 16h30",
-  backdrop: null,
+  backdrop: "nails-pink-almond.jpg",
   offers: [
     {
-      image: null,
+      image: "nails-pink-almond.jpg",
       hair: null,
-      nail: "almond" as const,
+      nail: null,
       focusX: 50,
-      focusY: 50,
-      zoom: 1,
+      focusY: 58,
+      zoom: 1.05,
       title: "Faux ongles + vernis permanent",
       subtitle: "−20 %",
       oldPrice: 100,
@@ -103,12 +103,12 @@ const ongles = {
       callout: "−20 DH",
     },
     {
-      image: null,
+      image: "nails-red-gel.jpg",
       hair: null,
-      nail: "red" as const,
-      focusX: 50,
-      focusY: 50,
-      zoom: 1,
+      nail: null,
+      focusX: 44,
+      focusY: 70,
+      zoom: 1.45,
       title: "Vernis permanent",
       subtitle: "−25 %",
       oldPrice: 80,
@@ -116,12 +116,12 @@ const ongles = {
       callout: "−20 DH",
     },
     {
-      image: null,
+      image: "mani-pedi.jpg",
       hair: null,
-      nail: "manipedi" as const,
-      focusX: 50,
-      focusY: 50,
-      zoom: 1,
+      nail: null,
+      focusX: 55,
+      focusY: 52,
+      zoom: 1.2,
       title: "Manucure + pédicure",
       subtitle: "−22 %",
       oldPrice: 180,
