@@ -62,14 +62,14 @@ export const OfferCard: React.FC<{
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          gap: 30,
+          gap: 24,
           padding: 22,
           boxSizing: "border-box",
         }}
       >
         <div
           style={{
-            width: 256,
+            width: 360,
             height: 256,
             borderRadius: 22,
             overflow: "hidden",
@@ -113,7 +113,7 @@ export const OfferCard: React.FC<{
             style={{
               fontFamily: SANS,
               fontWeight: 800,
-              fontSize: 42,
+              fontSize: 40,
               lineHeight: 1.05,
               letterSpacing: "-0.01em",
               color: INK,
@@ -141,7 +141,7 @@ export const OfferCard: React.FC<{
             style={{
               fontFamily: SANS,
               fontWeight: 600,
-              fontSize: 30,
+              fontSize: 28,
               lineHeight: 1.1,
               color: GREEN,
               opacity: interpolate(frame, [at + 10, at + 18], [0, 1], {
@@ -215,7 +215,7 @@ export const OfferCard: React.FC<{
             to={offer.newPrice}
             at={at + 12}
             duration={18}
-            size={78}
+            size={72}
             color={GREEN}
             unit="DH"
           />

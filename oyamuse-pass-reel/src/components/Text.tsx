@@ -1,6 +1,7 @@
 import { Easing, Interactive, interpolate, useCurrentFrame } from "remotion";
-import { DISPLAY } from "../fonts";
+import { DISPLAY, SANS } from "../fonts";
 import { LogoBadge } from "./Logo";
+import { Star } from "./Overlays";
 
 // Top bar of a scene: one spaced label on the left, the logo on the right.
 export const SectionLabel: React.FC<{
@@ -106,5 +107,45 @@ export const RiseLine: React.FC<{
     >
       {text}
     </Interactive.Div>
+  );
+};
+
+// The platform footer, like the flyer's: a four-point star and the site name.
+export const SiteMark: React.FC<{
+  readonly site: string;
+  readonly at: number;
+  readonly size: number;
+  readonly color: string;
+  readonly starColor: string;
+}> = ({ site, at, size, color, starColor }) => {
+  const frame = useCurrentFrame();
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: size * 0.4,
+        fontFamily: SANS,
+        fontWeight: 700,
+        fontSize: size,
+        letterSpacing: "0.04em",
+        color,
+        opacity: interpolate(frame, [at, at + 8], [0, 1], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        }),
+        translate: interpolate(frame, [at, at + 16], ["0px 30px", "0px 0px"], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+          easing: Easing.bezier(0.16, 1, 0.3, 1),
+        }),
+      }}
+    >
+      <Star size={size * 0.75} color={starColor} />
+      {site}
+    </div>
   );
 };

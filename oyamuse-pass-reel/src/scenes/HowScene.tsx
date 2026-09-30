@@ -156,7 +156,8 @@ const StepRow: React.FC<{
 // Bars 11-13: how to get the pass, one step per bar.
 export const HowScene: React.FC<{
   readonly how: PassReelProps["how"];
-}> = ({ how }) => {
+  readonly site: string;
+}> = ({ how, site }) => {
   const frame = useCurrentFrame();
 
   return (
@@ -218,7 +219,7 @@ export const HowScene: React.FC<{
         <CodeIllustration at={62} code={how.code} label="VOTRE CODE" />
       </StepRow>
       <StepRow index={2} step={how.steps[2]} at={112}>
-        <BookIllustration at={118} site={how.site} slotLabel={how.slotLabel} />
+        <BookIllustration at={118} site={site} slotLabel={how.slotLabel} />
       </StepRow>
       <Flash at={0} peak={0.55} />
     </AbsoluteFill>

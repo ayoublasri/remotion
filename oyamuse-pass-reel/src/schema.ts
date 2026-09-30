@@ -18,12 +18,18 @@ export const stepSchema = z.object({
 });
 
 export const passReelSchema = z.object({
-  handle: z.string(),
-  logo: z.string().describe("Logo file inside public/images"),
+  site: z.string().describe("The platform to contact, shown in the footers"),
+  logo: z.string().describe("Salon logo file inside public/images"),
   hook: z.object({
     image: z.string(),
     line1: z.string(),
     line2: z.string(),
+  }),
+  collab: z.object({
+    intro: z.string(),
+    name: z.string(),
+    city: z.string(),
+    outro: z.string(),
   }),
   title: z.object({
     salon: z.string(),
@@ -50,7 +56,6 @@ export const passReelSchema = z.object({
     answer: z.string(),
     steps: z.array(stepSchema).length(3),
     code: z.string().describe("Example code typed on the ticket"),
-    site: z.string().describe("Booking site shown on the calendar"),
     dmMessage: z.string().describe("Client message in the DM illustration"),
     payLabel: z.string(),
     paidLabel: z.string(),

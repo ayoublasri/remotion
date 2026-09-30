@@ -9,7 +9,7 @@ import { LogoBadge } from "../components/Logo";
 import { Flash, Twinkles } from "../components/Overlays";
 import { Sfx } from "../components/Sfx";
 import { Starburst } from "../components/Starburst";
-import { PopLine, RiseLine } from "../components/Text";
+import { PopLine, RiseLine, SiteMark } from "../components/Text";
 import { DISPLAY, SANS } from "../fonts";
 import type { PassReelProps } from "../schema";
 import { CREAM, CREAM_DEEP, GOLD, GREEN, GREEN_DEEP, RED } from "../theme";
@@ -17,9 +17,9 @@ import { CREAM, CREAM_DEEP, GOLD, GREEN, GREEN_DEEP, RED } from "../theme";
 // Bars 16-18: the second drop and the one invite: book now, by DM.
 export const CtaScene: React.FC<{
   readonly cta: PassReelProps["cta"];
-  readonly handle: string;
   readonly logo: string;
-}> = ({ cta, handle, logo }) => {
+  readonly site: string;
+}> = ({ cta, logo, site }) => {
   const frame = useCurrentFrame();
 
   return (
@@ -225,19 +225,15 @@ export const CtaScene: React.FC<{
             />
           </Interactive.Div>
         </div>
-        <RiseLine
-          name="Handle"
-          text={handle}
-          at={70}
-          style={{
-            marginTop: 34,
-            fontFamily: SANS,
-            fontWeight: 700,
-            fontSize: 54,
-            letterSpacing: "-0.01em",
-            color: GREEN,
-          }}
-        />
+        <div style={{ marginTop: 36 }}>
+          <SiteMark
+            site={site}
+            at={70}
+            size={44}
+            color={GREEN}
+            starColor={GOLD}
+          />
+        </div>
       </AbsoluteFill>
       <Interactive.Div
         name="Conditions"

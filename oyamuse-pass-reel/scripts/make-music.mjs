@@ -1,6 +1,6 @@
 // Generates the royalty-free soundtrack for the reel: an energetic pop /
 // house groove at 128.57 BPM (exactly 14 frames per beat at 30 fps),
-// 18 bars (33.6 s) plus a short tail. Everything is synthesised here.
+// 20 bars (37.3 s) plus a short tail. Everything is synthesised here.
 //
 //   node scripts/make-music.mjs  -> public/music/oyamuse-theme.wav
 //   (convert to mp3 with ffmpeg, see README)
@@ -12,7 +12,7 @@ import { fileURLToPath } from "node:url";
 const SR = 44100;
 const BEAT = 14 / 30; // seconds; 14 frames at 30 fps -> 128.57 BPM
 const BAR = BEAT * 4;
-const BARS = 18;
+const BARS = 20;
 const TAIL = 1.6;
 const LENGTH = BARS * BAR + TAIL;
 const N = Math.ceil(LENGTH * SR);
@@ -288,23 +288,31 @@ const riser = (start, dur, vel) => {
 // ---------- arrangement ----------
 const at = (bar, beat) => bar * BAR + beat * BEAT; // 0-based bar and beat
 
-// Melody (A minor pentatonic), one note per eighth, used in bars 8-9 and 15-16.
+// Sections (0-based bar indexes), matching the reel's timeline:
+//   0-1 hook (quiet intro), 2-3 collab (pre-drop groove, build in 3),
+//   4-5 title (drop), 6-9 offers, 10-11 validity, 12-14 how,
+//   15-16 code (build in 16), 17-19 CTA (second drop).
+const DROP = 4;
+const SECOND_DROP = 17;
+
+// Melody (A minor pentatonic), one note per eighth.
 const MELODY = [76, 74, 72, 74, 76, 79, 76, 74, 72, 69, 72, 74, 76, 74, 72, 69];
 
 for (let bar = 0; bar < BARS; bar++) {
   const { chord, root } = PROGRESSION[bar % 4];
-  const intro = bar < 2;
-  const build = bar === 14; // snare build into the CTA drop
-  const groove = !intro;
+  const quiet = bar < 2;
+  const preDrop = bar >= 2 && bar < DROP;
+  const groove = bar >= DROP;
+  const build = bar === DROP - 1 || bar === SECOND_DROP - 1;
 
   // Chord stabs: syncopated house pattern.
-  const stabVel = intro ? 0.16 : 0.2;
+  const stabVel = quiet ? 0.16 : 0.2;
   for (const b of [0, 0.75, 1.5, 2, 2.75, 3.5])
     stab(at(bar, b), BEAT * 0.6, chord, stabVel * (b % 1 === 0 ? 1 : 0.85));
-  pad(at(bar, 0), BAR, chord, intro ? 0.05 : 0.07);
+  pad(at(bar, 0), BAR, chord, quiet ? 0.05 : 0.07);
 
   // Sparkle arpeggio on sixteenths, second half of the bar.
-  if (bar >= 3 && !build) {
+  if (bar >= 2 && !build) {
     const arp = chord.map((m) => m + 24);
     for (let s = 8; s < 16; s++)
       bell(at(bar, s / 4), arp[s % 4], 0.045, s % 2 ? 0.5 : -0.5);
@@ -337,36 +345,42 @@ for (let bar = 0; bar < BARS; bar++) {
         );
       if (s % 2 === 1) shaker(at(bar, s / 4), 0.06 * (0.8 + rand() * 0.4));
     }
+  } else if (preDrop) {
+    // Collab bars: kick on every beat, hats and a simple bass, no claps yet.
+    for (let b = 0; b < 4; b++) kick(at(bar, b), 0.8);
+    for (let e = 0; e < 8; e++) hat(at(bar, e / 2), 0.1 + e * 0.008, false);
+    for (let s = 1; s < 16; s += 2) shaker(at(bar, s / 4), 0.05);
+    bass(at(bar, 0), BEAT * 0.9, root, 0.4);
+    bass(at(bar, 2), BEAT * 0.9, root, 0.36);
   } else {
-    // Intro: hats and a snare roll into the drop.
+    // Quiet intro: hats sneak in, two soft kicks in the second bar.
     for (let e = 0; e < 8; e++)
       hat(at(bar, e / 2), 0.05 + bar * 0.04 + e * 0.008, false);
     if (bar === 1) {
-      for (let e = 0; e < 4; e++) snare(at(bar, 2 + e / 2), 0.18 + e * 0.05);
-      for (let s = 0; s < 4; s++) snare(at(bar, 3 + s / 4), 0.35 + s * 0.08);
-      kick(at(bar, 0), 0.6);
-      kick(at(bar, 2), 0.7);
+      kick(at(bar, 0), 0.5);
+      kick(at(bar, 2), 0.6);
     }
   }
 
-  // Lead melody.
-  if (bar === 8 || bar === 9 || bar === 16 || bar === 17) {
-    const phrase = bar % 2 === 1 ? MELODY.slice(0, 8) : MELODY.slice(8, 16);
+  // Lead melody over the offers hold, the validity scene and the CTA.
+  if (bar === 9 || bar === 10 || bar === 18 || bar === 19) {
+    const phrase =
+      bar === 9 || bar === 18 ? MELODY.slice(0, 8) : MELODY.slice(8, 16);
     phrase.forEach((m, i) => lead(at(bar, i / 2), BEAT * 0.5, m, 0.13));
   }
 
-  // Build in bar 14 (index 13): snare roll accelerating, riser.
+  // Builds: accelerating snare roll and a riser into each drop.
   if (build) {
     for (let e = 0; e < 4; e++) snare(at(bar, e / 2), 0.3 + e * 0.04);
     for (let s = 0; s < 8; s++) snare(at(bar, 2 + s / 4), 0.4 + s * 0.05);
     riser(at(bar, 0), BAR, 0.3);
   }
 
-  // Section accents: crashes and impacts on the drops.
-  if ([2, 4, 8, 10, 13, 15].includes(bar))
-    crash(at(bar, 0), bar === 2 || bar === 15 ? 0.32 : 0.2);
-  if (bar === 2 || bar === 15) impact(at(bar, 0), 0.55);
-  if (bar === 1 || bar === 7 || bar === 12)
+  // Section accents: crashes and impacts on the scene changes.
+  if ([DROP, 6, 10, 12, 15, SECOND_DROP].includes(bar))
+    crash(at(bar, 0), bar === DROP || bar === SECOND_DROP ? 0.32 : 0.2);
+  if (bar === DROP || bar === SECOND_DROP) impact(at(bar, 0), 0.55);
+  if (bar === 1 || bar === 9 || bar === 14)
     riser(at(bar, 2), BEAT * 2, bar === 1 ? 0.35 : 0.2);
 }
 

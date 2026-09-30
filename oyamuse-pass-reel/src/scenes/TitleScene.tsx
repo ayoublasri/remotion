@@ -1,15 +1,9 @@
-import {
-  AbsoluteFill,
-  Easing,
-  Interactive,
-  interpolate,
-  useCurrentFrame,
-} from "remotion";
+import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
 import { LogoBadge } from "../components/Logo";
 import { Flash, Twinkles } from "../components/Overlays";
 import { Sfx } from "../components/Sfx";
 import { Starburst } from "../components/Starburst";
-import { PopLine, RiseLine } from "../components/Text";
+import { PopLine, RiseLine, SiteMark } from "../components/Text";
 import { DISPLAY, SANS, SERIF } from "../fonts";
 import type { PassReelProps } from "../schema";
 import { CREAM, CREAM_DEEP, GOLD, GREEN, GREEN_DEEP } from "../theme";
@@ -49,8 +43,8 @@ const Pill: React.FC<{ readonly text: string; readonly at: number }> = ({
 export const TitleScene: React.FC<{
   readonly title: PassReelProps["title"];
   readonly logo: string;
-  readonly handle: string;
-}> = ({ title, logo, handle }) => {
+  readonly site: string;
+}> = ({ title, logo, site }) => {
   const frame = useCurrentFrame();
 
   return (
@@ -189,26 +183,15 @@ export const TitleScene: React.FC<{
           <Pill text={title.pills[2]} at={84} />
         </div>
       </AbsoluteFill>
-      <Interactive.Div
-        name="Handle"
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 1440,
-          textAlign: "center",
-          fontFamily: SANS,
-          fontWeight: 600,
-          fontSize: 34,
-          color: "rgba(31,75,60,0.6)",
-          opacity: interpolate(frame, [70, 80], [0, 1], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-          }),
-        }}
-      >
-        {handle}
-      </Interactive.Div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 1440 }}>
+        <SiteMark
+          site={site}
+          at={70}
+          size={34}
+          color={GREEN}
+          starColor={GOLD}
+        />
+      </div>
       <Flash at={0} peak={0.7} />
     </AbsoluteFill>
   );

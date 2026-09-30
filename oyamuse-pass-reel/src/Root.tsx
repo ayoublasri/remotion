@@ -1,6 +1,7 @@
 import { Composition, Folder } from "remotion";
 import { PassReel } from "./PassReel";
 import { CodeScene } from "./scenes/CodeScene";
+import { CollabScene } from "./scenes/CollabScene";
 import { CtaScene } from "./scenes/CtaScene";
 import { HookScene } from "./scenes/HookScene";
 import { HowScene } from "./scenes/HowScene";
@@ -9,13 +10,20 @@ import { TitleScene } from "./scenes/TitleScene";
 import { ValidityScene } from "./scenes/ValidityScene";
 import { passReelSchema } from "./schema";
 
-const handle = "@oyamuse.ma";
+const site = "mysalon.ma";
 const logo = "logo.jpg";
 
 const hook = {
   image: "nails-pearl.jpg",
   line1: "99 DH la manucure russe ?",
   line2: "Oui. Ghir l'3chya.",
+};
+
+const collab = {
+  intro: "EN COLLABORATION AVEC",
+  name: "OYA MUSE",
+  city: "TÉMARA",
+  outro: "nous vous offrons le…",
 };
 
 const title = {
@@ -91,7 +99,6 @@ const how = {
     },
   ],
   code: "OYA-3CHYA-72",
-  site: "mysalon.ma",
   dmMessage: "Le Pass L'3chya svp !",
   payLabel: "Payer",
   paidLabel: "Payé",
@@ -123,15 +130,16 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="PassReel"
         component={PassReel}
-        durationInFrames={1008}
+        durationInFrames={1120}
         fps={30}
         width={1080}
         height={1920}
         schema={passReelSchema}
         defaultProps={{
-          handle,
+          site,
           logo,
           hook,
+          collab,
           title,
           offers,
           validity,
@@ -152,13 +160,22 @@ export const RemotionRoot: React.FC = () => {
           defaultProps={{ hook }}
         />
         <Composition
+          id="Collab"
+          component={CollabScene}
+          durationInFrames={112}
+          fps={30}
+          width={1080}
+          height={1920}
+          defaultProps={{ collab, logo }}
+        />
+        <Composition
           id="Title"
           component={TitleScene}
           durationInFrames={112}
           fps={30}
           width={1080}
           height={1920}
-          defaultProps={{ title, logo, handle }}
+          defaultProps={{ title, logo, site }}
         />
         <Composition
           id="Offers"
@@ -190,7 +207,7 @@ export const RemotionRoot: React.FC = () => {
           fps={30}
           width={1080}
           height={1920}
-          defaultProps={{ how }}
+          defaultProps={{ how, site }}
         />
         <Composition
           id="Code"
@@ -208,7 +225,7 @@ export const RemotionRoot: React.FC = () => {
           fps={30}
           width={1080}
           height={1920}
-          defaultProps={{ cta, handle, logo }}
+          defaultProps={{ cta, logo, site }}
         />
       </Folder>
     </>
