@@ -9,9 +9,16 @@ with its own royalty-free soundtrack and sound effects. Every cut lands on a dow
 | 3–4   | 112 – 224  | Title    | The drop: PASS L'3CHYA slams in over a rotating starburst, then "Votre soirée bien-être" and the three pills.    |
 | 5–8   | 224 – 448  | Offers   | Three offer cards stack up, one per bar: photo, old price struck through, new price counting down and landing, a "1 place restante" callout. The fourth bar holds the list with the days/hours pill. |
 | 9–10  | 448 – 560  | Validity | "Ces prix sont valables UNIQUEMENT": M J V light up on the beat, "Mercredi → Vendredi", a clock sweeping 17h → 20h, "Réservé aux nouvelles clientes". |
-| 11–13 | 560 – 728  | How      | "Comment en profiter ? C'est simple." Three steps, one per bar: pay the pass (card + Payer → Payé), receive the code (typed on a ticket, chime), book online (calendar slot on mysalon.ma). |
+| 11–13 | 560 – 728  | How      | "Comment en profiter ? C'est simple." Three steps, one per bar: write to us by DM (a chat thread where the client asks for the pass and taps Payer → Payé), receive the code (typed on a ticket, chime), book online (calendar slot on mysalon.ma). |
 | 14–15 | 728 – 840  | Code     | "Votre code reste valable 45 JOURS" with a ring drawing itself and the number counting up, "pour choisir votre soirée", reminder of the window. |
-| 16–18 | 840 – 1008 | CTA      | Second drop: logo, "RÉSERVEZ VOTRE PLACE MAINTENANT !", "1 place restante par soin", a pulsing "Lien en bio" button, mysalon.ma, the handle, and the conditions line. |
+| 16–18 | 840 – 1008 | CTA      | Second drop: logo, "RÉSERVEZ VOTRE PLACE MAINTENANT !", "1 place restante par soin", "Pour réserver, c'est par message :", a pulsing "Écrivez-nous en DM" button, the handle, and the conditions line. |
+
+## Photos
+
+The manicure card and the hook use the salon's own pearl-set photo. The brow-lift and lash-lift cards use the generated
+images from the flyer (`public/images/brow-lift-generated.jpg`, `lash-lift-generated.jpg`), cut out of `flyer.jpg`, upscaled
+3x and lightly sharpened. If you have the original files of those two images, drop them into `public/images` and point the
+`offers[].image` props at them for a crisper result.
 
 ## Remotion Elements used
 
@@ -61,9 +68,9 @@ All copy, prices and photos are props on the `PassReel` composition (Studio prop
 - `title.salon / line1 / line2 / tagline / pills` – the title scene.
 - `offers[]` – three cards: `image`, `focusX/focusY/zoom` (thumbnail crop), `title`, `subtitle`, `oldPrice`, `newPrice`, `scarcity`.
 - `validity.*` – intro, "UNIQUEMENT", the days line, `activeDays` (indexes into L M M J V S D), the hours line, `fromHour/toHour` for the clock, the note.
-- `how.*` – question, answer, three `steps` (title + subtitle), the sample `code`, the pay/paid labels, the slot label.
+- `how.*` – question, answer, three `steps` (title + subtitle), the sample `code`, the booking `site` shown on the calendar, the client's `dmMessage`, the pay/paid labels, the slot label.
 - `code.*` – intro, `days`, unit, outro, reminder.
-- `cta.*` – the three title lines, the urgency pill, button label, site, the conditions line.
+- `cta.*` – the three title lines, the urgency pill, the `lead` line, the button label, the conditions line.
 - `musicFile` – audio file inside `public/`, or `null`.
 
 Scenes are whole bars (56 frames) long; keep that grid if you re-order them so the cuts stay on the beat.

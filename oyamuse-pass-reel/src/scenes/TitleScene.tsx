@@ -49,7 +49,8 @@ const Pill: React.FC<{ readonly text: string; readonly at: number }> = ({
 export const TitleScene: React.FC<{
   readonly title: PassReelProps["title"];
   readonly logo: string;
-}> = ({ title, logo }) => {
+  readonly handle: string;
+}> = ({ title, logo, handle }) => {
   const frame = useCurrentFrame();
 
   return (
@@ -206,7 +207,7 @@ export const TitleScene: React.FC<{
           }),
         }}
       >
-        @oyamuse.ma
+        {handle}
       </Interactive.Div>
       <Flash at={0} peak={0.7} />
     </AbsoluteFill>

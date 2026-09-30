@@ -8,7 +8,7 @@ import {
 import {
   BookIllustration,
   CodeIllustration,
-  PayIllustration,
+  DmPayIllustration,
 } from "../components/Illustrations";
 import { Flash } from "../components/Overlays";
 import { Sfx } from "../components/Sfx";
@@ -156,8 +156,7 @@ const StepRow: React.FC<{
 // Bars 11-13: how to get the pass, one step per bar.
 export const HowScene: React.FC<{
   readonly how: PassReelProps["how"];
-  readonly site: string;
-}> = ({ how, site }) => {
+}> = ({ how }) => {
   const frame = useCurrentFrame();
 
   return (
@@ -208,8 +207,9 @@ export const HowScene: React.FC<{
         />
       </AbsoluteFill>
       <StepRow index={0} step={how.steps[0]} at={0}>
-        <PayIllustration
+        <DmPayIllustration
           at={6}
+          message={how.dmMessage}
           payLabel={how.payLabel}
           paidLabel={how.paidLabel}
         />
@@ -218,7 +218,7 @@ export const HowScene: React.FC<{
         <CodeIllustration at={62} code={how.code} label="VOTRE CODE" />
       </StepRow>
       <StepRow index={2} step={how.steps[2]} at={112}>
-        <BookIllustration at={118} site={site} slotLabel={how.slotLabel} />
+        <BookIllustration at={118} site={how.site} slotLabel={how.slotLabel} />
       </StepRow>
       <Flash at={0} peak={0.55} />
     </AbsoluteFill>

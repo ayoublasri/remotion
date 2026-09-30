@@ -50,6 +50,8 @@ export const passReelSchema = z.object({
     answer: z.string(),
     steps: z.array(stepSchema).length(3),
     code: z.string().describe("Example code typed on the ticket"),
+    site: z.string().describe("Booking site shown on the calendar"),
+    dmMessage: z.string().describe("Client message in the DM illustration"),
     payLabel: z.string(),
     paidLabel: z.string(),
     slotLabel: z.string(),
@@ -66,8 +68,8 @@ export const passReelSchema = z.object({
     line2: z.string(),
     line3: z.string(),
     urgency: z.string(),
+    lead: z.string(),
     button: z.string(),
-    site: z.string(),
     conditions: z.string(),
   }),
   musicFile: z

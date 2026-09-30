@@ -58,34 +58,41 @@ const TapRing: React.FC<{ readonly at: number }> = ({ at }) => {
   );
 };
 
-// Step 1: a bank card and a "Pay" button that gets tapped and turns into "Paid".
-export const PayIllustration: React.FC<{
+// Step 1: a DM thread. The client asks for the pass, a payment button
+// appears in the reply and gets tapped: Payer -> Payé.
+export const DmPayIllustration: React.FC<{
   readonly at: number;
+  readonly message: string;
   readonly payLabel: string;
   readonly paidLabel: string;
-}> = ({ at, payLabel, paidLabel }) => {
+}> = ({ at, message, payLabel, paidLabel }) => {
   const frame = useCurrentFrame();
-  const tapAt = at + 22;
+  const tapAt = at + 30;
   const paid = frame >= tapAt + 4;
 
   return (
     <div style={{ position: "relative", width: 280, height: 220 }}>
+      <Sfx name="pop" at={at + 2} volume={0.5} />
       <Sfx name="pop" at={tapAt} volume={0.7} />
       <div
         style={{
           position: "absolute",
-          left: 16,
-          top: 10,
-          width: 210,
-          height: 132,
-          borderRadius: 18,
-          background: `linear-gradient(135deg, ${GREEN} 0%, ${GREEN_DEEP} 100%)`,
-          boxShadow: "0 18px 36px rgba(31,75,60,0.3)",
-          rotate: `${interpolate(frame, [at, at + 18], [-24, -8], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.16, 1, 0.3, 1) })}deg`,
+          right: 0,
+          top: 22,
+          whiteSpace: "nowrap",
+          padding: "12px 18px",
+          borderRadius: "22px 22px 6px 22px",
+          backgroundColor: GREEN,
+          color: CREAM,
+          fontFamily: SANS,
+          fontWeight: 600,
+          fontSize: 19,
+          lineHeight: 1.25,
+          boxShadow: "0 12px 26px rgba(31,75,60,0.25)",
           translate: interpolate(
             frame,
-            [at, at + 18],
-            ["-120px 40px", "0px 0px"],
+            [at, at + 14],
+            ["80px 0px", "0px 0px"],
             {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
@@ -98,63 +105,25 @@ export const PayIllustration: React.FC<{
           }),
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            left: 18,
-            top: 22,
-            width: 40,
-            height: 30,
-            borderRadius: 6,
-            backgroundColor: GOLD,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            left: 18,
-            bottom: 18,
-            fontFamily: DISPLAY,
-            fontWeight: 700,
-            fontSize: 16,
-            letterSpacing: "0.2em",
-            color: CREAM,
-          }}
-        >
-          OYA MUSE
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            right: 18,
-            top: 24,
-            fontFamily: SANS,
-            fontWeight: 600,
-            fontSize: 14,
-            color: "rgba(246,239,226,0.7)",
-          }}
-        >
-          •••• 3CHY
-        </div>
+        {message}
       </div>
       <div
         style={{
           position: "absolute",
-          right: 0,
-          bottom: 14,
-          height: 66,
-          padding: "0 26px",
-          borderRadius: 33,
+          left: 0,
+          top: 96,
+          width: 46,
+          height: 46,
+          borderRadius: 23,
+          backgroundColor: GOLD,
+          color: GREEN_DEEP,
+          fontFamily: DISPLAY,
+          fontWeight: 700,
+          fontSize: 18,
           display: "flex",
           alignItems: "center",
-          gap: 10,
-          backgroundColor: paid ? GREEN : GOLD,
-          color: paid ? CREAM : GREEN_DEEP,
-          fontFamily: SANS,
-          fontWeight: 700,
-          fontSize: 24,
-          boxShadow: "0 14px 30px rgba(0,0,0,0.18)",
-          scale: interpolate(frame, [at + 8, at + 20], [0, 1], {
+          justifyContent: "center",
+          scale: interpolate(frame, [at + 14, at + 26], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: Easing.spring({ damping: 12, stiffness: 180, mass: 0.8 }),
@@ -162,9 +131,91 @@ export const PayIllustration: React.FC<{
           }),
         }}
       >
-        {paid ? <Check size={26} color={CREAM} /> : null}
-        {paid ? paidLabel : payLabel}
-        <TapRing at={tapAt} />
+        OYA
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          left: 58,
+          top: 92,
+          width: 200,
+          padding: "12px 14px 14px",
+          borderRadius: "22px 22px 22px 6px",
+          backgroundColor: CARD,
+          boxShadow:
+            "0 12px 26px rgba(31,75,60,0.16), 0 0 0 1px rgba(196,162,79,0.4)",
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+          translate: interpolate(
+            frame,
+            [at + 14, at + 28],
+            ["-60px 0px", "0px 0px"],
+            {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+              easing: Easing.bezier(0.16, 1, 0.3, 1),
+            },
+          ),
+          opacity: interpolate(frame, [at + 14, at + 20], [0, 1], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          }),
+        }}
+      >
+        <div
+          style={{
+            fontFamily: SANS,
+            fontWeight: 600,
+            fontSize: 17,
+            color: MUTED,
+          }}
+        >
+          Réglez ici :
+        </div>
+        <div
+          style={{
+            position: "relative",
+            alignSelf: "flex-start",
+            height: 48,
+            padding: "0 18px",
+            borderRadius: 24,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            backgroundColor: paid ? GREEN : GOLD,
+            color: paid ? CREAM : GREEN_DEEP,
+            fontFamily: SANS,
+            fontWeight: 700,
+            fontSize: 20,
+            boxShadow: "0 10px 22px rgba(0,0,0,0.16)",
+          }}
+        >
+          {paid ? (
+            <Check size={22} color={CREAM} />
+          ) : (
+            <svg
+              width="24"
+              height="18"
+              viewBox="0 0 24 18"
+              style={{ display: "block" }}
+            >
+              <rect
+                x="1"
+                y="1"
+                width="22"
+                height="16"
+                rx="3"
+                fill="none"
+                stroke={GREEN_DEEP}
+                strokeWidth="2"
+              />
+              <rect x="1" y="5" width="22" height="3" fill={GREEN_DEEP} />
+            </svg>
+          )}
+          {paid ? paidLabel : payLabel}
+          <TapRing at={tapAt} />
+        </div>
       </div>
     </div>
   );

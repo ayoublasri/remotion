@@ -14,7 +14,7 @@ import { DISPLAY, SANS } from "../fonts";
 import type { PassReelProps } from "../schema";
 import { CREAM, CREAM_DEEP, GOLD, GREEN, GREEN_DEEP, RED } from "../theme";
 
-// Bars 16-18: the second drop and the one invite: book now, link in bio.
+// Bars 16-18: the second drop and the one invite: book now, by DM.
 export const CtaScene: React.FC<{
   readonly cta: PassReelProps["cta"];
   readonly handle: string;
@@ -44,6 +44,7 @@ export const CtaScene: React.FC<{
       />
       <Sfx name="stamp" at={8} volume={0.7} />
       <Sfx name="stamp" at={22} volume={0.7} />
+      <Sfx name="pop" at={58} volume={0.7} />
       <Twinkles
         points={[
           { x: 14, y: 30 },
@@ -137,10 +138,23 @@ export const CtaScene: React.FC<{
         >
           {cta.urgency}
         </div>
+        <RiseLine
+          name="CTA lead"
+          text={cta.lead}
+          at={48}
+          style={{
+            marginTop: 44,
+            fontFamily: SANS,
+            fontWeight: 600,
+            fontSize: 36,
+            letterSpacing: "0.04em",
+            color: "rgba(31,75,60,0.8)",
+          }}
+        />
         <div
           style={{
-            marginTop: 50,
-            scale: interpolate(frame, [50, 66], [0, 1], {
+            marginTop: 20,
+            scale: interpolate(frame, [56, 72], [0, 1], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
               easing: Easing.spring({ damping: 11, stiffness: 170, mass: 0.8 }),
@@ -157,7 +171,7 @@ export const CtaScene: React.FC<{
               flexDirection: "row",
               alignItems: "center",
               gap: 22,
-              padding: "0 76px",
+              padding: "0 70px",
               height: 130,
               borderRadius: 65,
               backgroundColor: GREEN,
@@ -173,17 +187,17 @@ export const CtaScene: React.FC<{
             }}
           >
             <svg
-              width="46"
-              height="46"
+              width="50"
+              height="50"
               viewBox="0 0 24 24"
               fill="none"
               stroke={CREAM}
-              strokeWidth="2.4"
+              strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <path d="M7 17 17 7" />
-              <path d="M8 7h9v9" />
+              <path d="M22 2 11 13" />
+              <path d="m22 2-7 20-4-9-9-4 20-7z" />
             </svg>
             {cta.button}
             <div
@@ -199,7 +213,7 @@ export const CtaScene: React.FC<{
                 pointerEvents: "none",
                 translate: interpolate(
                   frame,
-                  [80, 104],
+                  [84, 108],
                   ["-200px 0px", "900px 0px"],
                   {
                     extrapolateLeft: "clamp",
@@ -212,28 +226,16 @@ export const CtaScene: React.FC<{
           </Interactive.Div>
         </div>
         <RiseLine
-          name="CTA site"
-          text={cta.site}
-          at={66}
-          style={{
-            marginTop: 36,
-            fontFamily: SANS,
-            fontWeight: 700,
-            fontSize: 44,
-            letterSpacing: "0.04em",
-            color: GREEN,
-          }}
-        />
-        <RiseLine
           name="Handle"
           text={handle}
-          at={74}
+          at={70}
           style={{
-            marginTop: 10,
+            marginTop: 34,
             fontFamily: SANS,
-            fontWeight: 600,
-            fontSize: 36,
-            color: "rgba(31,75,60,0.7)",
+            fontWeight: 700,
+            fontSize: 54,
+            letterSpacing: "-0.01em",
+            color: GREEN,
           }}
         />
       </AbsoluteFill>

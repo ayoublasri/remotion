@@ -45,7 +45,7 @@ export const PassReel: React.FC<PassReelProps> = ({
         <HookScene hook={hook} />
       </Sequence>
       <Sequence from={112} durationInFrames={112} name="Title">
-        <TitleScene title={title} logo={logo} />
+        <TitleScene title={title} logo={logo} handle={handle} />
       </Sequence>
       <Sequence from={224} durationInFrames={224} name="Offers">
         <OffersScene
@@ -59,7 +59,7 @@ export const PassReel: React.FC<PassReelProps> = ({
         <ValidityScene validity={validity} />
       </Sequence>
       <Sequence from={560} durationInFrames={168} name="How it works">
-        <HowScene how={how} site={cta.site} />
+        <HowScene how={how} />
       </Sequence>
       <Sequence from={728} durationInFrames={112} name="Code validity">
         <CodeScene code={code} />

@@ -39,10 +39,10 @@ const offers = [
     scarcity: "1 place restante",
   },
   {
-    image: "brows-before-after.jpg",
+    image: "brow-lift-generated.jpg",
     focusX: 50,
-    focusY: 78,
-    zoom: 1.9,
+    focusY: 50,
+    zoom: 1,
     title: "Brow lift",
     subtitle: "Sourcils restructurés",
     oldPrice: 200,
@@ -50,10 +50,10 @@ const offers = [
     scarcity: "1 place restante",
   },
   {
-    image: "lash-lift.jpg",
-    focusX: 62,
-    focusY: 60,
-    zoom: 1.7,
+    image: "lash-lift-generated.jpg",
+    focusX: 50,
+    focusY: 50,
+    zoom: 1,
     title: "Lash lift",
     subtitle: "Cils rehaussés",
     oldPrice: 250,
@@ -78,8 +78,8 @@ const how = {
   answer: "C'est simple.",
   steps: [
     {
-      title: "Payez votre pass",
-      subtitle: "Choisissez votre soin et réglez-le.",
+      title: "Écrivez-nous en DM",
+      subtitle: "Choisissez votre soin et réglez votre pass.",
     },
     {
       title: "Recevez votre code",
@@ -91,6 +91,8 @@ const how = {
     },
   ],
   code: "OYA-3CHYA-72",
+  site: "mysalon.ma",
+  dmMessage: "Le Pass L'3chya svp !",
   payLabel: "Payer",
   paidLabel: "Payé",
   slotLabel: "Jeu. 17h30",
@@ -109,8 +111,8 @@ const cta = {
   line2: "VOTRE PLACE",
   line3: "MAINTENANT !",
   urgency: "1 place restante par soin",
-  button: "Lien en bio",
-  site: "mysalon.ma",
+  lead: "Pour réserver, c'est par message :",
+  button: "Écrivez-nous en DM",
   conditions:
     "Mer → Ven · 17h – 20h · Nouvelles clientes · Code valable 45 jours",
 };
@@ -156,7 +158,7 @@ export const RemotionRoot: React.FC = () => {
           fps={30}
           width={1080}
           height={1920}
-          defaultProps={{ title, logo }}
+          defaultProps={{ title, logo, handle }}
         />
         <Composition
           id="Offers"
@@ -188,7 +190,7 @@ export const RemotionRoot: React.FC = () => {
           fps={30}
           width={1080}
           height={1920}
-          defaultProps={{ how, site: cta.site }}
+          defaultProps={{ how }}
         />
         <Composition
           id="Code"
