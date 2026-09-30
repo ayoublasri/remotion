@@ -139,12 +139,12 @@ export const ValidityScene: React.FC<{
           }}
         />
         <div style={{ marginTop: 50 }}>
-          <WeekStrip activeDays={validity.activeDays} at={14} spacing={14} />
+          <WeekStrip activeDays={validity.activeDays} at={28} spacing={14} />
         </div>
         <RiseLine
           name="Validity days"
           text={validity.days}
-          at={42}
+          at={70}
           style={{
             marginTop: 30,
             fontFamily: DISPLAY,
@@ -163,8 +163,8 @@ export const ValidityScene: React.FC<{
             alignItems: "flex-start",
           }}
         >
-          <HoursRow row={validity.rows[0]} at={56} />
-          <HoursRow row={validity.rows[1]} at={70} />
+          <HoursRow row={validity.rows[0]} at={84} />
+          <HoursRow row={validity.rows[1]} at={112} />
         </div>
         <div
           style={{
@@ -176,7 +176,7 @@ export const ValidityScene: React.FC<{
             fontFamily: SANS,
             fontWeight: 700,
             fontSize: 34,
-            scale: interpolate(frame, [88, 102], [0, 1], {
+            scale: interpolate(frame, [140, 154], [0, 1], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
               easing: Easing.spring({ damping: 12, stiffness: 180, mass: 0.8 }),

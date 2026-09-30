@@ -6,6 +6,7 @@ export const offerSchema = z.object({
     .nullable()
     .describe("Photo inside public/images, or null to show the hair icon"),
   hair: z.enum(["short", "medium", "long"]).nullable(),
+  nail: z.enum(["almond", "red", "manipedi"]).nullable(),
   focusX: z.number().min(0).max(100),
   focusY: z.number().min(0).max(100),
   zoom: z.number().min(1).max(4).describe("Extra zoom on the thumbnail"),
@@ -22,7 +23,10 @@ export const offerSectionSchema = z.object({
   footer: z.string(),
   backdrop: z
     .string()
-    .describe("Photo inside public/images, blurred behind the cards"),
+    .nullable()
+    .describe(
+      "Photo inside public/images, blurred behind the cards, or null for a soft gradient",
+    ),
   offers: z.array(offerSchema).length(3),
 });
 

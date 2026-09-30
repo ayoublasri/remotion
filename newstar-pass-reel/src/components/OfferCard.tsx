@@ -11,6 +11,7 @@ import type { Offer } from "../schema";
 import { BLUSH_DEEP, CARD, INK, MUTED, PLUM, ROSE_DEEP } from "../theme";
 import { Callout } from "./Callout";
 import { HairIcon } from "./HairIcon";
+import { NailIcon } from "./NailIcons";
 import { Price } from "./Price";
 import { Sfx } from "./Sfx";
 
@@ -97,7 +98,11 @@ export const OfferCard: React.FC<{
                 }),
               }}
             >
-              <HairIcon length={offer.hair ?? "medium"} size={150} />
+              {offer.nail === null ? (
+                <HairIcon length={offer.hair ?? "medium"} size={150} />
+              ) : (
+                <NailIcon kind={offer.nail} size={220} />
+              )}
             </div>
           ) : (
             <Img

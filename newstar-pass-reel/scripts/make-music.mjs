@@ -1,6 +1,6 @@
 // Generates the royalty-free soundtrack for the reel: an energetic pop /
 // house groove at 128.57 BPM (exactly 14 frames per beat at 30 fps),
-// 24 bars (44.8 s) plus a short tail. Everything is synthesised here.
+// 29 bars (54.1 s) plus a short tail. Everything is synthesised here.
 //
 //   node scripts/make-music.mjs  -> public/music/oyamuse-theme.wav
 //   (convert to mp3 with ffmpeg, see README)
@@ -12,7 +12,7 @@ import { fileURLToPath } from "node:url";
 const SR = 44100;
 const BEAT = 14 / 30; // seconds; 14 frames at 30 fps -> 128.57 BPM
 const BAR = BEAT * 4;
-const BARS = 24;
+const BARS = 29;
 const TAIL = 1.6;
 const LENGTH = BARS * BAR + TAIL;
 const N = Math.ceil(LENGTH * SR);
@@ -290,10 +290,10 @@ const at = (bar, beat) => bar * BAR + beat * BEAT; // 0-based bar and beat
 
 // Sections (0-based bar indexes), matching the reel's timeline:
 //   0-1 hook (quiet intro), 2-3 collab (pre-drop groove, build in 3),
-//   4-5 title (drop), 6-9 lissage, 10-13 ongles, 14-15 validity,
-//   16-18 how, 19-20 code (build in 20), 21-23 CTA (second drop).
+//   4-6 title (drop), 7-11 lissage, 12-16 ongles, 17-19 validity,
+//   20-23 how, 24-25 code (build in 25), 26-28 CTA (second drop).
 const DROP = 4;
-const SECOND_DROP = 21;
+const SECOND_DROP = 26;
 
 // Melody (A minor pentatonic), one note per eighth.
 const MELODY = [81, 79, 77, 79, 81, 84, 81, 79, 77, 74, 77, 79, 81, 79, 77, 74];
@@ -363,7 +363,7 @@ for (let bar = 0; bar < BARS; bar++) {
   }
 
   // Lead melody over the offers hold, the validity scene and the CTA.
-  if ([8, 9, 12, 13, 22, 23].includes(bar)) {
+  if ([10, 11, 15, 16, 27, 28].includes(bar)) {
     const phrase = bar % 2 === 0 ? MELODY.slice(0, 8) : MELODY.slice(8, 16);
     phrase.forEach((m, i) => lead(at(bar, i / 2), BEAT * 0.5, m, 0.13));
   }
@@ -376,10 +376,10 @@ for (let bar = 0; bar < BARS; bar++) {
   }
 
   // Section accents: crashes and impacts on the scene changes.
-  if ([DROP, 6, 10, 14, 16, 19, SECOND_DROP].includes(bar))
+  if ([DROP, 7, 12, 17, 20, 24, SECOND_DROP].includes(bar))
     crash(at(bar, 0), bar === DROP || bar === SECOND_DROP ? 0.32 : 0.2);
   if (bar === DROP || bar === SECOND_DROP) impact(at(bar, 0), 0.55);
-  if (bar === 1 || bar === 9 || bar === 13 || bar === 18)
+  if (bar === 1 || bar === 11 || bar === 16 || bar === 23)
     riser(at(bar, 2), BEAT * 2, bar === 1 ? 0.35 : 0.2);
 }
 

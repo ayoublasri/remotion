@@ -28,12 +28,22 @@ export const OffersScene: React.FC<{
         }),
       }}
     >
-      <Backdrop
-        image={section.backdrop}
-        blur={34}
-        tint="rgba(236,213,206,0.84)"
-        opacity={1}
-      />
+      {section.backdrop === null ? (
+        <AbsoluteFill
+          name="Soft backdrop"
+          style={{
+            background:
+              "radial-gradient(60% 40% at 20% 15%, rgba(201,120,140,0.35) 0%, rgba(201,120,140,0) 100%), radial-gradient(55% 40% at 85% 80%, rgba(61,20,38,0.28) 0%, rgba(61,20,38,0) 100%), radial-gradient(50% 35% at 80% 20%, rgba(239,195,203,0.6) 0%, rgba(239,195,203,0) 100%)",
+          }}
+        />
+      ) : (
+        <Backdrop
+          image={section.backdrop}
+          blur={34}
+          tint="rgba(236,213,206,0.84)"
+          opacity={1}
+        />
+      )}
       <SectionLabel label={section.label} logo={logo} color={PLUM} />
       <Sfx name="pop" at={4} volume={0.6} />
       <div

@@ -21,13 +21,13 @@ import type { PassReelProps } from "./schema";
 // Every scene starts on a downbeat:
 //   bars 1-2   Hook        0 - 112   (quiet intro)
 //   bars 3-4   Collab    112 - 224   (pre-drop groove, snare build)
-//   bars 5-6   Title     224 - 336   (drop + crash)
-//   bars 7-10  Lissage   336 - 560   (one card per bar, then hold)
-//   bars 11-14 Ongles    560 - 784   (one card per bar, then hold)
-//   bars 15-16 Validity  784 - 896
-//   bars 17-19 How       896 - 1064  (one step per bar)
-//   bars 20-21 Code     1064 - 1176  (snare build)
-//   bars 22-24 CTA      1176 - 1344  (second drop)
+//   bars 5-7   Title     224 - 392   (drop + crash, then hold)
+//   bars 8-12  Lissage   392 - 672   (one card per bar, then two bars hold)
+//   bars 13-17 Ongles    672 - 952   (one card per bar, then two bars hold)
+//   bars 18-20 Validity  952 - 1120
+//   bars 21-24 How      1120 - 1344  (one step per bar, then hold)
+//   bars 25-26 Code     1344 - 1456  (snare build)
+//   bars 27-29 CTA      1456 - 1624  (second drop)
 export const PassReel: React.FC<PassReelProps> = ({
   site,
   logo,
@@ -52,25 +52,25 @@ export const PassReel: React.FC<PassReelProps> = ({
       <Sequence from={112} durationInFrames={112} name="Collab">
         <CollabScene collab={collab} logo={logo} />
       </Sequence>
-      <Sequence from={224} durationInFrames={112} name="Title">
+      <Sequence from={224} durationInFrames={168} name="Title">
         <TitleScene title={title} logo={logo} site={site} />
       </Sequence>
-      <Sequence from={336} durationInFrames={224} name="Lissage">
+      <Sequence from={392} durationInFrames={280} name="Lissage">
         <OffersScene section={lissage} logo={logo} />
       </Sequence>
-      <Sequence from={560} durationInFrames={224} name="Ongles">
+      <Sequence from={672} durationInFrames={280} name="Ongles">
         <OffersScene section={ongles} logo={logo} />
       </Sequence>
-      <Sequence from={784} durationInFrames={112} name="Validity">
+      <Sequence from={952} durationInFrames={168} name="Validity">
         <ValidityScene validity={validity} />
       </Sequence>
-      <Sequence from={896} durationInFrames={168} name="How it works">
+      <Sequence from={1120} durationInFrames={224} name="How it works">
         <HowScene how={how} site={site} />
       </Sequence>
-      <Sequence from={1064} durationInFrames={112} name="Code validity">
+      <Sequence from={1344} durationInFrames={112} name="Code validity">
         <CodeScene code={code} />
       </Sequence>
-      <Sequence from={1176} durationInFrames={168} name="CTA">
+      <Sequence from={1456} durationInFrames={168} name="CTA">
         <CtaScene cta={cta} logo={logo} site={site} />
       </Sequence>
       {musicFile ? (

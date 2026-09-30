@@ -1,6 +1,6 @@
 # Pass Njma Reel
 
-A vertical 9:16 offer reel (1080 x 1920, 30 fps, 44.8 s) for the New Star Beauty (Wifak, Témara) morning and daytime offers,
+A vertical 9:16 offer reel (1080 x 1920, 30 fps, 54.1 s) for the New Star Beauty (Wifak, Témara) morning and daytime offers,
 sold as the "Pass Njma" (njma = star, after the salon's name and the sparkles in its logo). Built with Remotion, with its own
 royalty-free soundtrack and sound effects. Every cut lands on a downbeat of the music.
 
@@ -8,13 +8,13 @@ royalty-free soundtrack and sound effects. Every cut lands on a downbeat of the 
 | ----- | ----------- | -------- | -------------------------------------------------------------------------------------------------------------- |
 | 1–2   | 0 – 112     | Hook     | "Un lissage à 649 DH ?" then "Oui. Ghir f sbah." over a blurred salon photo while the music builds.           |
 | 3–4   | 112 – 224   | Collab   | "En collaboration avec" the New Star Beauty logo, name and "Wifak · Témara", then "nous vous offrons le…".     |
-| 5–6   | 224 – 336   | Title    | The drop: PASS NJMA over a rotating starburst, "Brillez comme une étoile", the Lissage / Ongles / Mar → Ven pills, the mysalon.ma footer. |
-| 7–10  | 336 – 560   | Lissage  | Window pill "MAR → VEN · 9h30 → 12h30", then three cards stacking one per bar (short, mid-length, long hair icons), old price struck through, new price counting down, "−151 DH" callouts; footer "Dernier rendez-vous à 12h30". |
-| 11–14 | 560 – 784   | Ongles   | Window pill "MAR → VEN · 11h30 → 16h30", three cards with the salon's nail photos: faux ongles + vernis permanent 80 DH, vernis permanent 60 DH, manucure + pédicure 140 DH. |
-| 15–16 | 784 – 896   | Validity | "Ces prix sont valables UNIQUEMENT": M M J V light up on the beat, "Mardi → Vendredi", two clocks sweeping the lissage and ongles windows, "Dernier rendez-vous lissage : 12h30". |
-| 17–19 | 896 – 1064  | How      | "Comment en profiter ? C'est simple." Three steps, one per bar: write to us by DM (chat thread, Payer → Payé), receive the code (typed on a ticket, chime), book online (calendar slot on mysalon.ma). |
-| 20–21 | 1064 – 1176 | Code     | "Votre code reste valable 45 JOURS" with a ring drawing itself and the number counting up, "pour choisir votre créneau", the windows reminder. |
-| 22–24 | 1176 – 1344 | CTA      | Second drop: logo, "RÉSERVEZ VOTRE PLACE MAINTENANT !", "Du mardi au vendredi", "Pour réserver, c'est par message :", a pulsing "Écrivez-nous en DM" button, the mysalon.ma footer, the conditions. |
+| 5–7   | 224 – 392   | Title    | The drop: PASS NJMA over a rotating starburst, "Brillez comme une étoile", the Lissage / Ongles / Mar → Ven pills, the mysalon.ma footer, then a bar of hold. |
+| 8–12  | 392 – 672   | Lissage  | Window pill "MAR → VEN · 9h30 → 12h30", three cards stacking one per bar (short, mid-length, long hair icons), old price struck through, new price counting down, "−151 DH" callouts; two bars of hold with "Dernier rendez-vous à 12h30". |
+| 13–17 | 672 – 952   | Ongles   | Window pill "MAR → VEN · 11h30 → 16h30", three cards with drawn nail illustrations: faux ongles + vernis permanent 80 DH, vernis permanent 60 DH, manucure + pédicure 140 DH; two bars of hold. |
+| 18–20 | 952 – 1120  | Validity | "Ces prix sont valables UNIQUEMENT": M M J V light up on the beat, "Mardi → Vendredi", two clocks sweeping the lissage and ongles windows, "Dernier rendez-vous lissage : 12h30". |
+| 21–24 | 1120 – 1344 | How      | "Comment en profiter ? C'est simple." Three steps, one per bar: write to us by DM (chat thread, Payer → Payé), receive the code (typed on a ticket, chime), book online (calendar slot on mysalon.ma); one bar of hold. |
+| 25–26 | 1344 – 1456 | Code     | "Votre code reste valable 45 JOURS" with a ring drawing itself and the number counting up, "pour choisir votre créneau", the windows reminder. |
+| 27–29 | 1456 – 1624 | CTA      | Second drop: logo, "RÉSERVEZ VOTRE PLACE MAINTENANT !", "Du mardi au vendredi", "Pour réserver, c'est par message :", a pulsing "Écrivez-nous en DM" button, the mysalon.ma footer, the conditions. |
 
 ## Design
 
@@ -22,13 +22,14 @@ Palette from the salon logo: deep plum (`#3d1426`) and blush (`#ecd5ce`) with a 
 story beats (collab, validity, code); blush scenes carry the offers, the how-to and the invite. Headlines are set in Cinzel,
 accents in Playfair Display italic, UI copy in Inter.
 
-## Photos
+## Pictures
 
-The hook backdrop and the nail cards use the salon's own posts, cut from the profile grid screenshot (`public/images`),
-with the Instagram play badge cropped away. They are upscaled from a phone screenshot; if you have the original photos or
-videos, drop them into `public/images` and point `hook.image`, `ongles.backdrop`, `lissage.backdrop` and the
-`ongles.offers[].image` props at them for a crisper result. The lissage cards use a drawn hair-length icon (short, mid,
-long) instead of a photo; set `image` on those offers to use a photo instead.
+The hook backdrop (and the blurred backdrop of the lissage section) is the salon's own hair-treatment post, cut from the
+profile grid screenshot. Everything else is drawn: the lissage cards use a flat hair-length icon (short, mid, long) and
+the ongles cards use flat nail illustrations (`src/components/NailIcons.tsx`: a hand with long blush almond nails, a hand
+with glossy red gel nails and a polish bottle, a hand and a foot for the mani-pedi), all in the logo's palette. To use
+photos instead, set `image` on an offer to a file in `public/images` (and `nail` / `hair` to `null`), or set a section's
+`backdrop` to a photo.
 
 ## Remotion Elements used
 
@@ -54,9 +55,9 @@ npx remotion render PassReel out/pass-reel.mp4 --browser-executable=/path/to/chr
 ## Music and sound effects
 
 `public/music/pass-theme.mp3` is generated by `scripts/make-music.mjs`: an energetic pop / house groove in D minor at
-128.57 BPM (exactly 14 frames per beat at 30 fps), 24 bars: quiet two-bar intro, kick-driven pre-drop groove with a snare
+128.57 BPM (exactly 14 frames per beat at 30 fps), 29 bars: quiet two-bar intro, kick-driven pre-drop groove with a snare
 build under the collab scene, the drop on the title (bar 5), crashes on every section change, a lead melody over the
-offer holds and the CTA, a second build under the 45-day scene and a second drop on the CTA (bar 22).
+offer holds and the CTA, a second build under the 45-day scene and a second drop on the CTA (bar 27).
 `public/sfx/*.wav` (whoosh, stamp, pop, tick, ding, success) come from `scripts/make-sfx.mjs`. Everything is synthesised
 from scratch, so it is free to use anywhere.
 
@@ -77,7 +78,7 @@ All copy, prices, hours and photos are props on the `PassReel` composition (Stud
 - `site`, `logo` – the platform name shown in the footers and on the calendar, and the salon logo file in `public/images`.
 - `hook.image / line1 / line2`, `collab.intro / name / nameLine2 / city / outro`, `title.*`.
 - `lissage` and `ongles` – one section each: `label`, `window` pill, `footer` pill, `backdrop` photo, and three `offers`
-  (`image` or `hair` icon, `focusX/focusY/zoom`, `title`, `subtitle`, `oldPrice`, `newPrice`, `callout`).
+  (`image` photo, or `hair` / `nail` icon, `focusX/focusY/zoom`, `title`, `subtitle`, `oldPrice`, `newPrice`, `callout`); `backdrop` may be `null` for a soft gradient.
 - `validity.*` – intro, "UNIQUEMENT", the days line, `activeDays` (indexes into L M M J V S D), two `rows` (label, hours
   text, `fromHour/toHour` for the clock), the note.
 - `how.*`, `code.*`, `cta.*` – the how-to steps, the 45-day beat and the invite (`\n` in `cta.conditions` breaks the line).

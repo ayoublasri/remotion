@@ -73,7 +73,7 @@ export const CodeScene: React.FC<{ readonly code: PassReelProps["code"] }> = ({
         <RiseLine
           name="Code outro"
           text={code.outro}
-          at={52}
+          at={48}
           style={{
             marginTop: 56,
             fontFamily: SERIF,
@@ -87,7 +87,7 @@ export const CodeScene: React.FC<{ readonly code: PassReelProps["code"] }> = ({
         <RiseLine
           name="Code reminder"
           text={code.reminder}
-          at={66}
+          at={60}
           style={{
             marginTop: 26,
             fontFamily: SANS,

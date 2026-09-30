@@ -44,6 +44,7 @@ const lissage = {
     {
       image: null,
       hair: "short" as const,
+      nail: null,
       focusX: 50,
       focusY: 50,
       zoom: 1,
@@ -56,6 +57,7 @@ const lissage = {
     {
       image: null,
       hair: "medium" as const,
+      nail: null,
       focusX: 50,
       focusY: 50,
       zoom: 1,
@@ -68,6 +70,7 @@ const lissage = {
     {
       image: null,
       hair: "long" as const,
+      nail: null,
       focusX: 50,
       focusY: 50,
       zoom: 1,
@@ -84,13 +87,14 @@ const ongles = {
   label: "ONGLES",
   window: "MAR → VEN · 11h30 → 16h30",
   footer: "Créneaux de 11h30 à 16h30",
-  backdrop: "nails-red.jpg",
+  backdrop: null,
   offers: [
     {
-      image: "nails-pink.jpg",
+      image: null,
       hair: null,
-      focusX: 40,
-      focusY: 55,
+      nail: "almond" as const,
+      focusX: 50,
+      focusY: 50,
       zoom: 1,
       title: "Faux ongles + vernis permanent",
       subtitle: "−20 %",
@@ -99,11 +103,12 @@ const ongles = {
       callout: "−20 DH",
     },
     {
-      image: "nails-red.jpg",
+      image: null,
       hair: null,
-      focusX: 45,
-      focusY: 40,
-      zoom: 1.15,
+      nail: "red" as const,
+      focusX: 50,
+      focusY: 50,
+      zoom: 1,
       title: "Vernis permanent",
       subtitle: "−25 %",
       oldPrice: 80,
@@ -111,10 +116,11 @@ const ongles = {
       callout: "−20 DH",
     },
     {
-      image: "nails-pedicure.jpg",
+      image: null,
       hair: null,
+      nail: "manipedi" as const,
       focusX: 50,
-      focusY: 45,
+      focusY: 50,
       zoom: 1,
       title: "Manucure + pédicure",
       subtitle: "−22 %",
@@ -186,7 +192,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="PassReel"
         component={PassReel}
-        durationInFrames={1344}
+        durationInFrames={1624}
         fps={30}
         width={1080}
         height={1920}
@@ -228,7 +234,7 @@ export const RemotionRoot: React.FC = () => {
         <Composition
           id="Title"
           component={TitleScene}
-          durationInFrames={112}
+          durationInFrames={168}
           fps={30}
           width={1080}
           height={1920}
@@ -237,7 +243,7 @@ export const RemotionRoot: React.FC = () => {
         <Composition
           id="Lissage"
           component={OffersScene}
-          durationInFrames={224}
+          durationInFrames={280}
           fps={30}
           width={1080}
           height={1920}
@@ -246,7 +252,7 @@ export const RemotionRoot: React.FC = () => {
         <Composition
           id="Ongles"
           component={OffersScene}
-          durationInFrames={224}
+          durationInFrames={280}
           fps={30}
           width={1080}
           height={1920}
@@ -255,7 +261,7 @@ export const RemotionRoot: React.FC = () => {
         <Composition
           id="Validity"
           component={ValidityScene}
-          durationInFrames={112}
+          durationInFrames={168}
           fps={30}
           width={1080}
           height={1920}
@@ -264,7 +270,7 @@ export const RemotionRoot: React.FC = () => {
         <Composition
           id="How"
           component={HowScene}
-          durationInFrames={168}
+          durationInFrames={224}
           fps={30}
           width={1080}
           height={1920}
