@@ -14,6 +14,7 @@ import { Flash } from "../components/Overlays";
 import { Sfx } from "../components/Sfx";
 import { PopLine, RiseLine } from "../components/Text";
 import { DISPLAY, SANS, SERIF } from "../fonts";
+import { useLayout } from "../layout";
 import type { HappyHoursReelProps } from "../schema";
 import { CARD, CREAM, CREAM_DEEP, GOLD, GREEN, INK, MUTED } from "../theme";
 
@@ -25,15 +26,16 @@ const StepRow: React.FC<{
   readonly children: React.ReactNode;
 }> = ({ index, title, subtitle, at, children }) => {
   const frame = useCurrentFrame();
+  const { pick } = useLayout();
 
   return (
     <div
       style={{
         position: "absolute",
-        left: 80,
-        top: 470 + index * 290,
-        width: 920,
-        height: 250,
+        left: pick(80, 70),
+        top: pick(470, 290) + index * pick(290, 236),
+        width: pick(920, 940),
+        height: pick(250, 212),
         borderRadius: 30,
         backgroundColor: CARD,
         boxShadow:
@@ -63,8 +65,8 @@ const StepRow: React.FC<{
       <Sfx name="whoosh" at={at} volume={0.45} />
       <div
         style={{
-          width: 92,
-          height: 92,
+          width: pick(92, 74),
+          height: pick(92, 74),
           borderRadius: 46,
           backgroundColor: GREEN,
           color: GOLD,
@@ -73,7 +75,7 @@ const StepRow: React.FC<{
           justifyContent: "center",
           fontFamily: DISPLAY,
           fontWeight: 700,
-          fontSize: 48,
+          fontSize: pick(48, 38),
           flexShrink: 0,
           paddingTop: 4,
           boxSizing: "border-box",
@@ -101,7 +103,7 @@ const StepRow: React.FC<{
           style={{
             fontFamily: SANS,
             fontWeight: 800,
-            fontSize: 42,
+            fontSize: pick(42, 34),
             lineHeight: 1.05,
             color: INK,
             opacity: interpolate(frame, [at + 8, at + 16], [0, 1], {
@@ -127,7 +129,7 @@ const StepRow: React.FC<{
           style={{
             fontFamily: SANS,
             fontWeight: 500,
-            fontSize: 29,
+            fontSize: pick(29, 24),
             lineHeight: 1.2,
             color: MUTED,
             opacity: interpolate(frame, [at + 14, at + 22], [0, 1], {
@@ -149,7 +151,15 @@ const StepRow: React.FC<{
           {subtitle}
         </Interactive.Div>
       </div>
-      <div style={{ flexShrink: 0 }}>{children}</div>
+      <div
+        style={{
+          flexShrink: 0,
+          scale: pick("1", "0.86"),
+          transformOrigin: "100% 50%",
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 };
@@ -160,6 +170,7 @@ export const HowScene: React.FC<{
   readonly site: string;
 }> = ({ how, site }) => {
   const frame = useCurrentFrame();
+  const { pick } = useLayout();
 
   return (
     <AbsoluteFill
@@ -177,7 +188,7 @@ export const HowScene: React.FC<{
         name="Header"
         style={{
           alignItems: "center",
-          padding: "200px 80px 0",
+          padding: pick("200px 80px 0", "84px 80px 0"),
           textAlign: "center",
         }}
       >
@@ -188,7 +199,7 @@ export const HowScene: React.FC<{
           style={{
             fontFamily: DISPLAY,
             fontWeight: 600,
-            fontSize: 44,
+            fontSize: pick(44, 34),
             letterSpacing: "0.14em",
             color: GREEN,
           }}
@@ -202,7 +213,7 @@ export const HowScene: React.FC<{
             fontFamily: SERIF,
             fontStyle: "italic",
             fontWeight: 500,
-            fontSize: 90,
+            fontSize: pick(90, 70),
             lineHeight: 1.1,
             color: GREEN,
           }}
@@ -243,20 +254,20 @@ export const HowScene: React.FC<{
           position: "absolute",
           left: 0,
           right: 0,
-          top: 1392,
+          top: pick(1392, 1010),
           display: "flex",
           justifyContent: "center",
         }}
       >
         <div
           style={{
-            padding: "16px 36px",
+            padding: pick("16px 36px", "12px 28px"),
             borderRadius: 999,
             backgroundColor: GREEN,
             color: CREAM,
             fontFamily: SANS,
             fontWeight: 700,
-            fontSize: 30,
+            fontSize: pick(30, 25),
             letterSpacing: "0.04em",
             scale: interpolate(frame, [112, 126], [0, 1], {
               extrapolateLeft: "clamp",

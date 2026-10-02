@@ -12,6 +12,7 @@ import { Sfx } from "../components/Sfx";
 import { Starburst } from "../components/Starburst";
 import { PopLine, RiseLine } from "../components/Text";
 import { DISPLAY, SANS } from "../fonts";
+import { useLayout } from "../layout";
 import type { HappyHoursReelProps, Salon } from "../schema";
 import { CREAM, CREAM_DEEP, GOLD, GREEN, GREEN_DEEP } from "../theme";
 
@@ -59,6 +60,7 @@ export const CtaScene: React.FC<{
   readonly salons: Salon[];
 }> = ({ cta, salons }) => {
   const frame = useCurrentFrame();
+  const { pick } = useLayout();
 
   return (
     <AbsoluteFill
@@ -97,7 +99,7 @@ export const CtaScene: React.FC<{
         name="Copy"
         style={{
           alignItems: "center",
-          padding: "300px 80px 0",
+          padding: pick("300px 80px 0", "100px 80px 0"),
           textAlign: "center",
         }}
       >
@@ -111,17 +113,22 @@ export const CtaScene: React.FC<{
             }),
           }}
         >
-          <Logo size={78} color={GREEN_DEEP} accent={GOLD} starColor={GREEN} />
+          <Logo
+            size={pick(78, 62)}
+            color={GREEN_DEEP}
+            accent={GOLD}
+            starColor={GREEN}
+          />
         </div>
         <PopLine
           name="CTA line 1"
           text={cta.line1}
           at={6}
           style={{
-            marginTop: 70,
+            marginTop: pick(70, 44),
             fontFamily: DISPLAY,
             fontWeight: 700,
-            fontSize: 96,
+            fontSize: pick(96, 78),
             lineHeight: 1,
             letterSpacing: "0.06em",
             color: GREEN_DEEP,
@@ -132,10 +139,10 @@ export const CtaScene: React.FC<{
           text={cta.line2}
           at={14}
           style={{
-            marginTop: 14,
+            marginTop: pick(14, 10),
             fontFamily: DISPLAY,
             fontWeight: 700,
-            fontSize: 96,
+            fontSize: pick(96, 78),
             lineHeight: 1,
             letterSpacing: "0.06em",
             color: GREEN_DEEP,
@@ -146,10 +153,10 @@ export const CtaScene: React.FC<{
           text={cta.line3}
           at={22}
           style={{
-            marginTop: 14,
+            marginTop: pick(14, 10),
             fontFamily: DISPLAY,
             fontWeight: 700,
-            fontSize: 96,
+            fontSize: pick(96, 78),
             lineHeight: 1,
             letterSpacing: "0.06em",
             color: GOLD,
@@ -160,17 +167,17 @@ export const CtaScene: React.FC<{
           text={cta.lead}
           at={40}
           style={{
-            marginTop: 54,
+            marginTop: pick(54, 36),
             fontFamily: SANS,
             fontWeight: 600,
-            fontSize: 36,
+            fontSize: pick(36, 30),
             letterSpacing: "0.04em",
             color: "rgba(11,63,58,0.8)",
           }}
         />
         <div
           style={{
-            marginTop: 22,
+            marginTop: pick(22, 16),
             scale: interpolate(frame, [52, 68], [0, 1], {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
@@ -188,14 +195,14 @@ export const CtaScene: React.FC<{
               flexDirection: "row",
               alignItems: "center",
               gap: 22,
-              padding: "0 70px",
-              height: 130,
+              padding: pick("0 70px", "0 56px"),
+              height: pick(130, 108),
               borderRadius: 65,
               backgroundColor: GREEN,
               color: CREAM,
               fontFamily: SANS,
               fontWeight: 700,
-              fontSize: 50,
+              fontSize: pick(50, 42),
               boxShadow: "0 26px 60px rgba(15,92,87,0.35)",
               scale: interpolate(frame % 14, [0, 3, 11], [1.04, 1.025, 1], {
                 extrapolateLeft: "clamp",
@@ -247,7 +254,7 @@ export const CtaScene: React.FC<{
             display: "flex",
             flexDirection: "row",
             gap: 18,
-            marginTop: 56,
+            marginTop: pick(56, 34),
           }}
         >
           <SalonChip salon={salons[0]} at={70} />
@@ -260,13 +267,13 @@ export const CtaScene: React.FC<{
           position: "absolute",
           left: 60,
           right: 60,
-          top: 1300,
+          top: pick(1300, 1060),
           textAlign: "center",
           whiteSpace: "pre-line",
           lineHeight: 1.7,
           fontFamily: SANS,
           fontWeight: 600,
-          fontSize: 27,
+          fontSize: pick(27, 24),
           letterSpacing: "0.06em",
           color: "rgba(11,63,58,0.75)",
           opacity: interpolate(frame, [90, 102], [0, 1], {

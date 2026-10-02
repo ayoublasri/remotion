@@ -15,6 +15,7 @@ const hook = {
   line2: "HOURS",
   line3: "beauté",
   subtitle: "À Témara, certaines heures coûtent moins cher.",
+  swipeHint: false,
 };
 
 const oya = {
@@ -198,6 +199,40 @@ export const RemotionRoot: React.FC = () => {
           how,
           cta,
           musicFile: "music/happy-hours-theme.mp3",
+        }}
+      />
+      <Composition
+        id="HappyHoursPost"
+        component={HappyHoursReel}
+        durationInFrames={896}
+        fps={30}
+        width={1080}
+        height={1350}
+        schema={happyHoursReelSchema}
+        defaultProps={{
+          site,
+          hook,
+          salons: [oya, newStar],
+          how,
+          cta,
+          musicFile: "music/happy-hours-theme.mp3",
+        }}
+      />
+      <Composition
+        id="HappyHoursCarousel"
+        component={HappyHoursReel}
+        durationInFrames={896}
+        fps={30}
+        width={1080}
+        height={1350}
+        schema={happyHoursReelSchema}
+        defaultProps={{
+          site,
+          hook: { ...hook, swipeHint: true },
+          salons: [oya, newStar],
+          how,
+          cta,
+          musicFile: null,
         }}
       />
       <Folder name="HappyHoursReel-Scenes">

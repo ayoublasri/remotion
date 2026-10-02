@@ -1,6 +1,7 @@
 # Happy Hours Beauté Reel
 
-A vertical 9:16 reel (1080 x 1920, 30 fps, 29.9 s) for MySalon.ma that sells both Témara offers at once, the OYA MUSE
+A 29.9 s reel for MySalon.ma, delivered in three formats from one project: the 9:16 reel (1080 x 1920), a 4:5 feed
+video (1080 x 1350) and a 5-slide 4:5 carousel of stills for a boosted post. sells both Témara offers at once, the OYA MUSE
 "Pass L'3chya" and the New Star Beauty "Pass Njma", under one idea everyone already understands: **happy hours**.
 Built with Remotion, with its own royalty-free soundtrack and sound effects. Every cut lands on a downbeat.
 
@@ -28,9 +29,21 @@ Built with Remotion, with its own royalty-free soundtrack and sound effects. Eve
 ```bash
 cd happy-hours-reel
 npm install
-npm run dev      # Remotion Studio at http://localhost:3000
-npm run render   # writes out/happy-hours-reel.mp4
+npm run dev           # Remotion Studio at http://localhost:3000
+npm run render        # 9:16 reel      -> out/happy-hours-reel.mp4
+npm run render:post   # 4:5 feed video -> out/happy-hours-post.mp4
+npm run carousel      # 4:5 carousel   -> out/carousel/01..05.jpg
 ```
+
+## Formats
+
+The scenes read the canvas height and switch to a compact layout below 1600 px (`src/layout.ts`), so the same
+compositions render as:
+
+- `HappyHoursReel` – 1080 x 1920, for Reels / TikTok / Stories.
+- `HappyHoursPost` – 1080 x 1350, the feed "capsule" video to post and boost.
+- `HappyHoursCarousel` – 1080 x 1350 with a "Glissez →" hint on the cover and no music; `npm run carousel` renders
+  its five settled frames as JPEG slides: cover, OYA MUSE, New Star Beauty, how to book, call to action.
 
 If Remotion cannot download Chrome Headless Shell in your environment:
 

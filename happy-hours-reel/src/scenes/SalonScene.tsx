@@ -14,6 +14,7 @@ import { Flash, Star, Twinkles } from "../components/Overlays";
 import { Price } from "../components/Price";
 import { Sfx } from "../components/Sfx";
 import { DISPLAY, SANS } from "../fonts";
+import { useLayout } from "../layout";
 import type { HourWindow, Palette, Salon, WindowRow } from "../schema";
 import { CARD, INK, MUTED } from "../theme";
 
@@ -23,6 +24,7 @@ const Row: React.FC<{
   readonly palette: Palette;
 }> = ({ row, at, palette }) => {
   const frame = useCurrentFrame();
+  const { pick } = useLayout();
 
   return (
     <div
@@ -30,8 +32,8 @@ const Row: React.FC<{
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        gap: 22,
-        height: 104,
+        gap: pick(22, 18),
+        height: pick(104, 82),
         borderTop: "1px solid rgba(0,0,0,0.07)",
         opacity: interpolate(frame, [at, at + 8], [0, 1], {
           extrapolateLeft: "clamp",
@@ -47,8 +49,8 @@ const Row: React.FC<{
       <Sfx name="tick" at={at} volume={0.5} />
       <div
         style={{
-          width: 80,
-          height: 80,
+          width: pick(80, 64),
+          height: pick(80, 64),
           borderRadius: 40,
           overflow: "hidden",
           flexShrink: 0,
@@ -63,7 +65,7 @@ const Row: React.FC<{
           row.hair === null ? null : (
             <HairIcon
               length={row.hair}
-              size={54}
+              size={pick(54, 44)}
               hair={palette.deep}
               skin={palette.bg}
             />
@@ -81,7 +83,7 @@ const Row: React.FC<{
           minWidth: 0,
           fontFamily: SANS,
           fontWeight: 700,
-          fontSize: 32,
+          fontSize: pick(32, 27),
           lineHeight: 1.08,
           color: INK,
         }}
@@ -93,7 +95,7 @@ const Row: React.FC<{
           style={{
             fontFamily: SANS,
             fontWeight: 600,
-            fontSize: 28,
+            fontSize: pick(28, 23),
             lineHeight: 1,
             color: MUTED,
             whiteSpace: "nowrap",
@@ -120,7 +122,7 @@ const Row: React.FC<{
       </div>
       <div
         style={{
-          width: 236,
+          width: pick(236, 196),
           display: "flex",
           justifyContent: "flex-end",
           flexShrink: 0,
@@ -131,7 +133,7 @@ const Row: React.FC<{
           to={row.newPrice}
           at={at + 6}
           duration={16}
-          size={row.newPrice >= 1000 ? 46 : 54}
+          size={row.newPrice >= 1000 ? pick(46, 38) : pick(54, 44)}
           color={palette.deep}
           unit="DH"
         />
@@ -146,6 +148,7 @@ const WindowCard: React.FC<{
   readonly palette: Palette;
 }> = ({ window, at, palette }) => {
   const frame = useCurrentFrame();
+  const { pick } = useLayout();
 
   return (
     <div
@@ -153,7 +156,7 @@ const WindowCard: React.FC<{
         borderRadius: 30,
         backgroundColor: CARD,
         boxShadow: "0 30px 60px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.05)",
-        padding: "22px 30px 14px",
+        padding: pick("22px 30px 14px", "14px 24px 8px"),
         display: "flex",
         flexDirection: "column",
         translate: interpolate(
@@ -179,12 +182,12 @@ const WindowCard: React.FC<{
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          gap: 22,
-          paddingBottom: 16,
+          gap: pick(22, 16),
+          paddingBottom: pick(16, 10),
         }}
       >
         <HourClock
-          size={100}
+          size={pick(100, 82)}
           fromHour={window.fromHour}
           toHour={window.toHour}
           at={at + 14}
@@ -207,7 +210,7 @@ const WindowCard: React.FC<{
               style={{
                 fontFamily: DISPLAY,
                 fontWeight: 600,
-                fontSize: 24,
+                fontSize: pick(24, 20),
                 letterSpacing: "0.3em",
                 color: palette.accent,
               }}
@@ -219,7 +222,7 @@ const WindowCard: React.FC<{
             style={{
               fontFamily: DISPLAY,
               fontWeight: 600,
-              fontSize: 30,
+              fontSize: pick(30, 25),
               letterSpacing: "0.12em",
               color: palette.deep,
               whiteSpace: "nowrap",
@@ -232,7 +235,7 @@ const WindowCard: React.FC<{
           style={{
             fontFamily: DISPLAY,
             fontWeight: 700,
-            fontSize: 54,
+            fontSize: pick(54, 44),
             lineHeight: 1,
             letterSpacing: "0.02em",
             color: palette.accent,
@@ -263,6 +266,7 @@ const WindowCard: React.FC<{
 // the first two bars and holds, so there is time to read.
 export const SalonScene: React.FC<{ readonly salon: Salon }> = ({ salon }) => {
   const frame = useCurrentFrame();
+  const { pick } = useLayout();
   const { palette } = salon;
 
   return (
@@ -296,11 +300,11 @@ export const SalonScene: React.FC<{ readonly salon: Salon }> = ({ salon }) => {
       <div
         style={{
           position: "absolute",
-          left: 80,
-          top: 140,
+          left: pick(80, 70),
+          top: pick(140, 64),
           fontFamily: DISPLAY,
           fontWeight: 600,
-          fontSize: 30,
+          fontSize: pick(30, 26),
           letterSpacing: "0.34em",
           color: palette.deep,
           opacity: interpolate(frame, [0, 10], [0, 1], {
@@ -320,8 +324,8 @@ export const SalonScene: React.FC<{ readonly salon: Salon }> = ({ salon }) => {
         name="Content"
         style={{
           justifyContent: "center",
-          padding: "200px 80px 200px",
-          gap: 26,
+          padding: pick("200px 80px 200px", "116px 70px 96px"),
+          gap: pick(26, 18),
         }}
       >
         <div
@@ -332,7 +336,7 @@ export const SalonScene: React.FC<{ readonly salon: Salon }> = ({ salon }) => {
             gap: 18,
             fontFamily: DISPLAY,
             fontWeight: 600,
-            fontSize: 30,
+            fontSize: pick(30, 24),
             letterSpacing: "0.4em",
             color: palette.accent,
             opacity: interpolate(frame, [0, 10], [0, 1], {
@@ -391,7 +395,7 @@ export const SalonScene: React.FC<{ readonly salon: Salon }> = ({ salon }) => {
           >
             <LogoBadge
               image={salon.logo}
-              size={160}
+              size={pick(160, 122)}
               ring
               ringColor={palette.accent}
             />
@@ -401,7 +405,7 @@ export const SalonScene: React.FC<{ readonly salon: Salon }> = ({ salon }) => {
               style={{
                 fontFamily: DISPLAY,
                 fontWeight: 700,
-                fontSize: 60,
+                fontSize: pick(60, 48),
                 lineHeight: 1,
                 letterSpacing: "0.06em",
                 color: palette.deep,
@@ -414,7 +418,7 @@ export const SalonScene: React.FC<{ readonly salon: Salon }> = ({ salon }) => {
                 style={{
                   fontFamily: DISPLAY,
                   fontWeight: 700,
-                  fontSize: 60,
+                  fontSize: pick(60, 48),
                   lineHeight: 1,
                   letterSpacing: "0.06em",
                   color: palette.deep,
@@ -427,7 +431,7 @@ export const SalonScene: React.FC<{ readonly salon: Salon }> = ({ salon }) => {
               style={{
                 fontFamily: SANS,
                 fontWeight: 700,
-                fontSize: 26,
+                fontSize: pick(26, 22),
                 letterSpacing: "0.26em",
                 textTransform: "uppercase",
                 color: palette.accent,
@@ -450,13 +454,13 @@ export const SalonScene: React.FC<{ readonly salon: Salon }> = ({ salon }) => {
         >
           <div
             style={{
-              padding: "16px 36px",
+              padding: pick("16px 36px", "12px 28px"),
               borderRadius: 999,
               backgroundColor: palette.deep,
               color: palette.bg,
               fontFamily: SANS,
               fontWeight: 700,
-              fontSize: 30,
+              fontSize: pick(30, 25),
               letterSpacing: "0.04em",
               scale: interpolate(frame, [112, 126], [0, 1], {
                 extrapolateLeft: "clamp",

@@ -7,12 +7,14 @@
   "scripts": {
     "dev": "remotion studio",
     "render": "remotion render HappyHoursReel out/happy-hours-reel.mp4",
-    "still": "remotion still HappyHoursReel out/cover.png --frame=40",
+    "still": "remotion still HappyHoursReel out/cover.png --frame=100",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc",
     "music": "node scripts/make-music.mjs",
-    "sfx": "node scripts/make-sfx.mjs"
+    "sfx": "node scripts/make-sfx.mjs",
+    "render:post": "remotion render HappyHoursPost out/happy-hours-post.mp4",
+    "carousel": "remotion still HappyHoursCarousel out/carousel/01-cover.jpg --frame=100 && remotion still HappyHoursCarousel out/carousel/02-oya-muse.jpg --frame=300 && remotion still HappyHoursCarousel out/carousel/03-new-star-beauty.jpg --frame=530 && remotion still HappyHoursCarousel out/carousel/04-comment-reserver.jpg --frame=700 && remotion still HappyHoursCarousel out/carousel/05-ecrivez-nous.jpg --frame=880"
   },
   "dependencies": {
     "@remotion/cli": "4.0.522",

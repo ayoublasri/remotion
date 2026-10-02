@@ -11,6 +11,7 @@ import { Grain, Twinkles, Vignette } from "../components/Overlays";
 import { Sfx } from "../components/Sfx";
 import { PopLine, RiseLine } from "../components/Text";
 import { DISPLAY, SANS, SERIF } from "../fonts";
+import { useLayout } from "../layout";
 import type { HappyHoursReelProps } from "../schema";
 import { CREAM, GOLD, GOLD_SOFT } from "../theme";
 
@@ -67,6 +68,7 @@ export const HookScene: React.FC<{
   readonly hook: HappyHoursReelProps["hook"];
 }> = ({ hook }) => {
   const frame = useCurrentFrame();
+  const { pick } = useLayout();
   const shake = interpolate(frame, [70, 112], [0, 6], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -125,7 +127,7 @@ export const HookScene: React.FC<{
           position: "absolute",
           left: 0,
           right: 0,
-          top: 150,
+          top: pick(150, 70),
           display: "flex",
           justifyContent: "center",
           opacity: interpolate(frame, [24, 36], [0, 1], {
@@ -152,7 +154,7 @@ export const HookScene: React.FC<{
           style={{
             fontFamily: DISPLAY,
             fontWeight: 700,
-            fontSize: 172,
+            fontSize: pick(172, 150),
             lineHeight: 0.95,
             letterSpacing: "0.04em",
             color: CREAM,
@@ -166,7 +168,7 @@ export const HookScene: React.FC<{
           style={{
             fontFamily: DISPLAY,
             fontWeight: 700,
-            fontSize: 172,
+            fontSize: pick(172, 150),
             lineHeight: 0.95,
             letterSpacing: "0.04em",
             color: CREAM,
@@ -182,7 +184,7 @@ export const HookScene: React.FC<{
             fontFamily: SERIF,
             fontStyle: "italic",
             fontWeight: 500,
-            fontSize: 104,
+            fontSize: pick(104, 90),
             lineHeight: 1,
             color: GOLD_SOFT,
             textShadow: "0 12px 40px rgba(0,0,0,0.5)",
@@ -193,17 +195,45 @@ export const HookScene: React.FC<{
           text={hook.subtitle}
           at={58}
           style={{
-            marginTop: 64,
+            marginTop: pick(64, 44),
             maxWidth: 820,
             fontFamily: SANS,
             fontWeight: 600,
-            fontSize: 42,
+            fontSize: pick(42, 38),
             lineHeight: 1.3,
             color: "rgba(248,244,238,0.95)",
             textShadow: "0 8px 30px rgba(0,0,0,0.5)",
           }}
         />
       </AbsoluteFill>
+      {hook.swipeHint ? (
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: pick(150, 70),
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              padding: "14px 30px",
+              borderRadius: 999,
+              backgroundColor: "rgba(248,244,238,0.16)",
+              border: "1px solid rgba(248,244,238,0.5)",
+              color: CREAM,
+              fontFamily: SANS,
+              fontWeight: 700,
+              fontSize: 28,
+              letterSpacing: "0.2em",
+            }}
+          >
+            GLISSEZ →
+          </div>
+        </div>
+      ) : null}
       <Grain />
       <AbsoluteFill
         name="Fade in"

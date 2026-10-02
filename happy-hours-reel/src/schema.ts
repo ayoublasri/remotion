@@ -56,6 +56,7 @@ export const happyHoursReelSchema = z.object({
     line2: z.string(),
     line3: z.string(),
     subtitle: z.string(),
+    swipeHint: z.boolean().describe("Show a 'Glissez' pill (carousel cover)"),
   }),
   salons: z.array(salonSchema).length(2),
   how: z.object({
