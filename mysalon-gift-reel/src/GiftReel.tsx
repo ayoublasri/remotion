@@ -147,7 +147,7 @@ export const GiftReel: React.FC<GiftReelProps> = ({
             interpolate(
               frame,
               [0, 6, durationInFrames - 20, durationInFrames - 1],
-              [0, 0.85, 0.85, 0],
+              [0, 0.8, 0.8, 0],
               {
                 extrapolateLeft: "clamp",
                 extrapolateRight: "clamp",

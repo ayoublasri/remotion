@@ -1,9 +1,15 @@
-// Generates the royalty-free soundtrack for the gift reel: an energetic,
-// catchy electro-house track at 120 BPM (exactly 15 frames per beat and 60
-// frames per bar at 30 fps), 16 bars plus a tail. Punchy four-on-the-floor
-// drums, an offbeat bass, pumping supersaw chords, a syncopated synth hook,
-// pluck arpeggios, risers, snare rolls and two drops. Everything is
-// synthesised here.
+// Generates the royalty-free soundtrack for the gift reel, produced like a
+// club record: a catchy, energetic house track at 120 BPM (exactly 15 frames
+// per beat and 60 frames per bar at 30 fps), 16 bars plus a tail.
+//
+// Sound: a tuned, layered kick; 808-style metallic hats, a swung shaker,
+// congas and rims; a rolling tech-house bass; pumping supersaw chords and
+// house stabs; the hook as a bright pluck lead doubled by formant "vocal
+// chops". Arrangement like a DJ edit: filtered intro, snare-roll builds with
+// risers, a high-pass sweep and a stutter before the drops, a beat of silence
+// right before each drop, a vocal breakdown, a re-drop and an echo-out.
+// Mix: sidechain pumping, mono low end, ping-pong delay, reverb, soft clip and
+// a lookahead limiter. Everything is synthesised here.
 //
 //   node scripts/make-music.mjs  -> public/music/gift-theme.wav
 //   (convert to mp3 with ffmpeg, see README)
@@ -20,17 +26,20 @@ const BARS = 16;
 const TAIL = 3;
 const LENGTH = BARS * BAR + TAIL;
 const N = Math.ceil(LENGTH * SR);
+const SWING = 0.017;
 
 const bus = () => [new Float32Array(N), new Float32Array(N)];
 const drums = bus();
+const perc = bus();
 const bassBus = bus();
 const chords = bus();
 const leads = bus();
+const vox = bus();
 const fx = bus();
 const reverbSend = bus();
 const delaySend = bus();
 
-let seed = 20261005;
+let seed = 20261006;
 const rand = () => {
   seed = (seed * 1664525 + 1013904223) >>> 0;
   return seed / 4294967296;
@@ -38,28 +47,30 @@ const rand = () => {
 const noise = () => rand() * 2 - 1;
 const midi = (m) => 440 * 2 ** ((m - 69) / 12);
 const at = (bar, beat) => bar * BAR + beat * BEAT;
+// Sixteenth-note position with swing on the off-sixteenths.
+const at16 = (bar, s) => at(bar, s / 4) + (s % 2 === 1 ? SWING : 0);
 
 // ---------- song map (0-based bars), matching the reel ----------
-//   0-1   hook: filtered intro over a driving kick, snare roll and riser
-//   2-4   reveal: DROP 1 (full groove, synth hook)
-//   5-6   for whom: plucks over the groove, no hook
-//   7-8   offer: the hook returns
-//   9-11  how it works: driving groove with plucks (room for the UI sounds)
-//   12    build: snare roll, riser, filter sweep
-//   13-15 call to action: DROP 2, hook doubled an octave up
-//   16    final hit, rings out
+//   0-1   hook: filtered intro over the kick, roll + riser, silence, then
+//   2-4   reveal: DROP 1 (full groove, hook + vocal chops)
+//   5-6   for whom: vocal breakdown, the kick comes back in bar 6 with a roll
+//   7-8   offer: re-drop, the hook returns
+//   9-11  how it works: rolling groove, house stabs and plucks (room for UI)
+//   12    build: snare roll, riser, high-pass sweep, stutter, silence
+//   13-15 call to action: DROP 2, everything plus ride and the octave hook
+//   16    final hit and echo-out
 const DROP = 2;
-const FOR_WHOM = 5;
+const BREAK = 5;
 const OFFER = 7;
 const HOW = 9;
 const BUILD = 12;
 const CTA = 13;
 
 const CHORDS = {
-  Am: { notes: [57, 60, 64, 69], root: 33 },
-  F: { notes: [57, 60, 65, 69], root: 29 },
-  C: { notes: [55, 60, 64, 67], root: 36 },
-  G: { notes: [55, 59, 62, 67], root: 31 },
+  Am: { notes: [57, 60, 64, 67], root: 33 },
+  F: { notes: [53, 57, 60, 64], root: 29 },
+  C: { notes: [55, 60, 62, 64], root: 36 },
+  G: { notes: [55, 59, 62, 64], root: 31 },
 };
 const PLAN = [
   "F",
@@ -118,6 +129,7 @@ const HOOK = {
     [3.5, 76, 0.5],
   ],
 };
+const VOWEL_CYCLE = ["a", "o", "a", "e", "a", "i", "o"];
 
 // ---------- helpers ----------
 const mixMono = (target, start, buf, pan = 0, gain = 1) => {
@@ -144,7 +156,7 @@ const mixStereo = (target, start, L, R, gain = 1) => {
   }
 };
 
-// Band-limited sawtooth correction (PolyBLEP).
+// Band-limited step correction (PolyBLEP).
 const blep = (t, dt) => {
   if (t < dt) {
     t /= dt;
@@ -157,8 +169,8 @@ const blep = (t, dt) => {
   return 0;
 };
 
-// Zero-delay-feedback state-variable filter; cutoff is a number or a
-// function of the sample index.
+// Zero-delay-feedback state-variable filter. Cutoff is a number or a function
+// of the sample index. "bp" is normalised to unity gain at the centre.
 const svf = (buf, cutoff, q, mode = "lp") => {
   let ic1 = 0;
   let ic2 = 0;
@@ -168,7 +180,7 @@ const svf = (buf, cutoff, q, mode = "lp") => {
   for (let i = 0; i < buf.length; i++) {
     if (!fixed)
       g = Math.tan(
-        (Math.PI * Math.min(Math.max(cutoff(i), 20), SR * 0.45)) / SR,
+        (Math.PI * Math.min(Math.max(cutoff(i), 10), SR * 0.45)) / SR,
       );
     const a1 = 1 / (1 + g * (g + k));
     const a2 = g * a1;
@@ -179,7 +191,7 @@ const svf = (buf, cutoff, q, mode = "lp") => {
     const v2 = ic2 + a2 * ic1 + a3 * v3;
     ic1 = 2 * v1 - ic1;
     ic2 = 2 * v2 - ic2;
-    buf[i] = mode === "lp" ? v2 : mode === "bp" ? v1 : v0 - k * v1 - v2;
+    buf[i] = mode === "lp" ? v2 : mode === "bp" ? k * v1 : v0 - k * v1 - v2;
   }
   return buf;
 };
@@ -187,45 +199,47 @@ const svf = (buf, cutoff, q, mode = "lp") => {
 // ---------- drums ----------
 const kickTimes = [];
 
+// Layered kick: a sub body tuned to A (55 Hz), a short knock and a click.
 const kick = (t0, vel) => {
   kickTimes.push(t0);
+  const n = Math.floor(0.5 * SR);
+  const buf = new Float32Array(n);
+  let ph = 0;
+  let ph2 = 0;
+  for (let i = 0; i < n; i++) {
+    const t = i / SR;
+    const f = 55 + 140 * Math.exp(-t / 0.028) + 1100 * Math.exp(-t / 0.0022);
+    ph += (2 * Math.PI * f) / SR;
+    ph2 += (2 * Math.PI * 150) / SR;
+    const body = Math.sin(ph) * Math.min(1, t / 0.0008) * Math.exp(-t / 0.24);
+    const knock = Math.sin(ph2) * Math.exp(-t / 0.016) * 0.32;
+    const click = noise() * Math.exp(-t / 0.0008) * 0.3;
+    buf[i] = Math.tanh(1.9 * (body + knock + click));
+  }
+  mixMono(drums, t0, buf, 0, vel);
+};
+
+// Clap with a snare body underneath.
+const clap = (t0, vel) => {
   const n = Math.floor(0.45 * SR);
   const buf = new Float32Array(n);
+  const body = new Float32Array(n);
   let ph = 0;
   for (let i = 0; i < n; i++) {
     const t = i / SR;
-    const f = 47 + 125 * Math.exp(-t / 0.032) + 280 * Math.exp(-t / 0.004);
-    ph += (2 * Math.PI * f) / SR;
-    const body = Math.sin(ph) * Math.min(1, t / 0.0012) * Math.exp(-t / 0.2);
-    const click = noise() * Math.exp(-t / 0.0012) * 0.45;
-    buf[i] = Math.tanh(2.4 * (body + click));
-  }
-  mixMono(drums, t0, buf, 0, 0.82 * vel);
-};
-
-const clap = (t0, vel) => {
-  const n = Math.floor(0.4 * SR);
-  const buf = new Float32Array(n);
-  for (let i = 0; i < n; i++) {
-    const t = i / SR;
     let env = 0;
-    for (const o of [0, 0.01, 0.021])
-      if (t >= o) env = Math.max(env, Math.exp(-(t - o) / 0.0055));
-    if (t >= 0.028) env = Math.max(env, 0.75 * Math.exp(-(t - 0.028) / 0.1));
+    for (const o of [0, 0.008, 0.017, 0.027])
+      if (t >= o) env = Math.max(env, Math.exp(-(t - o) / 0.005));
+    if (t >= 0.027) env = Math.max(env, 0.8 * Math.exp(-(t - 0.027) / 0.12));
     buf[i] = noise() * env;
+    ph += (2 * Math.PI * (215 + 40 * Math.exp(-t / 0.01))) / SR;
+    body[i] = Math.sin(ph) * Math.exp(-t / 0.045);
   }
-  svf(buf, 1350, 0.8, "bp");
-  mixMono(drums, t0, buf, 0.04, 1.9 * vel);
-  mixMono(reverbSend, t0, buf, 0, 0.7 * vel);
-};
-
-const hat = (t0, vel, open, pan) => {
-  const n = Math.floor((open ? 0.32 : 0.07) * SR);
-  const buf = new Float32Array(n);
-  for (let i = 0; i < n; i++)
-    buf[i] = noise() * Math.exp(-i / SR / (open ? 0.11 : 0.02));
-  svf(buf, 7800, 0.75, "hp");
-  mixMono(drums, t0, buf, pan, vel);
+  svf(buf, 1250, 0.8, "bp");
+  svf(buf, 380, 0.7, "hp");
+  for (let i = 0; i < n; i++) buf[i] = 2.2 * buf[i] + 0.3 * body[i];
+  mixMono(drums, t0, buf, 0.03, vel);
+  mixMono(reverbSend, t0, buf, 0, 0.55 * vel);
 };
 
 const snare = (t0, vel, pitch = 1) => {
@@ -239,21 +253,103 @@ const snare = (t0, vel, pitch = 1) => {
       noise() * 0.9 * Math.exp(-t / 0.05) +
       Math.sin(ph) * 0.55 * Math.exp(-t / 0.035);
   }
-  svf(buf, 220, 0.7, "hp");
+  svf(buf, 240, 0.7, "hp");
   mixMono(drums, t0, buf, 0, vel);
   mixMono(reverbSend, t0, buf, 0, vel * 0.35);
 };
 
-// Snare roll accelerating from eighths to thirty-seconds over `beats` beats.
+// Snare roll accelerating from eighths to thirty-seconds.
 const roll = (t0, beats, from, to) => {
   const end = t0 + beats * BEAT;
   let t = t0;
   while (t < end - 1e-6) {
     const p = (t - t0) / (end - t0);
     const step = p < 0.5 ? BEAT / 2 : p < 0.75 ? BEAT / 4 : BEAT / 8;
-    snare(t, from + (to - from) * p ** 1.5, 1 + 0.35 * p);
+    snare(t, from + (to - from) * p ** 1.4, 1 + 0.4 * p);
     t += step;
   }
+};
+
+// TR-808 style metallic hat: six detuned square waves, high-passed.
+const HAT_F = [205.3, 304.4, 369.6, 522.7, 540, 800];
+const hat = (t0, vel, open, pan) => {
+  const n = Math.floor((open ? 0.36 : 0.09) * SR);
+  const buf = new Float32Array(n);
+  const ph = HAT_F.map(() => rand());
+  for (let i = 0; i < n; i++) {
+    const t = i / SR;
+    let s = 0;
+    for (let k = 0; k < HAT_F.length; k++) {
+      ph[k] += HAT_F[k] / SR;
+      if (ph[k] >= 1) ph[k] -= 1;
+      s += ph[k] < 0.5 ? 1 : -1;
+    }
+    const env = Math.min(1, t / 0.0006) * Math.exp(-t / (open ? 0.12 : 0.024));
+    buf[i] = (s / 6 + 0.35 * noise()) * env;
+  }
+  svf(buf, 7200, 0.7, "hp");
+  svf(buf, 7200, 0.7, "hp");
+  mixMono(drums, t0, buf, pan, vel);
+};
+
+const shaker = (t0, vel, pan) => {
+  const n = Math.floor(0.09 * SR);
+  const buf = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const t = i / SR;
+    buf[i] = noise() * Math.min(1, t / 0.006) * Math.exp(-t / 0.03);
+  }
+  svf(buf, 6800, 1, "bp");
+  mixMono(perc, t0, buf, pan, vel);
+};
+
+const RIDE_F = [523, 787, 1117, 1531, 2033, 3106, 4521, 6011];
+const ride = (t0, vel) => {
+  const n = Math.floor(1.1 * SR);
+  const buf = new Float32Array(n);
+  const ph = RIDE_F.map(() => rand() * 2 * Math.PI);
+  for (let i = 0; i < n; i++) {
+    const t = i / SR;
+    let s = 0;
+    for (let k = 0; k < RIDE_F.length; k++)
+      s += Math.sin(ph[k] + 2 * Math.PI * RIDE_F[k] * t);
+    buf[i] =
+      (s / RIDE_F.length) * Math.exp(-t / 0.42) +
+      noise() * 0.35 * Math.exp(-t / 0.25);
+  }
+  svf(buf, 3200, 0.7, "hp");
+  mixMono(perc, t0, buf, 0.3, vel);
+};
+
+const conga = (t0, vel, f0, pan) => {
+  const n = Math.floor(0.3 * SR);
+  const buf = new Float32Array(n);
+  const slap = new Float32Array(n);
+  let ph = 0;
+  for (let i = 0; i < n; i++) {
+    const t = i / SR;
+    ph += (2 * Math.PI * f0 * (1 + 0.5 * Math.exp(-t / 0.008))) / SR;
+    buf[i] = Math.sin(ph) * Math.exp(-t / 0.13);
+    slap[i] = noise() * Math.exp(-t / 0.004);
+  }
+  svf(slap, 1800, 0.7, "hp");
+  for (let i = 0; i < n; i++)
+    buf[i] = Math.tanh(1.3 * (buf[i] + 0.35 * slap[i]));
+  mixMono(perc, t0, buf, pan, vel);
+};
+
+const rim = (t0, vel, pan) => {
+  const n = Math.floor(0.08 * SR);
+  const buf = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const t = i / SR;
+    buf[i] =
+      Math.sin(2 * Math.PI * 1700 * t) * Math.exp(-t / 0.011) +
+      0.6 * Math.sin(2 * Math.PI * 820 * t) * Math.exp(-t / 0.018) +
+      0.4 * noise() * Math.exp(-t / 0.003);
+  }
+  svf(buf, 420, 0.7, "hp");
+  mixMono(perc, t0, buf, pan, vel);
 };
 
 const crash = (t0, vel) => {
@@ -270,7 +366,7 @@ const crash = (t0, vel) => {
   mixStereo(fx, t0, L, R, vel);
 };
 
-// ---------- effects ----------
+// ---------- transition effects ----------
 const reverseCrash = (tEnd, dur, vel) => {
   const n = Math.floor(dur * SR);
   const L = new Float32Array(n);
@@ -296,30 +392,17 @@ const riser = (t0, dur, vel) => {
     const e = p ** 1.7;
     L[i] = noise() * e;
     R[i] = noise() * e;
-    ph += (2 * Math.PI * (180 * 2 ** (p * 2.2))) / SR;
-    tone[i] = (Math.sin(ph) + 0.5 * Math.sin(2 * ph)) * e * 0.25;
+    ph += (2 * Math.PI * (180 * 2 ** (p * 2.4))) / SR;
+    tone[i] =
+      (Math.sin(ph) + 0.5 * Math.sin(2 * ph) + 0.25 * Math.sin(3 * ph)) *
+      e *
+      0.22;
   }
-  const sweep = (i) => 350 * (9500 / 350) ** (i / n);
+  const sweep = (i) => 300 * (10000 / 300) ** (i / n);
   svf(L, sweep, 2.2, "bp");
   svf(R, sweep, 2.2, "bp");
-  mixStereo(fx, t0, L, R, vel);
+  mixStereo(fx, t0, L, R, vel * 1.6);
   mixMono(fx, t0, tone, 0, vel);
-};
-
-const impact = (t0, vel) => {
-  const n = Math.floor(1.8 * SR);
-  const buf = new Float32Array(n);
-  const hit = new Float32Array(n);
-  let ph = 0;
-  for (let i = 0; i < n; i++) {
-    const t = i / SR;
-    ph += (2 * Math.PI * (34 + 46 * Math.exp(-t / 0.12))) / SR;
-    buf[i] = Math.sin(ph) * Math.exp(-t / 0.55);
-    hit[i] = noise() * Math.exp(-t / 0.07);
-  }
-  svf(hit, 900, 0.7, "lp");
-  for (let i = 0; i < n; i++) buf[i] = Math.tanh(1.6 * (buf[i] + 0.8 * hit[i]));
-  mixMono(fx, t0, buf, 0, vel);
 };
 
 const downlifter = (t0, dur, vel) => {
@@ -334,12 +417,30 @@ const downlifter = (t0, dur, vel) => {
   const sweep = (i) => 7000 * (300 / 7000) ** (i / n);
   svf(L, sweep, 1.8, "bp");
   svf(R, sweep, 1.8, "bp");
-  mixStereo(fx, t0, L, R, vel);
+  mixStereo(fx, t0, L, R, vel * 1.6);
+};
+
+// Drop hit: a distorted sub boom sliding down, with a low noise burst.
+const impact = (t0, vel) => {
+  const n = Math.floor(1.9 * SR);
+  const buf = new Float32Array(n);
+  const hit = new Float32Array(n);
+  let ph = 0;
+  for (let i = 0; i < n; i++) {
+    const t = i / SR;
+    ph += (2 * Math.PI * (30 + 52 * Math.exp(-t / 0.18))) / SR;
+    buf[i] = Math.sin(ph) * Math.exp(-t / 0.6);
+    hit[i] = noise() * Math.exp(-t / 0.07);
+  }
+  svf(hit, 900, 0.7, "lp");
+  for (let i = 0; i < n; i++) buf[i] = Math.tanh(1.7 * (buf[i] + 0.8 * hit[i]));
+  mixMono(fx, t0, buf, 0, vel);
 };
 
 // ---------- instruments ----------
+// Rolling tech-house bass: resonant saw/square pluck with a sub underneath.
 const bassNote = (t0, dur, m, vel) => {
-  const n = Math.floor((dur + 0.03) * SR);
+  const n = Math.floor((dur + 0.02) * SR);
   const buf = new Float32Array(n);
   const f = midi(m);
   const dt = f / SR;
@@ -349,22 +450,50 @@ const bassNote = (t0, dur, m, vel) => {
     const t = i / SR;
     ph += dt;
     if (ph >= 1) ph -= 1;
+    const ph2 = (ph + 0.5) % 1;
     const saw = 2 * ph - 1 - blep(ph, dt);
+    const square = saw - (2 * ph2 - 1 - blep(ph2, dt));
     sub += (2 * Math.PI * f) / SR;
     const env =
-      Math.min(1, t / 0.003) *
-      Math.exp(-t / 0.28) *
-      (t < dur ? 1 : Math.exp(-(t - dur) / 0.008));
-    buf[i] = (0.6 * saw + 0.85 * Math.sin(sub)) * env;
+      Math.min(1, t / 0.002) *
+      (0.6 + 0.4 * Math.exp(-t / 0.07)) *
+      (t < dur ? 1 : Math.exp(-(t - dur) / 0.006));
+    buf[i] = (0.45 * saw + 0.25 * square + 0.9 * Math.sin(sub)) * env;
   }
-  svf(buf, (i) => 160 + 2600 * Math.exp(-i / SR / 0.05), 1.6, "lp");
-  for (let i = 0; i < n; i++) buf[i] = Math.tanh(1.7 * buf[i]);
+  svf(buf, (i) => 140 + 2300 * Math.exp(-i / SR / 0.045), 2.6, "lp");
+  for (let i = 0; i < n; i++) buf[i] = Math.tanh(1.8 * buf[i]);
+  mixMono(bassBus, t0, buf, 0, vel);
+};
+// [sixteenth, semitones, length in beats, velocity]
+const BASS_PATTERN = [
+  [2, 0, 0.42, 1],
+  [3, 12, 0.14, 0.5],
+  [6, 0, 0.42, 1],
+  [10, 0, 0.42, 1],
+  [11, 12, 0.14, 0.5],
+  [14, 0, 0.32, 0.95],
+  [15, 7, 0.14, 0.45],
+];
+
+// Sustained sub for the breakdown, so the low end never empties out.
+const subNote = (t0, dur, m, vel) => {
+  const n = Math.floor((dur + 0.1) * SR);
+  const buf = new Float32Array(n);
+  const f = midi(m);
+  let ph = 0;
+  for (let i = 0; i < n; i++) {
+    const t = i / SR;
+    ph += (2 * Math.PI * f) / SR;
+    const env =
+      Math.min(1, t / 0.08) * (t < dur ? 1 : Math.exp(-(t - dur) / 0.03));
+    buf[i] = Math.tanh(1.4 * Math.sin(ph)) * env;
+  }
   mixMono(bassBus, t0, buf, 0, vel);
 };
 
 const DETUNE = [-0.2, -0.12, -0.05, 0, 0.05, 0.12, 0.2];
 
-// Supersaw chord; cutoff is a function of the absolute time in seconds.
+// Supersaw chord; cutoff is a function of absolute time in seconds.
 const supersaw = (t0, dur, notes, vel, cutoffAt, release = 0.12) => {
   const n = Math.floor((dur + release) * SR);
   const L = new Float32Array(n);
@@ -373,7 +502,7 @@ const supersaw = (t0, dur, notes, vel, cutoffAt, release = 0.12) => {
     DETUNE.forEach((d, v) => {
       const dt = midi(m + d) / SR;
       let ph = rand();
-      const pan = ((v / (DETUNE.length - 1)) * 2 - 1) * 0.85;
+      const pan = ((v / (DETUNE.length - 1)) * 2 - 1) * 0.9;
       const gl = Math.cos(((pan + 1) * Math.PI) / 4);
       const gr = Math.sin(((pan + 1) * Math.PI) / 4);
       for (let i = 0; i < n; i++) {
@@ -399,6 +528,42 @@ const supersaw = (t0, dur, notes, vel, cutoffAt, release = 0.12) => {
   mixStereo(chords, t0, L, R, vel);
 };
 
+// Short house chord stab.
+const stab = (t0, notes, vel) => {
+  const n = Math.floor(0.3 * SR);
+  const L = new Float32Array(n);
+  const R = new Float32Array(n);
+  notes.forEach((m, j) => {
+    [-0.08, 0.08].forEach((d, v) => {
+      const dt = midi(m + 12 + d) / SR;
+      let ph = rand();
+      for (let i = 0; i < n; i++) {
+        ph += dt;
+        if (ph >= 1) ph -= 1;
+        const s =
+          (2 * ph - 1 - blep(ph, dt)) *
+          Math.exp(-i / SR / 0.11) *
+          Math.min(1, i / (0.002 * SR));
+        if (v === 0) L[i] += s * (j % 2 ? 0.8 : 1);
+        else R[i] += s * (j % 2 ? 1 : 0.8);
+      }
+    });
+  });
+  const cut = (i) => 400 + 3800 * Math.exp(-i / SR / 0.05);
+  svf(L, cut, 1.4, "lp");
+  svf(R, cut, 1.4, "lp");
+  mixStereo(chords, t0, L, R, vel);
+  mixMono(delaySend, t0, L, 0, vel * 0.25);
+};
+const STAB_PATTERN = [
+  [0, 0.7],
+  [3, 1],
+  [6, 0.8],
+  [8, 0.7],
+  [11, 1],
+  [14, 0.8],
+];
+
 const pluck = (t0, m, vel, pan, bright = 1) => {
   const n = Math.floor(0.42 * SR);
   const buf = new Float32Array(n);
@@ -422,16 +587,16 @@ const pluck = (t0, m, vel, pan, bright = 1) => {
   mixMono(reverbSend, t0, buf, 0, vel * 0.3);
 };
 
-// The hook: two detuned saws and a square, a filter envelope and a little
-// vibrato on long notes, with a soft bell an octave up for sparkle.
+// The hook lead: two detuned saws and a square with a filter envelope, a
+// little vibrato on long notes and a soft bell an octave up.
 const leadNote = (t0, dur, m, vel, cutoffMax) => {
   const n = Math.floor((dur + 0.1) * SR);
   const buf = new Float32Array(n);
+  const bellBuf = new Float32Array(n);
   const f = midi(m);
   const saws = [-0.09, 0.09].map((d) => ({ r: 2 ** (d / 12), ph: rand() }));
   let sq = rand();
   let bell = 0;
-  const bellBuf = new Float32Array(n);
   for (let i = 0; i < n; i++) {
     const t = i / SR;
     const vib =
@@ -466,150 +631,339 @@ const leadNote = (t0, dur, m, vel, cutoffMax) => {
     "lp",
   );
   mixMono(leads, t0, buf, 0, vel);
-  mixMono(leads, t0, bellBuf, 0.15, vel * 0.22);
+  mixMono(leads, t0, bellBuf, 0.15, vel * 0.2);
   mixMono(delaySend, t0, buf, 0, vel * 0.45);
   mixMono(reverbSend, t0, buf, 0, vel * 0.4);
+};
+
+// Formant "vocal chop": a glottal-like saw with a pitch scoop and vibrato
+// through three vowel formants, plus a breath of aspiration.
+const VOWELS = {
+  a: [
+    [850, 1, 9],
+    [1220, 0.6, 10],
+    [2810, 0.28, 12],
+  ],
+  o: [
+    [520, 1, 9],
+    [900, 0.65, 10],
+    [2700, 0.2, 12],
+  ],
+  e: [
+    [610, 1, 9],
+    [2000, 0.5, 12],
+    [2900, 0.28, 14],
+  ],
+  i: [
+    [330, 1, 8],
+    [2700, 0.5, 14],
+    [3300, 0.32, 14],
+  ],
+};
+const voxNote = (t0, dur, m, vel, vowel, pan = 0) => {
+  const n = Math.floor((dur + 0.05) * SR);
+  const src = new Float32Array(n);
+  const f = midi(m);
+  let ph = rand();
+  for (let i = 0; i < n; i++) {
+    const t = i / SR;
+    const scoop = -1.2 * Math.exp(-t / 0.025);
+    const vib =
+      t > 0.1
+        ? Math.sin(2 * Math.PI * 5.2 * t) * 0.18 * Math.min(1, (t - 0.1) / 0.15)
+        : 0;
+    const dt = (f * 2 ** ((scoop + vib) / 12)) / SR;
+    ph += dt;
+    if (ph >= 1) ph -= 1;
+    src[i] = 2 * ph - 1 - blep(ph, dt) + 0.12 * noise();
+  }
+  const out = new Float32Array(n);
+  for (const [fc, gain, q] of VOWELS[vowel]) {
+    const band = svf(Float32Array.from(src), fc, q, "bp");
+    for (let i = 0; i < n; i++) out[i] += band[i] * gain;
+  }
+  for (let i = 0; i < n; i++) {
+    const t = i / SR;
+    out[i] *=
+      2.4 *
+      Math.min(1, t / 0.006) *
+      (0.8 + 0.2 * Math.exp(-t / 0.06)) *
+      (t < dur ? 1 : Math.exp(-(t - dur) / 0.02));
+  }
+  mixMono(vox, t0, out, pan, vel);
+  mixMono(delaySend, t0, out, pan, vel * 0.35);
+  mixMono(reverbSend, t0, out, 0, vel * 0.45);
 };
 
 const playHook = (bar, vel, cutoffMax, octave = 0) => {
   for (const [b, m, d] of HOOK[PLAN[bar]])
     leadNote(at(bar, b), d * BEAT * 0.92, m + octave, vel, cutoffMax);
 };
+const playVox = (bar, vel, octave = 0) => {
+  HOOK[PLAN[bar]].forEach(([b, m, d], k) =>
+    voxNote(
+      at(bar, b),
+      d * BEAT * 0.85,
+      m + octave,
+      vel,
+      VOWEL_CYCLE[k % VOWEL_CYCLE.length],
+      k % 2 ? 0.12 : -0.12,
+    ),
+  );
+};
 
 // ---------- arrangement ----------
 for (let bar = 0; bar < BARS; bar++) {
-  const name = PLAN[bar];
-  const { notes, root } = CHORDS[name];
+  const { notes, root } = CHORDS[PLAN[bar]];
   const intro = bar < DROP;
-  const drop = (bar >= DROP && bar < FOR_WHOM) || bar >= CTA;
-  const forWhom = bar >= FOR_WHOM && bar < OFFER;
+  const drop1 = bar >= DROP && bar < BREAK;
+  const breakdown = bar === BREAK;
+  const rebuild = bar === BREAK + 1;
   const offer = bar >= OFFER && bar < HOW;
   const how = bar >= HOW && bar < BUILD;
   const build = bar === BUILD;
+  const drop2 = bar >= CTA;
+  const full = drop1 || offer || drop2;
 
-  // Kick: four on the floor; the build keeps only beats 1-2, the intro drops
-  // the last beat before the first drop.
-  for (let b = 0; b < 4; b++) {
-    if (build && b >= 2) continue;
-    if (bar === DROP - 1 && b === 3) continue;
-    kick(at(bar, b), intro ? 0.85 : 1);
+  // Kick.
+  if (!breakdown) {
+    for (let b = 0; b < 4; b++) {
+      if (build && b >= 2) continue;
+      if (bar === DROP - 1 && b === 3) continue;
+      kick(at(bar, b), intro || rebuild ? 0.9 : 1);
+    }
   }
 
-  // Claps on 2 and 4 from the first drop.
-  if (!intro && !build) {
-    clap(at(bar, 1), 0.5);
-    clap(at(bar, 3), 0.5);
+  // Clap on 2 and 4.
+  if (full || how || rebuild) {
+    clap(at(bar, 1), 0.55);
+    clap(at(bar, 3), 0.55);
   }
 
-  // Hats: sixteenths everywhere, open hats on the offbeats when it is full.
+  // Hats, shaker, open hats, ride.
   for (let s = 0; s < 16; s++) {
     if (build && s >= 8) continue;
-    const accent = s % 4 === 2 ? 0.11 : s % 2 === 1 ? 0.06 : 0.045;
-    hat(
-      at(bar, s / 4),
-      accent * (intro ? 0.8 : 1) * (0.85 + rand() * 0.3),
-      false,
-      s % 2 ? 0.25 : -0.2,
+    const t = at16(bar, s);
+    if (!breakdown) {
+      const v = s % 4 === 2 ? 0.12 : s % 2 === 1 ? 0.07 : 0.05;
+      hat(
+        t,
+        v * (intro ? 0.8 : 1) * (0.85 + rand() * 0.3),
+        false,
+        s % 2 ? 0.22 : -0.18,
+      );
+    }
+    shaker(
+      t,
+      (s % 2 === 1 ? 0.22 : 0.13) *
+        (breakdown ? 0.7 : 1) *
+        (0.85 + rand() * 0.3),
+      s % 2 ? -0.35 : 0.35,
     );
   }
-  if (drop || offer || how) {
+  if (full || how)
     for (let b = 0; b < 4; b++)
-      hat(at(bar, b + 0.5), how ? 0.1 : 0.14, true, 0.1);
+      hat(at(bar, b + 0.5), how ? 0.1 : 0.13, true, 0.12);
+  if (drop2) for (let b = 0; b < 4; b++) ride(at(bar, b), 0.09);
+
+  // Congas and rims: the groove under the drops and the how-to.
+  if (full || how || breakdown) {
+    const hits = [
+      [3, 330],
+      [6, 247],
+      [7, 330],
+      [10, 247],
+      [12, 220],
+      [14, 330],
+    ];
+    for (const [s, f] of hits)
+      conga(at16(bar, s), breakdown ? 0.12 : 0.2, f, f > 300 ? 0.3 : -0.3);
+  }
+  if (how || drop2) {
+    rim(at16(bar, 7), 0.16, 0.4);
+    rim(at16(bar, 13), 0.12, -0.4);
   }
 
-  // Offbeat bass, the electro-house pump.
-  if (!intro && !build) {
-    for (let b = 0; b < 4; b++)
-      bassNote(at(bar, b + 0.5), BEAT * 0.42, root, 0.5);
+  // Bass: the rolling pattern, or eighths climbing through the build.
+  if (full || how) {
+    for (const [s, semis, len, v] of BASS_PATTERN)
+      bassNote(at16(bar, s), len * BEAT, root + semis, 0.5 * v);
   }
   if (build) {
-    for (let s = 0; s < 8; s++)
+    for (let s = 0; s < 6; s++)
       bassNote(
         at(bar, s / 2),
         BEAT * 0.3,
         root + (s >= 4 ? 12 : 0),
-        0.32 + s * 0.03,
+        0.36 + s * 0.03,
       );
   }
 
-  // Supersaw chords: filtered in the intro, wide open on the drops.
+  // Chords.
   if (intro) {
     supersaw(
       at(bar, 0),
       BAR,
       notes,
       0.03,
-      (t) => 320 * (3600 / 320) ** Math.min(1, t / (DROP * BAR)),
+      (t) => 300 * (3600 / 300) ** Math.min(1, t / (DROP * BAR)),
     );
-  } else if (drop) {
-    supersaw(at(bar, 0), BAR, notes, 0.034, () => (bar >= CTA ? 7200 : 6200));
-  } else if (offer) {
-    supersaw(at(bar, 0), BAR, notes, 0.03, () => 5200);
-  } else if (forWhom || how) {
-    supersaw(at(bar, 0), BAR, notes, 0.022, () => 2400);
+  } else if (drop1 || offer) {
+    supersaw(at(bar, 0), BAR, notes, 0.034, () => 6400);
+  } else if (drop2) {
+    supersaw(at(bar, 0), BAR, notes, 0.036, () => 7600);
+    for (const [s, v] of STAB_PATTERN) stab(at16(bar, s), notes, 0.05 * v);
+  } else if (breakdown || rebuild) {
+    supersaw(
+      at(bar, 0),
+      BAR,
+      notes,
+      0.046,
+      (t) => (breakdown ? 3000 : 3000 * 2 ** ((t - at(bar, 0)) / BAR)),
+      0.3,
+    );
+    if (breakdown) subNote(at(bar, 0), BAR, root + 12, 0.42);
+  } else if (how) {
+    supersaw(at(bar, 0), BAR, notes, 0.016, () => 2000);
+    for (const [s, v] of STAB_PATTERN) stab(at16(bar, s), notes, 0.075 * v);
   } else if (build) {
     supersaw(
       at(bar, 0),
       BAR,
       notes,
-      0.028,
+      0.03,
       (t) => 1500 * 4.5 ** ((t - at(BUILD, 0)) / BAR),
     );
   }
 
-  // Pluck arpeggios in the calmer sections.
-  if (forWhom || how || build) {
+  // Plucks.
+  if (breakdown || rebuild || how || build) {
     const tones = [...notes.map((m) => m + 12), notes[1] + 24, notes[2] + 24];
     for (let s = 0; s < 16; s++) {
-      const m = tones[(s * 3) % tones.length];
+      const lift = breakdown || rebuild ? 1.35 : 1;
       pluck(
-        at(bar, s / 4),
-        m,
-        s % 4 === 0 ? 0.16 : 0.1,
+        at16(bar, s),
+        tones[(s * 3) % tones.length],
+        (s % 4 === 0 ? 0.15 : 0.09) * lift,
         s % 2 ? 0.35 : -0.35,
         how ? 0.8 : 1,
       );
     }
   }
 
-  // The hook.
+  // The hook: synth lead doubled by the vocal chops.
   if (intro) playHook(bar, 0.13, 1600 + bar * 900);
-  if ((bar >= DROP && bar < FOR_WHOM) || offer) playHook(bar, 0.2, 7500);
-  if (bar >= CTA) {
+  if (bar === DROP - 1) playVox(bar, 0.1);
+  if (drop1 || offer) {
+    playHook(bar, 0.2, 7500);
+    playVox(bar, 0.16);
+  }
+  if (breakdown || rebuild) playVox(bar, 0.26);
+  if (drop2) {
     playHook(bar, 0.2, 8000);
-    playHook(bar, 0.08, 6000, 12);
+    playHook(bar, 0.07, 6000, 12);
+    playVox(bar, 0.17);
   }
 
   // Accents.
-  if ([DROP, FOR_WHOM, OFFER, HOW, CTA].includes(bar))
-    crash(at(bar, 0), bar === DROP || bar === CTA ? 0.26 : 0.15);
+  if ([DROP, OFFER, HOW, CTA].includes(bar))
+    crash(at(bar, 0), bar === DROP || bar === CTA ? 0.28 : 0.18);
   if (bar === DROP || bar === CTA) {
-    impact(at(bar, 0), 0.62);
+    impact(at(bar, 0), 0.65);
     downlifter(at(bar, 0) + 0.05, 1.6, 0.1);
   }
+  if (bar === OFFER) impact(at(bar, 0), 0.35);
 }
 
-// Builds into the two drops.
-roll(at(DROP - 1, 1), 3, 0.12, 0.5);
+// Builds into the drops.
+roll(at(DROP - 1, 1), 2.5, 0.12, 0.5);
 riser(at(DROP - 1, 0), BAR, 0.16);
-reverseCrash(at(DROP, 0), 1.3, 0.22);
-roll(at(BUILD, 0), 4, 0.1, 0.55);
+reverseCrash(at(DROP, 0), 1.3, 0.24);
+roll(at(OFFER - 1, 2), 2, 0.12, 0.42);
+riser(at(OFFER - 1, 0), BAR, 0.12);
+reverseCrash(at(OFFER, 0), 1, 0.18);
+roll(at(BUILD, 0), 3.5, 0.1, 0.55);
 riser(at(BUILD, 0), BAR, 0.2);
-reverseCrash(at(CTA, 0), 1.3, 0.24);
+reverseCrash(at(CTA, 0), 1.3, 0.26);
 
-// Ending: a last big chord with the kick, the hook's final note, a crash.
+// Ending: a last hit, then an echo-out.
 kick(at(BARS, 0), 1);
-impact(at(BARS, 0), 0.4);
+impact(at(BARS, 0), 0.45);
 supersaw(
   at(BARS, 0),
-  1.6,
+  1.4,
   CHORDS.C.notes,
-  0.034,
+  0.036,
   (t) => 6500 * Math.exp(-(t - at(BARS, 0)) / 1.2) + 600,
   0.6,
 );
-leadNote(at(BARS, 0), 1.2, 72, 0.18, 7000);
-crash(at(BARS, 0), 0.24);
+leadNote(at(BARS, 0), 1, 72, 0.2, 7000);
+voxNote(at(BARS, 0), 0.9, 72, 0.2, "a");
+stab(at(BARS, 0), CHORDS.C.notes, 0.08);
+crash(at(BARS, 0), 0.26);
+
+// ---------- DJ edits on the buses ----------
+const ramp = (t, a, b, edge) =>
+  Math.min(1, Math.max(0, (t - a) / edge), Math.max(0, (b - t) / edge));
+
+// Silence before a drop (with 3 ms fades), on every bus except the effects.
+const gap = (from, to) => {
+  const i0 = Math.floor(from * SR);
+  const i1 = Math.floor(to * SR);
+  for (const b of [
+    drums,
+    perc,
+    bassBus,
+    chords,
+    leads,
+    vox,
+    delaySend,
+    reverbSend,
+  ]) {
+    for (let i = i0; i < i1; i++) {
+      const g = 1 - ramp(i / SR, from, to, 0.003);
+      b[0][i] *= g;
+      b[1][i] *= g;
+    }
+  }
+};
+
+// Beat-repeat: replay short slices of a bus, getting shorter.
+const stutter = (b, from, to) => {
+  const i0 = Math.floor(from * SR);
+  const i1 = Math.floor(to * SR);
+  const src = [b[0].slice(i0, i1), b[1].slice(i0, i1)];
+  const half = Math.floor((i1 - i0) / 2);
+  let pos = i0;
+  const lens = [Math.floor((BEAT / 4) * SR), Math.floor((BEAT / 8) * SR)];
+  while (pos < i1) {
+    const len = pos - i0 < half ? lens[0] : lens[1];
+    for (let k = 0; k < len && pos + k < i1; k++) {
+      const fade = Math.min(1, k / 64, (len - k) / 64);
+      b[0][pos + k] = src[0][k] * fade;
+      b[1][pos + k] = src[1][k] * fade;
+    }
+    pos += len;
+  }
+};
+
+// Time-varying high-pass on a bus (the DJ filter sweep).
+const hpSweep = (b, from, to, f0, f1) => {
+  const cut = (i) => {
+    const t = i / SR;
+    if (t < from || t >= to) return 10;
+    return f0 * (f1 / f0) ** ((t - from) / (to - from));
+  };
+  svf(b[0], cut, 0.75, "hp");
+  svf(b[1], cut, 0.75, "hp");
+};
+
+for (const b of [chords, leads, vox, bassBus])
+  hpSweep(b, at(BUILD, 0), at(CTA, 0), 30, 900);
+stutter(chords, at(BUILD, 3), at(BUILD, 3.875));
+stutter(leads, at(BUILD, 3), at(BUILD, 3.875));
+gap(at(DROP - 1, 3.5), at(DROP, 0));
+gap(at(BUILD, 3.875), at(CTA, 0));
 
 // ---------- sidechain pump ----------
 kickTimes.sort((a, b) => a - b);
@@ -627,11 +981,19 @@ const pump = (target, depth, recover) => {
     target[1][i] *= g;
   }
 };
-pump(chords, 0.78, 0.3);
-pump(bassBus, 0.4, 0.16);
+pump(chords, 0.8, 0.3);
+pump(bassBus, 0.6, 0.17);
 pump(leads, 0.22, 0.2);
+pump(vox, 0.25, 0.2);
+pump(perc, 0.3, 0.12);
 
-// ---------- delay (ping-pong, dotted eighth) ----------
+// Keep the music above the kick and bass.
+for (const b of [chords, leads, vox]) {
+  svf(b[0], 160, 0.7, "hp");
+  svf(b[1], 160, 0.7, "hp");
+}
+
+// ---------- delay (ping-pong, dotted eighth) and reverb ----------
 const pingPong = (inp, time, fb, lpHz) => {
   const d = Math.floor(time * SR);
   const outL = new Float32Array(N);
@@ -655,14 +1017,15 @@ const pingPong = (inp, time, fb, lpHz) => {
   }
   return [outL, outR];
 };
-const echo = pingPong(delaySend, BEAT * 0.75, 0.38, 4500);
+const echo = pingPong(delaySend, BEAT * 0.75, 0.42, 4200);
+svf(echo[0], 250, 0.7, "hp");
+svf(echo[1], 250, 0.7, "hp");
 
-// ---------- reverb (Freeverb-style) ----------
 const reverb = (inL, inR) => {
   const combT = [1116, 1188, 1277, 1356, 1422, 1491, 1557, 1617];
   const apT = [556, 441, 341, 225];
   const feedback = 0.8;
-  const damp = 0.3;
+  const damp = 0.32;
   const process = (offset) => {
     const out = new Float32Array(N);
     const combs = combT.map((t) => ({
@@ -694,49 +1057,110 @@ const reverb = (inL, inR) => {
   return [process(0), process(23)];
 };
 const wet = reverb(reverbSend[0], reverbSend[1]);
+svf(wet[0], 300, 0.7, "hp");
+svf(wet[1], 300, 0.7, "hp");
 
-const rms = (ch) => {
-  let s = 0;
-  for (let i = 0; i < N; i++) s += ch[i] * ch[i];
-  return Math.sqrt(s / N);
-};
-const wetGain = (0.6 * rms(leads[0])) / (rms(wet[0]) || 1);
-
-// ---------- master ----------
-const GAIN = { drums: 1, bass: 1.1, chords: 2.1, leads: 2.8, fx: 1, echo: 0.4 };
-const windowRms = (b, gain, from, to) => {
-  let s = 0;
+const rms = (ch, from = 0, to = LENGTH) => {
   const i0 = Math.floor(from * SR);
-  const i1 = Math.floor(to * SR);
-  for (let i = i0; i < i1; i++) s += (b[0][i] * gain) ** 2;
-  return (10 * Math.log10(s / (i1 - i0) + 1e-12)).toFixed(1);
+  const i1 = Math.min(N, Math.floor(to * SR));
+  let s = 0;
+  for (let i = i0; i < i1; i++) s += ch[i] * ch[i];
+  return Math.sqrt(s / (i1 - i0));
 };
+const wetGain = (0.5 * rms(leads[0])) / (rms(wet[0]) || 1);
+
+// ---------- mix ----------
+const GAIN = {
+  drums: 1,
+  perc: 1.7,
+  bass: 1.15,
+  chords: 2,
+  leads: 2.6,
+  vox: 3.6,
+  fx: 1,
+  echo: 0.45,
+  wet: wetGain,
+};
+const dB = (x) => (20 * Math.log10(x + 1e-12)).toFixed(1);
+const dropWindow = [at(DROP, 0), at(BREAK, 0)];
 console.log(
-  `drop rms dB: drums ${windowRms(drums, GAIN.drums, at(DROP, 0), at(FOR_WHOM, 0))} bass ${windowRms(bassBus, GAIN.bass, at(DROP, 0), at(FOR_WHOM, 0))} chords ${windowRms(chords, GAIN.chords, at(DROP, 0), at(FOR_WHOM, 0))} leads ${windowRms(leads, GAIN.leads, at(DROP, 0), at(FOR_WHOM, 0))}`,
+  `drop rms dB: drums ${dB(rms(drums[0], ...dropWindow) * GAIN.drums)} perc ${dB(rms(perc[0], ...dropWindow) * GAIN.perc)} bass ${dB(rms(bassBus[0], ...dropWindow) * GAIN.bass)} chords ${dB(rms(chords[0], ...dropWindow) * GAIN.chords)} leads ${dB(rms(leads[0], ...dropWindow) * GAIN.leads)} vox ${dB(rms(vox[0], ...dropWindow) * GAIN.vox)}`,
 );
+
 const L = new Float32Array(N);
 const R = new Float32Array(N);
-let peak = 0;
 for (let i = 0; i < N; i++) {
   const mixAt = (c) =>
     drums[c][i] * GAIN.drums +
+    perc[c][i] * GAIN.perc +
     bassBus[c][i] * GAIN.bass +
     chords[c][i] * GAIN.chords +
     leads[c][i] * GAIN.leads +
+    vox[c][i] * GAIN.vox +
     fx[c][i] * GAIN.fx +
     echo[c][i] * GAIN.echo +
-    wet[c][i] * wetGain;
-  L[i] = Math.tanh(1.3 * mixAt(0));
-  R[i] = Math.tanh(1.3 * mixAt(1));
-  peak = Math.max(peak, Math.abs(L[i]), Math.abs(R[i]));
+    wet[c][i] * GAIN.wet;
+  L[i] = mixAt(0);
+  R[i] = mixAt(1);
 }
-const norm = 0.89 / peak;
-const fadeStart = Math.floor((LENGTH - 1.6) * SR);
+
+// ---------- master: mono low end, soft clip, lookahead limiter ----------
+const side = new Float32Array(N);
+const mid = new Float32Array(N);
 for (let i = 0; i < N; i++) {
-  const fade =
-    i > fadeStart ? Math.max(0, 1 - (i - fadeStart) / (N - fadeStart)) : 1;
-  L[i] *= norm * fade;
-  R[i] *= norm * fade;
+  mid[i] = (L[i] + R[i]) * 0.5;
+  side[i] = (L[i] - R[i]) * 0.5;
+}
+svf(side, 150, 0.7, "hp");
+const drive = 0.46 / rms(mid, ...dropWindow);
+for (let i = 0; i < N; i++) {
+  L[i] = Math.tanh((mid[i] + side[i]) * drive * 0.9) / 0.9;
+  R[i] = Math.tanh((mid[i] - side[i]) * drive * 0.9) / 0.9;
+}
+
+// Air: a gentle high shelf (+2.5 dB above ~6.5 kHz) for sparkle.
+for (const ch of [L, R]) {
+  const air = svf(Float32Array.from(ch), 6500, 0.7, "hp");
+  for (let i = 0; i < N; i++) ch[i] += 0.33 * air[i];
+}
+
+const limiter = (ceiling, lookahead, release) => {
+  const la = Math.max(1, Math.floor(lookahead * SR));
+  const need = new Float32Array(N);
+  for (let i = 0; i < N; i++) {
+    const p = Math.max(Math.abs(L[i]), Math.abs(R[i]));
+    need[i] = p > ceiling ? ceiling / p : 1;
+  }
+  const ahead = new Float32Array(N);
+  const dq = new Int32Array(N);
+  let head = 0;
+  let tail = 0;
+  for (let i = N - 1; i >= 0; i--) {
+    while (tail > head && need[dq[tail - 1]] >= need[i]) tail--;
+    dq[tail++] = i;
+    while (dq[head] > i + la) head++;
+    ahead[i] = need[dq[head]];
+  }
+  const att = 1 - Math.exp(-3 / la);
+  const rel = 1 - Math.exp(-1 / (release * SR));
+  let env = 1;
+  let reduction = 1;
+  for (let i = 0; i < N; i++) {
+    env += (ahead[i] - env) * (ahead[i] < env ? att : rel);
+    const g = Math.min(env, need[i]);
+    reduction = Math.min(reduction, g);
+    L[i] *= g;
+    R[i] *= g;
+  }
+  return reduction;
+};
+const maxReduction = limiter(0.89, 0.005, 0.09);
+
+const fadeStart = Math.floor((LENGTH - 1.6) * SR);
+for (let i = fadeStart; i < N; i++) {
+  const fade = Math.max(0, 1 - (i - fadeStart) / (N - fadeStart));
+  L[i] *= fade;
+  R[i] *= fade;
 }
 
 // ---------- write 16-bit stereo WAV ----------
@@ -772,8 +1196,6 @@ header.write("data", 36);
 header.writeUInt32LE(data.length, 40);
 fs.writeFileSync(out, Buffer.concat([header, data]));
 console.log(`wrote ${out}`);
-console.log(`length ${LENGTH.toFixed(2)} s, ${BARS} bars at ${BPM} BPM`);
-const busRms = (b) => (20 * Math.log10(rms(b[0]) + 1e-9)).toFixed(1);
 console.log(
-  `bus rms dB: drums ${busRms(drums)} bass ${busRms(bassBus)} chords ${busRms(chords)} leads ${busRms(leads)} fx ${busRms(fx)}`,
+  `length ${LENGTH.toFixed(2)} s, ${BARS} bars at ${BPM} BPM, limiter max reduction ${dB(maxReduction)} dB`,
 );
