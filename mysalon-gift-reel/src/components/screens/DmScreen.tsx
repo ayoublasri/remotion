@@ -83,12 +83,19 @@ export const DmScreen: React.FC<{
   const frame = useCurrentFrame();
   const paid = frame >= tapAt + 4;
   const typing = frame >= requestAt + 12 && frame < replyAt;
+  // A one-word message (the DM keyword) is shown big, like a sticker.
+  const keyword = request.length <= 12;
   // The thread scrolls up a little as messages arrive.
-  const scroll = interpolate(frame, [sentAt, sentAt + 12], [0, -70], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: Easing.bezier(0.16, 1, 0.3, 1),
-  });
+  const scroll = interpolate(
+    frame,
+    [sentAt, sentAt + 12],
+    [0, keyword ? 0 : -70],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+      easing: Easing.bezier(0.16, 1, 0.3, 1),
+    },
+  );
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#fbf8f2" }}>
@@ -175,13 +182,14 @@ export const DmScreen: React.FC<{
           style={{
             alignSelf: "flex-end",
             maxWidth: 340,
-            padding: "18px 22px",
+            padding: keyword ? "20px 34px" : "18px 22px",
             borderRadius: "26px 26px 8px 26px",
             backgroundColor: EMERALD,
             color: "#ffffff",
             fontFamily: SANS,
-            fontWeight: 600,
-            fontSize: 25,
+            fontWeight: keyword ? 800 : 600,
+            fontSize: keyword ? 44 : 25,
+            letterSpacing: keyword ? "0.06em" : undefined,
             lineHeight: 1.3,
             transformOrigin: "100% 100%",
             ...pop(frame, requestAt),

@@ -1,13 +1,5 @@
 import { z } from "zod";
 
-export const serviceSchema = z.object({
-  image: z.string().describe("Photo inside public/images"),
-  focusX: z.number().min(0).max(100),
-  focusY: z.number().min(0).max(100),
-  label: z.string(),
-  detail: z.string(),
-});
-
 export const partnerSchema = z.object({
   name: z.string().describe("The salon being offered"),
   city: z.string(),
@@ -21,41 +13,50 @@ export const giftCardSchema = z.object({
   via: z.string().describe("Printed before the MySalon.ma wordmark"),
 });
 
+export const shotSchema = z.object({
+  image: z.string().describe("Photo inside public/images"),
+  focusX: z.number().min(0).max(100),
+  focusY: z.number().min(0).max(100),
+  framed: z
+    .boolean()
+    .describe("Show as a framed card over a blurred fill (for small photos)"),
+  label: z.string(),
+  detail: z.string(),
+});
+
 export const giftReelSchema = z.object({
   site: z.string().describe("The platform people book the gift through"),
   partner: partnerSchema,
   card: giftCardSchema,
   hook: z.object({
+    stop: z.string(),
+    lead: z.string(),
     items: z.array(z.string()).length(3),
-    line1: z.string(),
-    line2: z.string(),
+    turn: z.string(),
+    tease: z.string(),
   }),
   reveal: z.object({
-    recipient: z.string().describe("Handwritten on the gift card"),
     line1: z.string(),
     line2: z.string(),
-    bookOn: z.string().describe("Printed before the MySalon.ma wordmark"),
+    names: z
+      .array(z.string())
+      .min(1)
+      .max(6)
+      .describe("Written on the card one after the other"),
+    caption: z.string(),
   }),
-  forWhom: z.object({
-    label: z.string(),
-    names: z.array(z.string()).length(3),
-    payoff1: z.string(),
-    payoff2: z.string(),
-    backdrop: z.string(),
-  }),
-  offer: z.object({
-    title: z.string(),
-    services: z.array(serviceSchema).length(3),
-    note: z.string(),
+  montage: z.object({
+    shots: z.array(shotSchema).length(3),
+    finaleImage: z.string(),
+    finaleLead: z.string(),
   }),
   how: z.object({
-    label: z.string(),
     steps: z
       .array(z.object({ title: z.string(), subtitle: z.string() }))
       .length(3),
     senderTag: z.string(),
     recipientTag: z.string(),
-    dmRequest: z.string(),
+    dmKeyword: z.string(),
     dmReply: z.string(),
     giftLabel: z.string(),
     giftDetail: z.string(),
@@ -77,8 +78,9 @@ export const giftReelSchema = z.object({
   }),
   cta: z.object({
     recipient: z.string(),
-    line1: z.string(),
-    lead: z.string().describe("Printed before the MySalon.ma wordmark"),
+    dreamAsk: z.string(),
+    dreamLine: z.string(),
+    giftAsk: z.string(),
     button: z.string(),
   }),
   musicFile: z
@@ -87,7 +89,7 @@ export const giftReelSchema = z.object({
     .describe("Audio file inside public/, or null for silent"),
 });
 
-export type Service = z.infer<typeof serviceSchema>;
 export type Partner = z.infer<typeof partnerSchema>;
 export type GiftCardContent = z.infer<typeof giftCardSchema>;
+export type Shot = z.infer<typeof shotSchema>;
 export type GiftReelProps = z.infer<typeof giftReelSchema>;

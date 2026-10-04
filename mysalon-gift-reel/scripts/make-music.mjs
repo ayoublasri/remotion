@@ -1,13 +1,14 @@
 // Generates the royalty-free soundtrack for the gift reel, produced like a
 // club record: a catchy, energetic house track at 120 BPM (exactly 15 frames
-// per beat and 60 frames per bar at 30 fps), 16 bars plus a tail.
+// per beat and 60 frames per bar at 30 fps), 12 bars: a 24-second loop.
 //
 // Sound: a tuned, layered kick; 808-style metallic hats, a swung shaker,
 // congas and rims; a rolling tech-house bass; pumping supersaw chords and
 // house stabs; the hook as a bright pluck lead doubled by formant "vocal
 // chops". Arrangement like a DJ edit: filtered intro, snare-roll builds with
 // risers, a high-pass sweep and a stutter before the drops, a beat of silence
-// right before each drop, a vocal breakdown, a re-drop and an echo-out.
+// right before each drop, and a record stop at the end that loops back into
+// the hook.
 // Mix: sidechain pumping, mono low end, ping-pong delay, reverb, soft clip and
 // a lookahead limiter. Everything is synthesised here.
 //
@@ -22,8 +23,8 @@ const SR = 44100;
 const BPM = 120;
 const BEAT = 60 / BPM;
 const BAR = BEAT * 4;
-const BARS = 16;
-const TAIL = 3;
+const BARS = 12;
+const TAIL = 0.4;
 const LENGTH = BARS * BAR + TAIL;
 const N = Math.ceil(LENGTH * SR);
 const SWING = 0.017;
@@ -51,20 +52,18 @@ const at = (bar, beat) => bar * BAR + beat * BEAT;
 const at16 = (bar, s) => at(bar, s / 4) + (s % 2 === 1 ? SWING : 0);
 
 // ---------- song map (0-based bars), matching the reel ----------
-//   0-1   hook: filtered intro over the kick, roll + riser, silence, then
-//   2-4   reveal: DROP 1 (full groove, hook + vocal chops)
-//   5-6   for whom: vocal breakdown, the kick comes back in bar 6 with a roll
-//   7-8   offer: re-drop, the hook returns
-//   9-11  how it works: rolling groove, house stabs and plucks (room for UI)
-//   12    build: snare roll, riser, high-pass sweep, stutter, silence
-//   13-15 call to action: DROP 2, everything plus ride and the octave hook
-//   16    final hit and echo-out
+//   0     hook: the groove from the first frame, music filtered, hook teaser
+//   1     build: snare roll, riser, high-pass sweep, a beat of silence
+//   2-5   reveal + montage: DROP 1 (full groove, hook + vocal chops)
+//   6-7   how it works: rolling groove, house stabs and plucks (room for UI)
+//   8     build: roll, riser, high-pass sweep, stutter, silence
+//   9-11  call to action: DROP 2, everything plus ride and the octave hook,
+//         then a record stop on the last beat (the reel loops to the hook)
 const DROP = 2;
-const BREAK = 5;
-const OFFER = 7;
-const HOW = 9;
-const BUILD = 12;
-const CTA = 13;
+const MONTAGE = 4;
+const HOW = 6;
+const BUILD = 8;
+const CTA = 9;
 
 const CHORDS = {
   Am: { notes: [57, 60, 64, 67], root: 33 },
@@ -72,24 +71,7 @@ const CHORDS = {
   C: { notes: [55, 60, 62, 64], root: 36 },
   G: { notes: [55, 59, 62, 64], root: 31 },
 };
-const PLAN = [
-  "F",
-  "G",
-  "Am",
-  "F",
-  "C",
-  "G",
-  "Am",
-  "F",
-  "C",
-  "G",
-  "Am",
-  "F",
-  "G",
-  "Am",
-  "F",
-  "C",
-];
+const PLAN = ["F", "G", "Am", "F", "C", "G", "Am", "F", "G", "Am", "F", "C"];
 
 // The hook, one bar per chord: [beat, midi, length in beats].
 const HOOK = {
@@ -475,22 +457,6 @@ const BASS_PATTERN = [
   [15, 7, 0.14, 0.45],
 ];
 
-// Sustained sub for the breakdown, so the low end never empties out.
-const subNote = (t0, dur, m, vel) => {
-  const n = Math.floor((dur + 0.1) * SR);
-  const buf = new Float32Array(n);
-  const f = midi(m);
-  let ph = 0;
-  for (let i = 0; i < n; i++) {
-    const t = i / SR;
-    ph += (2 * Math.PI * f) / SR;
-    const env =
-      Math.min(1, t / 0.08) * (t < dur ? 1 : Math.exp(-(t - dur) / 0.03));
-    buf[i] = Math.tanh(1.4 * Math.sin(ph)) * env;
-  }
-  mixMono(bassBus, t0, buf, 0, vel);
-};
-
 const DETUNE = [-0.2, -0.12, -0.05, 0, 0.05, 0.12, 0.2];
 
 // Supersaw chord; cutoff is a function of absolute time in seconds.
@@ -715,49 +681,36 @@ const playVox = (bar, vel, octave = 0) => {
 // ---------- arrangement ----------
 for (let bar = 0; bar < BARS; bar++) {
   const { notes, root } = CHORDS[PLAN[bar]];
-  const intro = bar < DROP;
-  const drop1 = bar >= DROP && bar < BREAK;
-  const breakdown = bar === BREAK;
-  const rebuild = bar === BREAK + 1;
-  const offer = bar >= OFFER && bar < HOW;
+  const intro = bar < DROP - 1;
+  const build1 = bar === DROP - 1;
+  const drop1 = bar >= DROP && bar < HOW;
   const how = bar >= HOW && bar < BUILD;
-  const build = bar === BUILD;
+  const build2 = bar === BUILD;
   const drop2 = bar >= CTA;
-  const full = drop1 || offer || drop2;
+  const full = drop1 || drop2;
+  const build = build1 || build2;
 
-  // Kick.
-  if (!breakdown) {
-    for (let b = 0; b < 4; b++) {
-      if (build && b >= 2) continue;
-      if (bar === DROP - 1 && b === 3) continue;
-      kick(at(bar, b), intro || rebuild ? 0.9 : 1);
-    }
+  // Kick from the very first frame; the builds keep only beats 1-2.
+  for (let b = 0; b < 4; b++) {
+    if (build && b >= 2) continue;
+    kick(at(bar, b), intro ? 0.92 : 1);
   }
 
   // Clap on 2 and 4.
-  if (full || how || rebuild) {
-    clap(at(bar, 1), 0.55);
-    clap(at(bar, 3), 0.55);
+  if (!build) {
+    clap(at(bar, 1), intro ? 0.45 : 0.55);
+    clap(at(bar, 3), intro ? 0.45 : 0.55);
   }
 
   // Hats, shaker, open hats, ride.
   for (let s = 0; s < 16; s++) {
     if (build && s >= 8) continue;
     const t = at16(bar, s);
-    if (!breakdown) {
-      const v = s % 4 === 2 ? 0.12 : s % 2 === 1 ? 0.07 : 0.05;
-      hat(
-        t,
-        v * (intro ? 0.8 : 1) * (0.85 + rand() * 0.3),
-        false,
-        s % 2 ? 0.22 : -0.18,
-      );
-    }
+    const v = s % 4 === 2 ? 0.12 : s % 2 === 1 ? 0.07 : 0.05;
+    hat(t, v * (0.85 + rand() * 0.3), false, s % 2 ? 0.22 : -0.18);
     shaker(
       t,
-      (s % 2 === 1 ? 0.22 : 0.13) *
-        (breakdown ? 0.7 : 1) *
-        (0.85 + rand() * 0.3),
+      (s % 2 === 1 ? 0.22 : 0.13) * (0.85 + rand() * 0.3),
       s % 2 ? -0.35 : 0.35,
     );
   }
@@ -766,8 +719,8 @@ for (let bar = 0; bar < BARS; bar++) {
       hat(at(bar, b + 0.5), how ? 0.1 : 0.13, true, 0.12);
   if (drop2) for (let b = 0; b < 4; b++) ride(at(bar, b), 0.09);
 
-  // Congas and rims: the groove under the drops and the how-to.
-  if (full || how || breakdown) {
+  // Congas and rims.
+  if (full || how) {
     const hits = [
       [3, 330],
       [6, 247],
@@ -777,19 +730,23 @@ for (let bar = 0; bar < BARS; bar++) {
       [14, 330],
     ];
     for (const [s, f] of hits)
-      conga(at16(bar, s), breakdown ? 0.12 : 0.2, f, f > 300 ? 0.3 : -0.3);
+      conga(at16(bar, s), 0.2, f, f > 300 ? 0.3 : -0.3);
   }
   if (how || drop2) {
     rim(at16(bar, 7), 0.16, 0.4);
     rim(at16(bar, 13), 0.12, -0.4);
   }
 
-  // Bass: the rolling pattern, or eighths climbing through the build.
-  if (full || how) {
+  // Bass: rolling everywhere but the builds, which climb in eighths.
+  if (!build) {
     for (const [s, semis, len, v] of BASS_PATTERN)
-      bassNote(at16(bar, s), len * BEAT, root + semis, 0.5 * v);
-  }
-  if (build) {
+      bassNote(
+        at16(bar, s),
+        len * BEAT,
+        root + semis,
+        (intro ? 0.42 : 0.5) * v,
+      );
+  } else {
     for (let s = 0; s < 6; s++)
       bassNote(
         at(bar, s / 2),
@@ -805,102 +762,71 @@ for (let bar = 0; bar < BARS; bar++) {
       at(bar, 0),
       BAR,
       notes,
-      0.03,
-      (t) => 300 * (3600 / 300) ** Math.min(1, t / (DROP * BAR)),
+      0.032,
+      (t) => 420 * (2600 / 420) ** Math.min(1, t / BAR),
     );
-  } else if (drop1 || offer) {
-    supersaw(at(bar, 0), BAR, notes, 0.034, () => 6400);
-  } else if (drop2) {
-    supersaw(at(bar, 0), BAR, notes, 0.036, () => 7600);
-    for (const [s, v] of STAB_PATTERN) stab(at16(bar, s), notes, 0.05 * v);
-  } else if (breakdown || rebuild) {
-    supersaw(
-      at(bar, 0),
-      BAR,
-      notes,
-      0.046,
-      (t) => (breakdown ? 3000 : 3000 * 2 ** ((t - at(bar, 0)) / BAR)),
-      0.3,
-    );
-    if (breakdown) subNote(at(bar, 0), BAR, root + 12, 0.42);
-  } else if (how) {
-    supersaw(at(bar, 0), BAR, notes, 0.016, () => 2000);
-    for (const [s, v] of STAB_PATTERN) stab(at16(bar, s), notes, 0.075 * v);
   } else if (build) {
     supersaw(
       at(bar, 0),
       BAR,
       notes,
-      0.03,
-      (t) => 1500 * 4.5 ** ((t - at(BUILD, 0)) / BAR),
+      0.032,
+      (t) => 2600 * 2.6 ** ((t - at(bar, 0)) / BAR),
     );
+  } else if (drop1) {
+    supersaw(at(bar, 0), BAR, notes, 0.034, () => 6400);
+  } else if (drop2) {
+    supersaw(at(bar, 0), BAR, notes, 0.036, () => 7600);
+    for (const [s, v] of STAB_PATTERN) stab(at16(bar, s), notes, 0.05 * v);
+  } else if (how) {
+    supersaw(at(bar, 0), BAR, notes, 0.016, () => 2000);
+    for (const [s, v] of STAB_PATTERN) stab(at16(bar, s), notes, 0.075 * v);
   }
 
-  // Plucks.
-  if (breakdown || rebuild || how || build) {
+  // Plucks under the how-to and its build.
+  if (how || build2) {
     const tones = [...notes.map((m) => m + 12), notes[1] + 24, notes[2] + 24];
-    for (let s = 0; s < 16; s++) {
-      const lift = breakdown || rebuild ? 1.35 : 1;
+    for (let s = 0; s < 16; s++)
       pluck(
         at16(bar, s),
         tones[(s * 3) % tones.length],
-        (s % 4 === 0 ? 0.15 : 0.09) * lift,
+        s % 4 === 0 ? 0.15 : 0.09,
         s % 2 ? 0.35 : -0.35,
-        how ? 0.8 : 1,
+        0.8,
       );
-    }
   }
 
-  // The hook: synth lead doubled by the vocal chops.
-  if (intro) playHook(bar, 0.13, 1600 + bar * 900);
-  if (bar === DROP - 1) playVox(bar, 0.1);
-  if (drop1 || offer) {
+  // The hook: a filtered teaser in the first bar, then the synth lead doubled
+  // by the vocal chops on both drops.
+  if (intro) playHook(bar, 0.14, 2200);
+  if (build1) playVox(bar, 0.1);
+  if (drop1) {
     playHook(bar, 0.2, 7500);
     playVox(bar, 0.16);
   }
-  if (breakdown || rebuild) playVox(bar, 0.26);
   if (drop2) {
     playHook(bar, 0.2, 8000);
     playHook(bar, 0.07, 6000, 12);
     playVox(bar, 0.17);
   }
 
-  // Accents.
-  if ([DROP, OFFER, HOW, CTA].includes(bar))
+  // Accents on the scene changes.
+  if ([DROP, MONTAGE, HOW, CTA].includes(bar))
     crash(at(bar, 0), bar === DROP || bar === CTA ? 0.28 : 0.18);
   if (bar === DROP || bar === CTA) {
     impact(at(bar, 0), 0.65);
     downlifter(at(bar, 0) + 0.05, 1.6, 0.1);
   }
-  if (bar === OFFER) impact(at(bar, 0), 0.35);
+  if (bar === MONTAGE) impact(at(bar, 0), 0.3);
 }
 
 // Builds into the drops.
 roll(at(DROP - 1, 1), 2.5, 0.12, 0.5);
 riser(at(DROP - 1, 0), BAR, 0.16);
 reverseCrash(at(DROP, 0), 1.3, 0.24);
-roll(at(OFFER - 1, 2), 2, 0.12, 0.42);
-riser(at(OFFER - 1, 0), BAR, 0.12);
-reverseCrash(at(OFFER, 0), 1, 0.18);
 roll(at(BUILD, 0), 3.5, 0.1, 0.55);
 riser(at(BUILD, 0), BAR, 0.2);
 reverseCrash(at(CTA, 0), 1.3, 0.26);
-
-// Ending: a last hit, then an echo-out.
-kick(at(BARS, 0), 1);
-impact(at(BARS, 0), 0.45);
-supersaw(
-  at(BARS, 0),
-  1.4,
-  CHORDS.C.notes,
-  0.036,
-  (t) => 6500 * Math.exp(-(t - at(BARS, 0)) / 1.2) + 600,
-  0.6,
-);
-leadNote(at(BARS, 0), 1, 72, 0.2, 7000);
-voxNote(at(BARS, 0), 0.9, 72, 0.2, "a");
-stab(at(BARS, 0), CHORDS.C.notes, 0.08);
-crash(at(BARS, 0), 0.26);
 
 // ---------- DJ edits on the buses ----------
 const ramp = (t, a, b, edge) =>
@@ -958,8 +884,10 @@ const hpSweep = (b, from, to, f0, f1) => {
   svf(b[1], cut, 0.75, "hp");
 };
 
-for (const b of [chords, leads, vox, bassBus])
+for (const b of [chords, leads, vox, bassBus]) {
+  hpSweep(b, at(DROP - 1, 0), at(DROP, 0), 30, 700);
   hpSweep(b, at(BUILD, 0), at(CTA, 0), 30, 900);
+}
 stutter(chords, at(BUILD, 3), at(BUILD, 3.875));
 stutter(leads, at(BUILD, 3), at(BUILD, 3.875));
 gap(at(DROP - 1, 3.5), at(DROP, 0));
@@ -1082,7 +1010,7 @@ const GAIN = {
   wet: wetGain,
 };
 const dB = (x) => (20 * Math.log10(x + 1e-12)).toFixed(1);
-const dropWindow = [at(DROP, 0), at(BREAK, 0)];
+const dropWindow = [at(DROP, 0), at(HOW, 0)];
 console.log(
   `drop rms dB: drums ${dB(rms(drums[0], ...dropWindow) * GAIN.drums)} perc ${dB(rms(perc[0], ...dropWindow) * GAIN.perc)} bass ${dB(rms(bassBus[0], ...dropWindow) * GAIN.bass)} chords ${dB(rms(chords[0], ...dropWindow) * GAIN.chords)} leads ${dB(rms(leads[0], ...dropWindow) * GAIN.leads)} vox ${dB(rms(vox[0], ...dropWindow) * GAIN.vox)}`,
 );
@@ -1124,6 +1052,33 @@ for (const ch of [L, R]) {
   for (let i = 0; i < N; i++) ch[i] += 0.33 * air[i];
 }
 
+// Record stop on the last beat: the whole mix slows down to a halt (pitch
+// falling), then silence. The reel loops straight back into the hook.
+const tapeStop = (from, to) => {
+  const i0 = Math.floor(from * SR);
+  const i1 = Math.floor(to * SR);
+  const len = i1 - i0;
+  const srcL = L.slice(i0, i1);
+  const srcR = R.slice(i0, i1);
+  let pos = 0;
+  for (let k = 0; k < len; k++) {
+    const p = k / len;
+    const j = Math.floor(pos);
+    const f = pos - j;
+    const a = j + 1 < len ? srcL[j] * (1 - f) + srcL[j + 1] * f : 0;
+    const b = j + 1 < len ? srcR[j] * (1 - f) + srcR[j + 1] * f : 0;
+    const amp = 1 - p ** 4;
+    L[i0 + k] = a * amp;
+    R[i0 + k] = b * amp;
+    pos += (1 - p) ** 1.4;
+  }
+  for (let i = i1; i < N; i++) {
+    L[i] = 0;
+    R[i] = 0;
+  }
+};
+tapeStop(at(BARS - 1, 3), at(BARS, 0));
+
 const limiter = (ceiling, lookahead, release) => {
   const la = Math.max(1, Math.floor(lookahead * SR));
   const need = new Float32Array(N);
@@ -1155,13 +1110,6 @@ const limiter = (ceiling, lookahead, release) => {
   return reduction;
 };
 const maxReduction = limiter(0.89, 0.005, 0.09);
-
-const fadeStart = Math.floor((LENGTH - 1.6) * SR);
-for (let i = fadeStart; i < N; i++) {
-  const fade = Math.max(0, 1 - (i - fadeStart) / (N - fadeStart));
-  L[i] *= fade;
-  R[i] *= fade;
-}
 
 // ---------- write 16-bit stereo WAV ----------
 const out = path.join(

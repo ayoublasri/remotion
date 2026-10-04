@@ -1,39 +1,45 @@
 # OYA MUSE × MySalon.ma Gift Card Reel
 
-A 33 s vertical reel (1080 x 1920, 30 fps): **offer someone special a moment at OYA MUSE, booked through MySalon.ma**.
-You write to MySalon.ma, the person you choose receives a code and books the treatment you offered at OYA MUSE on
-mysalon.ma. Built with Remotion, with its own royalty-free electro soundtrack and sound effects. Every scene starts on a
-downbeat.
+A 24-second vertical reel (1080 x 1920, 30 fps), cut to go viral: **gift a true experience**. Arrête d'offrir des
+fleurs: offre une vraie expérience chez OYA MUSE, réservée via MySalon.ma. The person you choose receives a code and
+books when she likes on mysalon.ma. Built with Remotion, with its own club-style soundtrack and sound effects; every
+cut lands on the beat and the reel loops.
 
-## Branding
+| Bars  | Time    | Scene   | What happens                                                                                                                                                                                                               |
+| ----- | ------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1–2   | 0–4 s   | Hook    | Frame 0 already reads **"ARRÊTE D'OFFRIR… des fleurs"**. Perfume and chocolates join and all three get struck through on the beat, then "Offre plutôt… une vraie…" over a build and a beat of silence.                     |
+| 3–4   | 4–8 s   | Reveal  | The drop: **"une vraie EXPÉRIENCE"** slams in, a gift box bursts open and the OYA MUSE gift card floats out. The name on it is rewritten on every beat (Maman, Ma chérie, Ma best, Ma sœur, Ma femme): "Pour qui tu veux." |
+| 5–6   | 8–12 s  | Montage | One-second cuts: ONGLES, CILS, SOURCILS, landing on the salon: "chez OYA MUSE, Témara".                                                                                                                                    |
+| 7–9   | 12–18 s | How     | Three two-second steps on two phones: 1. "Écris « CADEAU » en DM" (pay in the chat), 2. "Elle reçoit son code", 3. "Elle réserve quand elle veut" (booking confirmed). Builds into the last drop.                          |
+| 10–12 | 18–24 s | CTA     | Two-sided invite. **"TU EN RÊVES ?** Envoie ce reel à qui doit te l'offrir." / **"TU VEUX L'OFFRIR ?** Écris « CADEAU » en DM". "OYA MUSE × MySalon.ma". The music stops like a record and the reel loops.                 |
 
-- **OYA MUSE is the gift.** It is the salon people are offered, so it gets the hero moments: the hook ends on its name
-  in gold foil, the gift card is an OYA MUSE card, the treatment menu sits under its logo, the booking screen books
-  OYA MUSE and the call to action reads "OFFREZ UN MOMENT OYA MUSE".
-- **MySalon.ma is how you book it.** The platform signs the opening ("OYA MUSE × MySalon.ma"), prints "via MySalon.ma"
-  on the card, runs the DM, the notification and the booking, and closes the reel with "Réservez le cadeau via
-  MySalon.ma" and the "Écrivez-nous en DM" button.
-- **One elegant palette for both.** Emerald, champagne gold and ivory: the OYA MUSE colours deepened towards the
-  MySalon.ma teal. Cinzel echoes the OYA MUSE lettering, Playfair Display and Inter are the MySalon.ma fonts, Great
-  Vibes is the handwriting on the card.
+## Built to go viral
 
-| Bars  | Frames    | Scene    | What happens                                                                                                                                                                                                                                    |
-| ----- | --------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1–2   | 0 – 120   | Hook     | Deep emerald, "OYA MUSE × MySalon.ma". "Des fleurs ? Un parfum ? Des chocolats ?" with gold line icons, struck through one by one: "Cette fois, _offrez un moment_ **OYA MUSE**" in gold foil.                                                  |
-| 3–5   | 120 – 300 | Reveal   | The drop, through an eight-pointed star wipe. An emerald gift box with a champagne ribbon wiggles, the lid pops in a burst of gold confetti and the OYA MUSE gift card floats out while "Maman" is written on it. "Réservez-le sur MySalon.ma". |
-| 6–7   | 300 – 420 | For whom | Blur zoom into emerald. "POUR…" Votre sœur, Votre meilleure amie, Votre chérie, handwritten one after the other, then "…ou juste _parce que._"                                                                                                  |
-| 8–9   | 420 – 540 | Offer    | A champagne satin ribbon sweeps across. The OYA MUSE logo, "Choisissez le soin à offrir": ONGLES, CILS, SOURCILS as an elegant menu with photos. "Le cadeau qui fait vraiment plaisir."                                                         |
-| 10–13 | 540 – 780 | How      | "Comment ça marche ?" on two phones. 1. You write to MySalon.ma in DM and pay. 2. She gets the gift and its code on her lock screen. 3. "Et réserve chez OYA MUSE": she enters the code on mysalon.ma, picks a slot, "Rendez-vous confirmé".    |
-| 14–16 | 780 – 990 | CTA      | Second drop, through a gold iris. The gift card "pour quelqu'un de spécial", "OFFREZ UN MOMENT **OYA MUSE**", "Réservez le cadeau via MySalon.ma" and a pulsing champagne "Écrivez-nous en DM" button. The last chord rings out.                |
+- **The first frame is the hook.** "ARRÊTE D'OFFRIR des fleurs" is on screen at 0.0 s, as a full sentence: a pattern
+  interrupt everyone recognises, readable before anyone scrolls.
+- **Payoff in four seconds.** The beat drops exactly on "une vraie EXPÉRIENCE" and the gift box opening.
+- **For him and for her.** The name on the card changes on every beat, so every viewer sees their person: "Ma chérie"
+  and "Ma femme" for men, "Ma best" and "Ma sœur" for women, "Maman" for everyone.
+- **Something new every second.** Card, photo cuts, phones: no shot lasts longer than two seconds, with very little
+  text per screen so it stays readable.
+- **Two-sided call to action.** Those who dream of it are asked to _send the reel_ to the person who should offer it
+  (shares and DM sends are the strongest reach signal on Instagram); those who want to offer it get a one-word action:
+  "Écris « CADEAU » en DM".
+- **Short and loopable.** 24 seconds, and the record stop at the end flows straight back into "ARRÊTE", so the reel
+  replays seamlessly.
+- **Sound off or on.** Every message is on screen; the music carries the energy and the drops.
+
+Ready-to-post caption, hashtags, pinned comment, DM auto-reply and launch tips: see [POSTING.md](POSTING.md).
 
 ## Run it
 
 ```bash
 cd mysalon-gift-reel
 npm install
-npm run dev      # Remotion Studio at http://localhost:3000
-npm run render   # -> out/mysalon-gift-reel.mp4
-npm run still    # cover image -> out/cover.png (frame 250)
+npm run dev          # Remotion Studio at http://localhost:3000
+npm run render       # -> out/mysalon-gift-reel.mp4
+npm run cover        # grid cover (gift card) -> out/cover-card.png
+npm run cover:hook   # alternative cover (hook) -> out/cover-hook.png
 ```
 
 If Remotion cannot download Chrome Headless Shell in your environment:
@@ -46,28 +52,29 @@ Each scene is also registered on its own under the `GiftReel-Scenes` folder in t
 
 ## Editing
 
-All copy, names, photos, the salon, the code and the booking details are props validated by a Zod schema
+All copy, names, photos, the salon, the DM keyword and the booking details are props validated by a Zod schema
 (`src/schema.ts`), with defaults in `src/Root.tsx`, so they can be changed in the Studio's props panel. The salon being
-offered is one object, `partner` (name, city, logo, services): change it and the hook, card, menu, booking screen and
-call to action follow. Photos live in `public/images`; the brow and lash photos are generated ones, the nails photos are
-OYA MUSE's.
+offered is one object, `partner` (name, city, logo, services). The names written on the card are `reveal.names`.
+Photos live in `public/images`; the brow and lash photos are generated ones, the nails photos are OYA MUSE's.
 
-Colours are in `src/theme.ts`. Scene lengths are in `src/GiftReel.tsx` (`SCENES`): each length includes the overlap
-with the next scene, so that every scene starts on a bar line of the soundtrack. The transitions (star wipe, blur zoom,
-ribbon wipe, iris) are in `src/components/transitions.tsx` and use plain CSS, no WebGL.
+Colours are in `src/theme.ts` (emerald, champagne gold and ivory). Scene lengths are in `src/GiftReel.tsx`
+(`SCENES`): each length includes the overlap with the next scene, so that every scene starts on a bar line of the
+soundtrack. The transitions (star wipe, blur zoom, iris) are in `src/components/transitions.tsx` and use plain CSS, no
+WebGL.
 
 ## Music and sound effects
 
 `public/music/gift-theme.mp3` is generated by `scripts/make-music.mjs` and produced like a club record: a catchy,
 energetic house track at 120 BPM (exactly 15 frames per beat and 60 frames per bar at 30 fps) in A minor
-(Am7 - Fmaj7 - Cadd9 - G6).
+(Am7 - Fmaj7 - Cadd9 - G6), 12 bars long.
 
 - **Sound:** a layered kick tuned to A, clap with a snare body, 808-style metallic hats with swing, shaker, congas,
   rims and a ride on the last drop; a rolling tech-house bass; pumping supersaw chords and house stabs; the hook as a
   bright pluck lead doubled by formant "vocal chops".
-- **Arrangement, cut like a DJ edit:** a filtered intro over the kick, snare-roll builds with risers, a high-pass sweep
-  and a stutter before the big drop, a beat of silence right before each drop, a vocal breakdown under "pour…", a
-  re-drop on the offer, a rolling groove under the how-to (room for the UI sounds) and an echo-out ending.
+- **Arrangement, cut like a DJ edit:** the groove hits on the first frame with the music filtered, a snare roll, riser
+  and high-pass sweep build into the first drop (the reveal), a rolling groove leaves room for the phone sounds, a
+  second build with a stutter leads into the last drop (the call to action), a beat of silence precedes each drop, and
+  a record stop ends the loop.
 - **Mix and master:** sidechain pumping, the music high-passed above the kick and bass, mono low end, ping-pong delay
   and reverb, an air shelf, a soft clipper and a lookahead limiter.
 

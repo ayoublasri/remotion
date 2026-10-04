@@ -1,25 +1,13 @@
 import { Audio } from "@remotion/media";
 import { linearTiming, TransitionSeries } from "@remotion/transitions";
 import { slide } from "@remotion/transitions/slide";
-import {
-  AbsoluteFill,
-  Easing,
-  interpolate,
-  staticFile,
-  useVideoConfig,
-} from "remotion";
-import {
-  blurZoom,
-  irisGlow,
-  ribbonWipe,
-  starWipe,
-} from "./components/transitions";
+import { AbsoluteFill, Easing, interpolate, staticFile } from "remotion";
+import { blurZoom, irisGlow, starWipe } from "./components/transitions";
 import "./fonts";
 import { CtaScene } from "./scenes/CtaScene";
-import { ForWhomScene } from "./scenes/ForWhomScene";
 import { HookScene } from "./scenes/HookScene";
 import { HowScene } from "./scenes/HowScene";
-import { OfferScene } from "./scenes/OfferScene";
+import { MontageScene } from "./scenes/MontageScene";
 import { RevealScene } from "./scenes/RevealScene";
 import type { GiftReelProps } from "./schema";
 import { EMERALD_INK, GOLD } from "./theme";
@@ -27,22 +15,20 @@ import { EMERALD_INK, GOLD } from "./theme";
 const easing = Easing.bezier(0.65, 0, 0.35, 1);
 const goldGlow = "rgba(233,213,166,0.95)";
 
-// Scene lengths include the overlap with the next scene (the transition), so
-// that every scene starts on a downbeat of the 120 BPM soundtrack (60 frames
-// per bar):
-//   bars 1-2   Hook       0 - 120   music box and heartbeat
-//   bars 3-5   Reveal   120 - 300   the drop
-//   bars 6-7   For whom 300 - 420   harp
-//   bars 8-9   Offer    420 - 540   melody
-//   bars 10-13 How      540 - 780   lighter groove, build in bar 13
-//   bars 14-16 CTA      780 - 990   second drop, last chord rings out
+// A 24-second, loopable cut. Scene lengths include the overlap with the next
+// scene (the transition), so that every scene starts on a downbeat of the
+// 120 BPM soundtrack (60 frames per bar):
+//   bars 1-2   Hook      0 - 120   "ARRÊTE D'OFFRIR...", build, silence
+//   bars 3-4   Reveal  120 - 240   drop: the experience, the card, the names
+//   bars 5-6   Montage 240 - 360   nails, lashes, brows, "Chez OYA MUSE"
+//   bars 7-9   How     360 - 540   three steps, build into the last drop
+//   bars 10-12 CTA     540 - 720   second drop, two-sided invite, record stop
 export const SCENES = {
-  hook: { duration: 140, overlap: 20 },
-  reveal: { duration: 195, overlap: 15 },
-  forWhom: { duration: 138, overlap: 18 },
-  offer: { duration: 135, overlap: 15 },
-  how: { duration: 258, overlap: 18 },
-  cta: { duration: 210, overlap: 0 },
+  hook: { duration: 132, overlap: 12 },
+  reveal: { duration: 130, overlap: 10 },
+  montage: { duration: 130, overlap: 10 },
+  how: { duration: 192, overlap: 12 },
+  cta: { duration: 180, overlap: 0 },
 };
 
 export const GIFT_REEL_DURATION = Object.values(SCENES).reduce(
@@ -56,14 +42,11 @@ export const GiftReel: React.FC<GiftReelProps> = ({
   card,
   hook,
   reveal,
-  forWhom,
-  offer,
+  montage,
   how,
   cta,
   musicFile,
 }) => {
-  const { durationInFrames } = useVideoConfig();
-
   return (
     <AbsoluteFill style={{ backgroundColor: EMERALD_INK }}>
       <TransitionSeries>
@@ -71,7 +54,7 @@ export const GiftReel: React.FC<GiftReelProps> = ({
           durationInFrames={SCENES.hook.duration}
           name="Hook"
         >
-          <HookScene hook={hook} partner={partner} />
+          <HookScene hook={hook} />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
           presentation={starWipe({ edgeColor: GOLD, glow: goldGlow })}
@@ -94,28 +77,15 @@ export const GiftReel: React.FC<GiftReelProps> = ({
           })}
         />
         <TransitionSeries.Sequence
-          durationInFrames={SCENES.forWhom.duration}
-          name="For whom"
+          durationInFrames={SCENES.montage.duration}
+          name="Montage"
         >
-          <ForWhomScene forWhom={forWhom} />
+          <MontageScene montage={montage} partner={partner} />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
-          presentation={ribbonWipe({ band: 120 })}
+          presentation={slide({ direction: "from-right" })}
           timing={linearTiming({
-            durationInFrames: SCENES.forWhom.overlap,
-            easing,
-          })}
-        />
-        <TransitionSeries.Sequence
-          durationInFrames={SCENES.offer.duration}
-          name="Offer"
-        >
-          <OfferScene offer={offer} partner={partner} />
-        </TransitionSeries.Sequence>
-        <TransitionSeries.Transition
-          presentation={slide({ direction: "from-bottom" })}
-          timing={linearTiming({
-            durationInFrames: SCENES.offer.overlap,
+            durationInFrames: SCENES.montage.overlap,
             easing,
           })}
         />
@@ -144,15 +114,10 @@ export const GiftReel: React.FC<GiftReelProps> = ({
           name="Music"
           src={staticFile(musicFile)}
           volume={(frame) =>
-            interpolate(
-              frame,
-              [0, 6, durationInFrames - 20, durationInFrames - 1],
-              [0, 0.8, 0.8, 0],
-              {
-                extrapolateLeft: "clamp",
-                extrapolateRight: "clamp",
-              },
-            )
+            interpolate(frame, [0, 1], [0, 0.76], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+            })
           }
         />
       ) : null}

@@ -5,29 +5,29 @@ import {
   interpolate,
   useCurrentFrame,
 } from "remotion";
-import { CoBrand, StarMark } from "../components/Brand";
-import { foil } from "../components/Icons";
+import { StarMark } from "../components/Brand";
 import { LineIcon } from "../components/LineIcons";
 import { Grain, Vignette } from "../components/Overlays";
 import { StarPattern } from "../components/Pattern";
 import { Sfx } from "../components/Sfx";
-import { DISPLAY, SANS, SERIF } from "../fonts";
-import type { GiftReelProps, Partner } from "../schema";
+import { SANS, SERIF } from "../fonts";
+import type { GiftReelProps } from "../schema";
 import { BEAT } from "../timing";
-import { DARK_BG, GOLD, GOLD_FOIL, GOLD_LIGHT, IVORY, SAGE } from "../theme";
+import { DARK_BG, EMERALD_INK, GOLD, GOLD_LIGHT, IVORY, SAGE } from "../theme";
 
 const ICONS = ["flowers", "perfume", "chocolates"] as const;
-const ROW_AT = [0, BEAT, BEAT * 2];
-const STRIKE_AT = [BEAT * 3, BEAT * 3 + 5, BEAT * 3 + 10];
-const LINE1_AT = BEAT * 4;
-const LINE2_AT = BEAT * 4 + 8;
-const NAME_AT = BEAT * 5 + 3;
+// The first row is already on screen at frame 0: the hook reads as a full
+// sentence before anyone can scroll away.
+const ROW_AT = [-8, BEAT, BEAT * 2];
+const STRIKE_AT = [8, BEAT + 8, BEAT * 2 + 8];
+const TURN_AT = BEAT * 4;
+const TEASE_AT = BEAT * 5 + 9;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
-const Row: React.FC<{
-  readonly index: number;
-  readonly text: string;
-}> = ({ index, text }) => {
+const Row: React.FC<{ readonly index: number; readonly text: string }> = ({
+  index,
+  text,
+}) => {
   const frame = useCurrentFrame();
   const at = ROW_AT[index];
   const strikeAt = STRIKE_AT[index];
@@ -38,30 +38,30 @@ const Row: React.FC<{
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        gap: 34,
-        opacity: interpolate(frame, [at, at + 6], [0, 1], clamp),
-        translate: interpolate(frame, [at, at + 16], ["0px 50px", "0px 0px"], {
+        gap: 30,
+        opacity: interpolate(frame, [at, at + 5], [0, 1], clamp),
+        translate: interpolate(frame, [at, at + 12], ["0px 46px", "0px 0px"], {
           ...clamp,
           easing: Easing.bezier(0.16, 1, 0.3, 1),
         }),
       }}
     >
-      <LineIcon kind={ICONS[index]} at={at} size={132} color={GOLD} />
+      <LineIcon kind={ICONS[index]} at={at} size={124} color={GOLD} />
       <div style={{ position: "relative" }}>
         <Interactive.Div
           name={`Hook item ${index + 1}`}
           style={{
             fontFamily: SERIF,
             fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 90,
+            fontWeight: 500,
+            fontSize: 94,
             lineHeight: 1.1,
             color: IVORY,
             whiteSpace: "nowrap",
             opacity: interpolate(
               frame,
-              [strikeAt, strikeAt + 10],
-              [1, 0.4],
+              [strikeAt, strikeAt + 8],
+              [1, 0.42],
               clamp,
             ),
           }}
@@ -71,15 +71,15 @@ const Row: React.FC<{
         <div
           style={{
             position: "absolute",
-            left: -8,
-            right: -8,
+            left: -10,
+            right: -10,
             top: "54%",
-            height: 6,
-            borderRadius: 3,
+            height: 8,
+            borderRadius: 4,
             backgroundColor: GOLD,
-            boxShadow: "0 0 16px rgba(233,213,166,0.8)",
+            boxShadow: "0 0 18px rgba(233,213,166,0.85)",
             transformOrigin: "0% 50%",
-            scale: `${interpolate(frame, [strikeAt, strikeAt + 7], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) })} 1`,
+            scale: `${interpolate(frame, [strikeAt, strikeAt + 5], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) })} 1`,
             rotate: "-3deg",
           }}
         />
@@ -88,16 +88,19 @@ const Row: React.FC<{
   );
 };
 
-// Bars 1-2: the usual gifts get crossed out, then the idea: offer a moment at
-// the salon.
-export const HookScene: React.FC<{
-  readonly hook: GiftReelProps["hook"];
-  readonly partner: Partner;
-}> = ({ hook, partner }) => {
+// Bars 1-2: "ARRÊTE D'OFFRIR des fleurs" on the very first frame, the usual
+// gifts crossed out on the beat, then the turn: "Offre plutôt une vraie…".
+export const HookScene: React.FC<{ readonly hook: GiftReelProps["hook"] }> = ({
+  hook,
+}) => {
   const frame = useCurrentFrame();
-  const settle = interpolate(frame, [BEAT * 4 - 2, BEAT * 4 + 16], [0, 1], {
+  const settle = interpolate(frame, [BEAT * 3, BEAT * 4], [0, 1], {
     ...clamp,
     easing: Easing.bezier(0.65, 0, 0.35, 1),
+  });
+  const punch = interpolate(frame, [0, 7], [1.16, 1], {
+    ...clamp,
+    easing: Easing.out(Easing.cubic),
   });
 
   return (
@@ -117,43 +120,77 @@ export const HookScene: React.FC<{
       >
         <StarMark size={1000} color={GOLD_LIGHT} />
       </div>
-      {ROW_AT.map((at) => (
+      <Sfx name="stamp" at={0} volume={0.6} />
+      {ROW_AT.slice(1).map((at) => (
         <Sfx key={at} name="pop" at={at} volume={0.5} />
       ))}
       {STRIKE_AT.map((at) => (
-        <Sfx key={at} name="strike" at={at} volume={0.55} />
+        <Sfx key={at} name="strike" at={at} volume={0.6} />
       ))}
-      <Sfx name="sparkle" at={NAME_AT} volume={0.45} />
+      <Sfx name="whoosh" at={TURN_AT} volume={0.4} />
       <div
         style={{
           position: "absolute",
           left: 0,
           right: 0,
-          top: 172,
+          top: 400,
           display: "flex",
-          justifyContent: "center",
-          opacity: interpolate(frame, [0, 10], [0, 1], clamp),
+          flexDirection: "column",
+          alignItems: "center",
+          scale: String(punch),
         }}
       >
-        <CoBrand
-          logo={partner.logo}
-          name={partner.name}
-          size={38}
-          nameColor={GOLD}
-          crossColor={SAGE}
-          wordmark={{ color: IVORY, accent: GOLD, star: GOLD }}
-        />
+        <Interactive.Div
+          name="Hook stop"
+          style={{
+            position: "relative",
+            padding: "4px 34px 10px",
+            fontFamily: SANS,
+            fontWeight: 800,
+            fontSize: 168,
+            lineHeight: 1,
+            letterSpacing: "-0.02em",
+            color: EMERALD_INK,
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: 18,
+              background:
+                "linear-gradient(100deg, #b8955a 0%, #e9d5a6 45%, #c9a96e 100%)",
+              rotate: "-2deg",
+              boxShadow: "0 18px 40px rgba(0,0,0,0.35)",
+            }}
+          />
+          <span style={{ position: "relative" }}>{hook.stop}</span>
+        </Interactive.Div>
+        <Interactive.Div
+          name="Hook lead"
+          style={{
+            marginTop: 26,
+            fontFamily: SANS,
+            fontWeight: 800,
+            fontSize: 86,
+            lineHeight: 1,
+            letterSpacing: "0.03em",
+            color: IVORY,
+          }}
+        >
+          {hook.lead}
+        </Interactive.Div>
       </div>
       <div
         style={{
           position: "absolute",
           left: "50%",
-          top: 500,
+          top: 760,
           display: "flex",
           flexDirection: "column",
-          gap: 34,
-          translate: `-50% ${-110 * settle}px`,
-          scale: String(1 - 0.14 * settle),
+          gap: 28,
+          translate: `-50% ${-36 * settle}px`,
+          scale: String(1 - 0.18 * settle),
         }}
       >
         {hook.items.map((item, i) => (
@@ -165,27 +202,22 @@ export const HookScene: React.FC<{
           position: "absolute",
           left: 40,
           right: 40,
-          top: 990,
+          top: 1250,
           textAlign: "center",
         }}
       >
         <Interactive.Div
-          name="Hook line 1"
+          name="Hook turn"
           style={{
             fontFamily: SANS,
-            fontWeight: 600,
-            fontSize: 44,
-            letterSpacing: "0.04em",
+            fontWeight: 700,
+            fontSize: 54,
+            letterSpacing: "0.02em",
             color: SAGE,
-            opacity: interpolate(
-              frame,
-              [LINE1_AT, LINE1_AT + 8],
-              [0, 1],
-              clamp,
-            ),
+            opacity: interpolate(frame, [TURN_AT, TURN_AT + 6], [0, 1], clamp),
             translate: interpolate(
               frame,
-              [LINE1_AT, LINE1_AT + 16],
+              [TURN_AT, TURN_AT + 14],
               ["0px 30px", "0px 0px"],
               {
                 ...clamp,
@@ -194,59 +226,32 @@ export const HookScene: React.FC<{
             ),
           }}
         >
-          {hook.line1}
+          {hook.turn}
         </Interactive.Div>
         <Interactive.Div
-          name="Hook line 2"
+          name="Hook tease"
           style={{
-            marginTop: 10,
+            marginTop: 8,
             fontFamily: SERIF,
             fontStyle: "italic",
             fontWeight: 500,
-            fontSize: 84,
+            fontSize: 110,
             lineHeight: 1.1,
-            color: IVORY,
+            color: GOLD_LIGHT,
+            textShadow: "0 0 40px rgba(201,169,110,0.45)",
             opacity: interpolate(
               frame,
-              [LINE2_AT, LINE2_AT + 8],
+              [TEASE_AT, TEASE_AT + 6],
               [0, 1],
               clamp,
             ),
-            translate: interpolate(
-              frame,
-              [LINE2_AT, LINE2_AT + 16],
-              ["0px 30px", "0px 0px"],
-              {
-                ...clamp,
-                easing: Easing.bezier(0.16, 1, 0.3, 1),
-              },
-            ),
-          }}
-        >
-          {hook.line2}
-        </Interactive.Div>
-        <Interactive.Div
-          name="Hook salon"
-          style={{
-            marginTop: 6,
-            fontFamily: DISPLAY,
-            fontWeight: 700,
-            fontSize: 132,
-            lineHeight: 1.1,
-            letterSpacing: "0.05em",
-            ...foil(GOLD_FOIL),
-            backgroundSize: "200% 100%",
-            backgroundPosition: `${interpolate(frame, [NAME_AT, NAME_AT + 60], [100, 0], clamp)}% 0%`,
-            filter: "drop-shadow(0 0 30px rgba(201,169,110,0.35))",
-            opacity: interpolate(frame, [NAME_AT, NAME_AT + 6], [0, 1], clamp),
-            scale: interpolate(frame, [NAME_AT, NAME_AT + 18], [0.8, 1], {
+            scale: interpolate(frame, [TEASE_AT, TEASE_AT + 30], [0.86, 1.06], {
               ...clamp,
-              easing: Easing.spring({ damping: 13, stiffness: 150, mass: 0.9 }),
-              output: "perceptual-scale",
+              easing: Easing.out(Easing.quad),
             }),
           }}
         >
-          {partner.name}
+          {hook.tease}
         </Interactive.Div>
       </div>
       <Vignette />

@@ -18,17 +18,19 @@ import { StarPattern } from "./Pattern";
 export const CARD_WIDTH = 660;
 export const CARD_HEIGHT = 412;
 
-// The gift card: an OYA MUSE moment, issued via MySalon.ma. Ivory stock, the
-// khatam star pattern, double gold rules, a champagne sash tied across the
-// corner and the recipient's name written on by hand.
+// The gift card: an OYA MUSE experience, issued via MySalon.ma. Ivory stock,
+// the khatam star pattern, double gold rules, a champagne sash tied across the
+// corner and the recipient's name written by hand. With several names, they
+// are rewritten one after the other every `writeEvery` frames.
 export const GiftCard: React.FC<{
   readonly id: string;
   readonly content: GiftCardContent;
   readonly logo: string;
   readonly name: string;
   readonly city: string;
-  readonly recipient: string;
+  readonly recipients: string[];
   readonly writeAt: number;
+  readonly writeEvery: number;
   readonly shineAt: number;
   readonly recipientSize: number;
 }> = ({
@@ -37,17 +39,29 @@ export const GiftCard: React.FC<{
   logo,
   name,
   city,
-  recipient,
+  recipients,
   writeAt,
+  writeEvery,
   shineAt,
   recipientSize,
 }) => {
   const frame = useCurrentFrame();
-  const write = interpolate(frame, [writeAt, writeAt + 24], [0, 100], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: Easing.inOut(Easing.sin),
-  });
+  const index = Math.max(
+    0,
+    Math.min(recipients.length - 1, Math.floor((frame - writeAt) / writeEvery)),
+  );
+  const startedAt = writeAt + index * writeEvery;
+  const writeLength = recipients.length > 1 ? Math.min(10, writeEvery - 3) : 24;
+  const write = interpolate(
+    frame,
+    [startedAt, startedAt + writeLength],
+    [0, 100],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+      easing: Easing.inOut(Easing.sin),
+    },
+  );
 
   return (
     <div
@@ -201,17 +215,26 @@ export const GiftCard: React.FC<{
             clipPath: `inset(-30% ${100 - write}% -30% -5%)`,
           }}
         >
-          {recipient}
+          {frame >= writeAt ? recipients[index] : ""}
         </div>
         <div
           style={{
             flexShrink: 0,
-            scale: interpolate(frame, [writeAt + 22, writeAt + 34], [0, 1], {
-              extrapolateLeft: "clamp",
-              extrapolateRight: "clamp",
-              easing: Easing.spring({ damping: 10, stiffness: 200, mass: 0.6 }),
-              output: "perceptual-scale",
-            }),
+            scale: interpolate(
+              frame,
+              [writeAt + writeLength, writeAt + writeLength + 12],
+              [0, 1],
+              {
+                extrapolateLeft: "clamp",
+                extrapolateRight: "clamp",
+                easing: Easing.spring({
+                  damping: 10,
+                  stiffness: 200,
+                  mass: 0.6,
+                }),
+                output: "perceptual-scale",
+              },
+            ),
           }}
         >
           <Heart size={30} color={GOLD} />

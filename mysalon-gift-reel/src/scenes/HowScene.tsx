@@ -13,37 +13,29 @@ import { LockScreen } from "../components/screens/LockScreen";
 import { Sfx } from "../components/Sfx";
 import { DISPLAY, SANS, SERIF } from "../fonts";
 import type { GiftReelProps, Partner } from "../schema";
-import { BEAT } from "../timing";
-import {
-  EMERALD,
-  EMERALD_DEEP,
-  GOLD,
-  GOLD_DEEP,
-  LIGHT_BG,
-  MUTED,
-} from "../theme";
+import { BAR } from "../timing";
+import { EMERALD, EMERALD_DEEP, GOLD, LIGHT_BG, MUTED } from "../theme";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
-// Step starts (scene-local frames), five beats apart, then a longer last step.
-const STEP_AT = [0, BEAT * 5, BEAT * 10];
+// One bar per step: two seconds each.
+const STEP_AT = [0, BAR, BAR * 2];
 const PHONE_LEFT = (1080 - PHONE_WIDTH) / 2;
-const PHONE_TOP = 450;
+const PHONE_TOP = 470;
 
-// Timeline of the two phones.
 const T = {
-  request: 8,
-  reply: 30,
-  tap: 46,
-  sent: 58,
+  request: 4,
+  reply: 20,
+  tap: 34,
+  sent: 44,
   swap: STEP_AT[1],
-  notif: STEP_AT[1] + 22,
-  pulse: STEP_AT[1] + 40,
+  notif: STEP_AT[1] + 10,
+  pulse: STEP_AT[1] + 26,
   book: STEP_AT[2],
-  typeFrom: STEP_AT[2] + 18,
-  typeTo: STEP_AT[2] + 32,
-  slot: STEP_AT[2] + 44,
-  confirm: STEP_AT[2] + 58,
+  typeFrom: STEP_AT[2] + 10,
+  typeTo: STEP_AT[2] + 20,
+  slot: STEP_AT[2] + 28,
+  confirm: STEP_AT[2] + 38,
 };
 
 const Caption: React.FC<{
@@ -59,20 +51,23 @@ const Caption: React.FC<{
     <div
       style={{
         position: "absolute",
-        left: 50,
-        right: 50,
-        top: 196,
+        left: 40,
+        right: 40,
+        top: 210,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         textAlign: "center",
         opacity: interpolate(
           frame,
-          [at, at + 8, out - 2, out + 4],
+          [at, at + 5, out - 2, out + 3],
           [0, 1, 1, 0],
           clamp,
         ),
         translate: interpolate(
           frame,
-          [at, at + 16, out - 2, out + 6],
-          ["0px 36px", "0px 0px", "0px 0px", "0px -36px"],
+          [at, at + 12, out - 2, out + 5],
+          ["0px 40px", "0px 0px", "0px 0px", "0px -40px"],
           {
             ...clamp,
             easing: Easing.bezier(0.16, 1, 0.3, 1),
@@ -80,19 +75,55 @@ const Caption: React.FC<{
         ),
       }}
     >
-      <Interactive.Div
-        name={`Step ${index + 1} title`}
+      <div
         style={{
-          fontFamily: SERIF,
-          fontStyle: "italic",
-          fontWeight: 500,
-          fontSize: 66,
-          lineHeight: 1.1,
-          color: EMERALD_DEEP,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 18,
         }}
       >
-        {title}
-      </Interactive.Div>
+        <div
+          style={{
+            width: 74,
+            height: 74,
+            borderRadius: 37,
+            flexShrink: 0,
+            backgroundColor: EMERALD_DEEP,
+            color: GOLD,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: DISPLAY,
+            fontWeight: 700,
+            fontSize: 40,
+            paddingTop: 4,
+            boxSizing: "border-box",
+            boxShadow:
+              "0 10px 24px rgba(8,34,28,0.25), inset 0 0 0 2px rgba(201,169,110,0.7)",
+            scale: interpolate(frame, [at, at + 10], [0.4, 1], {
+              ...clamp,
+              easing: Easing.out(Easing.back(2)),
+            }),
+          }}
+        >
+          {index + 1}
+        </div>
+        <Interactive.Div
+          name={`Step ${index + 1} title`}
+          style={{
+            fontFamily: SERIF,
+            fontStyle: "italic",
+            fontWeight: 500,
+            fontSize: 64,
+            lineHeight: 1.08,
+            color: EMERALD_DEEP,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {title}
+        </Interactive.Div>
+      </div>
       <Interactive.Div
         name={`Step ${index + 1} subtitle`}
         style={{
@@ -119,9 +150,9 @@ const Tag: React.FC<{
     style={{
       position: "absolute",
       left: PHONE_WIDTH / 2,
-      top: -62,
+      top: -58,
       translate: "-50% 0px",
-      padding: "10px 26px",
+      padding: "8px 26px",
       borderRadius: 999,
       backgroundColor: bg,
       color: fg,
@@ -137,16 +168,15 @@ const Tag: React.FC<{
   </div>
 );
 
-// Bars 10-13: how it works, on two phones. You write to MySalon.ma and pay,
-// the person you chose gets a code, then books the salon with it on
-// mysalon.ma.
+// Bars 7-9: how it works in three two-second steps, on two phones. You send
+// the keyword by DM and pay, she gets her code, she books when she likes.
 export const HowScene: React.FC<{
   readonly how: GiftReelProps["how"];
   readonly partner: Partner;
   readonly site: string;
 }> = ({ how, partner, site }) => {
   const frame = useCurrentFrame();
-  const swap = interpolate(frame, [T.swap, T.swap + 18], [0, 1], {
+  const swap = interpolate(frame, [T.swap, T.swap + 12], [0, 1], {
     ...clamp,
     easing: Easing.bezier(0.65, 0, 0.35, 1),
   });
@@ -158,36 +188,16 @@ export const HowScene: React.FC<{
       style={{ background: LIGHT_BG, overflow: "hidden" }}
     >
       <StarPattern id="how-pattern" color={GOLD} opacity={0.08} size={120} />
-      <Sfx name="pop" at={T.request} volume={0.4} />
-      <Sfx name="pop" at={T.reply} volume={0.4} />
+      <Sfx name="pop" at={T.request} volume={0.45} />
+      <Sfx name="pop" at={T.reply} volume={0.35} />
       <Sfx name="tick" at={T.tap} volume={0.55} />
-      <Sfx name="success" at={T.sent} volume={0.35} />
-      <Sfx name="whoosh" at={T.swap} volume={0.45} />
+      <Sfx name="success" at={T.sent} volume={0.3} />
+      <Sfx name="whoosh" at={T.swap} volume={0.4} />
       <Sfx name="ding" at={T.notif} volume={0.55} />
-      <Sfx name="sparkle" at={T.pulse} volume={0.3} />
-      <Sfx name="whoosh" at={T.book} volume={0.4} />
-      <Sfx name="tick" at={T.typeTo + 2} volume={0.5} />
-      <Sfx name="tick" at={T.slot} volume={0.5} />
-      <Sfx name="tick" at={T.confirm} volume={0.5} />
-      <Sfx name="success" at={T.confirm + 4} volume={0.55} />
-      <Interactive.Div
-        name="How label"
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 136,
-          textAlign: "center",
-          fontFamily: DISPLAY,
-          fontWeight: 700,
-          fontSize: 30,
-          letterSpacing: "0.3em",
-          marginRight: "-0.3em",
-          color: GOLD_DEEP,
-        }}
-      >
-        {how.label}
-      </Interactive.Div>
+      <Sfx name="whoosh" at={T.book} volume={0.35} />
+      <Sfx name="tick" at={T.typeTo + 2} volume={0.45} />
+      <Sfx name="tick" at={T.slot} volume={0.45} />
+      <Sfx name="success" at={T.confirm + 4} volume={0.5} />
       {how.steps.map((s, i) => (
         <Caption
           key={s.title}
@@ -204,6 +214,12 @@ export const HowScene: React.FC<{
           translate: `${-1150 * swap}px 0px`,
           rotate: `${-8 * swap}deg`,
           opacity: swap < 1 ? 1 : 0,
+          scale: String(
+            interpolate(frame, [0, 10], [0.92, 1], {
+              ...clamp,
+              easing: Easing.out(Easing.cubic),
+            }),
+          ),
         }}
       >
         <Tag text={how.senderTag} bg={EMERALD_DEEP} fg={GOLD} />
@@ -214,7 +230,7 @@ export const HowScene: React.FC<{
           time={how.lockTime}
         >
           <DmScreen
-            request={how.dmRequest}
+            request={how.dmKeyword}
             reply={how.dmReply}
             giftLabel={how.giftLabel}
             giftDetail={how.giftDetail}
@@ -283,7 +299,7 @@ export const HowScene: React.FC<{
           position: "absolute",
           left: 0,
           right: 0,
-          top: PHONE_TOP + 1000 + 44,
+          top: PHONE_TOP + 1000 + 40,
           display: "flex",
           flexDirection: "row",
           justifyContent: "center",

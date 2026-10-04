@@ -1,13 +1,14 @@
 {
   "name": "mysalon-gift-reel",
   "version": "1.0.0",
-  "description": "Vertical (9:16) OYA MUSE gift card reel, booked through MySalon.ma, built with Remotion",
+  "description": "Vertical (9:16) 24 s viral reel: gift an OYA MUSE experience, booked through MySalon.ma (Remotion)",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "remotion studio",
     "render": "remotion render GiftReel out/mysalon-gift-reel.mp4",
-    "still": "remotion still GiftReel out/cover.png --frame=250",
+    "cover": "remotion still GiftReel out/cover-card.png --frame=192",
+    "cover:hook": "remotion still GiftReel out/cover-hook.png --frame=52",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc",
