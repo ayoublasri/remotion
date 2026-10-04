@@ -5,7 +5,7 @@ import {
   interpolate,
   useCurrentFrame,
 } from "remotion";
-import { StarMark } from "../components/Brand";
+import { Logo } from "../components/Brand";
 import { GiftCard } from "../components/GiftCard";
 import { BoxBody, BoxLid, Burst } from "../components/GiftBox";
 import { Twinkles } from "../components/Overlays";
@@ -13,9 +13,9 @@ import { StarPattern } from "../components/Pattern";
 import { Sfx } from "../components/Sfx";
 import { Starburst } from "../components/Starburst";
 import { SANS, SERIF } from "../fonts";
-import type { GiftCardContent, GiftReelProps } from "../schema";
+import type { GiftCardContent, GiftReelProps, Partner } from "../schema";
 import { BEAT } from "../timing";
-import { INK, LIGHT_BG, ROSE_DEEP, ROSE_SOFT, TEAL, TEAL_SOFT } from "../theme";
+import { EMERALD_DEEP, GOLD, GOLD_DEEP, IVORY, LIGHT_BG } from "../theme";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
@@ -28,13 +28,13 @@ const RISE_FROM = LID_AT + 4;
 const RISE_TO = RISE_FROM + 30;
 const CARD_Y = 720;
 
-// Bars 3-5 (the drop): a gift box wiggles, the lid pops, and a MySalon.ma gift
-// card floats out with someone's name being written on it.
+// Bars 3-5 (the drop): a gift box wiggles, the lid pops, and the gift card
+// floats out with someone's name being written on it.
 export const RevealScene: React.FC<{
   readonly reveal: GiftReelProps["reveal"];
   readonly card: GiftCardContent;
-  readonly partnerLogo: string;
-}> = ({ reveal, card, partnerLogo }) => {
+  readonly partner: Partner;
+}> = ({ reveal, card, partner }) => {
   const frame = useCurrentFrame();
 
   const enter = interpolate(frame, [0, 18], [0, 1], {
@@ -86,7 +86,9 @@ export const RevealScene: React.FC<{
       <GiftCard
         id="reveal-card"
         content={card}
-        partnerLogo={partnerLogo}
+        logo={partner.logo}
+        name={partner.name}
+        city={partner.city}
         recipient={reveal.recipient}
         writeAt={BEAT * 5}
         shineAt={BEAT * 4 + 8}
@@ -100,7 +102,7 @@ export const RevealScene: React.FC<{
       name="Reveal scene"
       style={{ background: LIGHT_BG, overflow: "hidden" }}
     >
-      <StarPattern id="reveal-pattern" color={TEAL} opacity={0.05} size={120} />
+      <StarPattern id="reveal-pattern" color={GOLD} opacity={0.08} size={120} />
       <Sfx name="tick" at={16} volume={0.45} />
       <Sfx name="tick" at={22} volume={0.45} />
       <Sfx name="sparkle" at={LID_AT} volume={0.6} />
@@ -110,8 +112,8 @@ export const RevealScene: React.FC<{
         style={{ opacity: halo, translate: `0px ${cardY - 960}px` }}
       >
         <Starburst
-          colorA="rgba(232,54,93,0.07)"
-          colorB="rgba(232,54,93,0)"
+          colorA="rgba(201,169,110,0.12)"
+          colorB="rgba(201,169,110,0)"
           rays={16}
           opacity={1}
           degreesPerFrame={0.25}
@@ -119,7 +121,7 @@ export const RevealScene: React.FC<{
         <AbsoluteFill
           style={{
             background:
-              "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 32%)",
+              "radial-gradient(circle at 50% 50%, rgba(255,250,236,0.95) 0%, rgba(255,250,236,0) 32%)",
           }}
         />
       </AbsoluteFill>
@@ -130,7 +132,7 @@ export const RevealScene: React.FC<{
           { x: 12, y: 50 },
           { x: 88, y: 48 },
         ]}
-        color={ROSE_SOFT}
+        color={GOLD}
       />
       {cardInFront ? null : giftCard}
       <div
@@ -182,7 +184,7 @@ export const RevealScene: React.FC<{
             fontWeight: 500,
             fontSize: 70,
             lineHeight: 1.15,
-            color: INK,
+            color: EMERALD_DEEP,
             opacity: interpolate(
               frame,
               [BEAT * 6, BEAT * 6 + 8],
@@ -210,7 +212,7 @@ export const RevealScene: React.FC<{
             fontWeight: 500,
             fontSize: 70,
             lineHeight: 1.15,
-            color: ROSE_DEEP,
+            color: GOLD_DEEP,
             opacity: interpolate(
               frame,
               [BEAT * 7, BEAT * 7 + 8],
@@ -236,16 +238,16 @@ export const RevealScene: React.FC<{
             display: "inline-flex",
             flexDirection: "row",
             alignItems: "center",
-            gap: 16,
-            padding: "18px 38px",
+            gap: 18,
+            padding: "20px 40px",
             borderRadius: 999,
-            backgroundColor: TEAL,
-            boxShadow: "0 18px 40px rgba(10,45,43,0.25)",
+            backgroundColor: EMERALD_DEEP,
+            boxShadow:
+              "0 18px 40px rgba(8,34,28,0.25), inset 0 0 0 1.5px rgba(201,169,110,0.6)",
             fontFamily: SANS,
-            fontWeight: 700,
-            fontSize: 36,
-            letterSpacing: "0.02em",
-            color: "#ffffff",
+            fontWeight: 600,
+            fontSize: 32,
+            color: IVORY,
             opacity: interpolate(
               frame,
               [BEAT * 8, BEAT * 8 + 6],
@@ -259,8 +261,8 @@ export const RevealScene: React.FC<{
             }),
           }}
         >
-          <StarMark size={30} color={TEAL_SOFT} />
-          {reveal.via}
+          {reveal.bookOn}
+          <Logo size={38} color={IVORY} accent={GOLD} starColor={GOLD} />
         </div>
       </div>
     </AbsoluteFill>

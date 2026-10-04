@@ -18,19 +18,19 @@ const defaultProps: GiftReelProps = {
   },
   card: {
     label: "CARTE CADEAU",
-    title: "Un moment beauté",
-    partnerLine: "chez OYA MUSE · Témara",
+    title: "Un moment",
+    via: "via",
   },
   hook: {
     items: ["Des fleurs ?", "Un parfum ?", "Des chocolats ?"],
     line1: "Cette fois,",
-    line2: "offrez un vrai moment.",
+    line2: "offrez un moment",
   },
   reveal: {
     recipient: "Maman",
-    line1: "Offrez un moment beauté",
+    line1: "Offrez un soin OYA MUSE",
     line2: "à quelqu'un de spécial.",
-    via: "avec MySalon.ma",
+    bookOn: "Réservez-le sur",
   },
   forWhom: {
     label: "POUR…",
@@ -40,7 +40,6 @@ const defaultProps: GiftReelProps = {
     backdrop: "nails-pink-florals.jpg",
   },
   offer: {
-    label: "CHEZ OYA MUSE · TÉMARA",
     title: "Choisissez le soin à offrir",
     services: [
       {
@@ -79,7 +78,7 @@ const defaultProps: GiftReelProps = {
         subtitle: "Directement sur son téléphone.",
       },
       {
-        title: "Et réserve quand ça lui va",
+        title: "Et réserve chez OYA MUSE",
         subtitle: "Avec son code, sur mysalon.ma.",
       },
     ],
@@ -88,7 +87,7 @@ const defaultProps: GiftReelProps = {
     dmRequest: "Bonjour ! Je voudrais offrir un soin OYA MUSE à ma sœur.",
     dmReply: "Avec plaisir ! Voici sa carte cadeau :",
     giftLabel: "Carte cadeau",
-    giftDetail: "Soin chez OYA MUSE",
+    giftDetail: "Soin OYA MUSE au choix",
     payLabel: "Payer",
     paidLabel: "Payé",
     dmSent: "Code envoyé à votre sœur",
@@ -108,11 +107,8 @@ const defaultProps: GiftReelProps = {
   cta: {
     recipient: "quelqu'un de spécial",
     line1: "OFFREZ UN MOMENT",
-    line2: "BEAUTÉ",
-    partnerLabel: "Soins chez OYA MUSE · Témara",
-    lead: "Pour offrir, c'est par message :",
+    lead: "Réservez le cadeau via",
     button: "Écrivez-nous en DM",
-    footer: "mysalon.ma",
   },
   musicFile: "music/gift-theme.mp3",
 };
@@ -138,7 +134,10 @@ export const RemotionRoot: React.FC = () => {
           component={HookScene}
           durationInFrames={SCENES.hook.duration}
           {...scene}
-          defaultProps={{ hook: defaultProps.hook }}
+          defaultProps={{
+            hook: defaultProps.hook,
+            partner: defaultProps.partner,
+          }}
         />
         <Composition
           id="Reveal"
@@ -148,7 +147,7 @@ export const RemotionRoot: React.FC = () => {
           defaultProps={{
             reveal: defaultProps.reveal,
             card: defaultProps.card,
-            partnerLogo: defaultProps.partner.logo,
+            partner: defaultProps.partner,
           }}
         />
         <Composition
@@ -165,7 +164,7 @@ export const RemotionRoot: React.FC = () => {
           {...scene}
           defaultProps={{
             offer: defaultProps.offer,
-            partnerLogo: defaultProps.partner.logo,
+            partner: defaultProps.partner,
           }}
         />
         <Composition
@@ -187,7 +186,7 @@ export const RemotionRoot: React.FC = () => {
           defaultProps={{
             cta: defaultProps.cta,
             card: defaultProps.card,
-            partnerLogo: defaultProps.partner.logo,
+            partner: defaultProps.partner,
           }}
         />
       </Folder>

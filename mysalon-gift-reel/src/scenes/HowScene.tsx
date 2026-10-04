@@ -11,10 +11,17 @@ import { BookingScreen } from "../components/screens/BookingScreen";
 import { DmScreen } from "../components/screens/DmScreen";
 import { LockScreen } from "../components/screens/LockScreen";
 import { Sfx } from "../components/Sfx";
-import { SANS, SERIF } from "../fonts";
+import { DISPLAY, SANS, SERIF } from "../fonts";
 import type { GiftReelProps, Partner } from "../schema";
 import { BEAT } from "../timing";
-import { LIGHT_BG, MUTED, ROSE, ROSE_DEEP, TEAL, TEAL_DEEP } from "../theme";
+import {
+  EMERALD,
+  EMERALD_DEEP,
+  GOLD,
+  GOLD_DEEP,
+  LIGHT_BG,
+  MUTED,
+} from "../theme";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
@@ -81,7 +88,7 @@ const Caption: React.FC<{
           fontWeight: 500,
           fontSize: 66,
           lineHeight: 1.1,
-          color: TEAL_DEEP,
+          color: EMERALD_DEEP,
         }}
       >
         {title}
@@ -103,10 +110,11 @@ const Caption: React.FC<{
   );
 };
 
-const Tag: React.FC<{ readonly text: string; readonly color: string }> = ({
-  text,
-  color,
-}) => (
+const Tag: React.FC<{
+  readonly text: string;
+  readonly bg: string;
+  readonly fg: string;
+}> = ({ text, bg, fg }) => (
   <div
     style={{
       position: "absolute",
@@ -115,14 +123,14 @@ const Tag: React.FC<{ readonly text: string; readonly color: string }> = ({
       translate: "-50% 0px",
       padding: "10px 26px",
       borderRadius: 999,
-      backgroundColor: color,
-      color: "#ffffff",
-      fontFamily: SANS,
-      fontWeight: 800,
-      fontSize: 22,
-      letterSpacing: "0.16em",
+      backgroundColor: bg,
+      color: fg,
+      fontFamily: DISPLAY,
+      fontWeight: 700,
+      fontSize: 24,
+      letterSpacing: "0.18em",
       whiteSpace: "nowrap",
-      boxShadow: "0 10px 24px rgba(10,45,43,0.2)",
+      boxShadow: "0 10px 24px rgba(8,34,28,0.2)",
     }}
   >
     {text}
@@ -130,7 +138,8 @@ const Tag: React.FC<{ readonly text: string; readonly color: string }> = ({
 );
 
 // Bars 10-13: how it works, on two phones. You write to MySalon.ma and pay,
-// the person you chose gets a code, then books with it on mysalon.ma.
+// the person you chose gets a code, then books the salon with it on
+// mysalon.ma.
 export const HowScene: React.FC<{
   readonly how: GiftReelProps["how"];
   readonly partner: Partner;
@@ -148,7 +157,7 @@ export const HowScene: React.FC<{
       name="How scene"
       style={{ background: LIGHT_BG, overflow: "hidden" }}
     >
-      <StarPattern id="how-pattern" color={TEAL} opacity={0.05} size={120} />
+      <StarPattern id="how-pattern" color={GOLD} opacity={0.08} size={120} />
       <Sfx name="pop" at={T.request} volume={0.4} />
       <Sfx name="pop" at={T.reply} volume={0.4} />
       <Sfx name="tick" at={T.tap} volume={0.55} />
@@ -169,12 +178,12 @@ export const HowScene: React.FC<{
           right: 0,
           top: 136,
           textAlign: "center",
-          fontFamily: SANS,
-          fontWeight: 800,
-          fontSize: 28,
-          letterSpacing: "0.28em",
-          marginRight: "-0.28em",
-          color: ROSE_DEEP,
+          fontFamily: DISPLAY,
+          fontWeight: 700,
+          fontSize: 30,
+          letterSpacing: "0.3em",
+          marginRight: "-0.3em",
+          color: GOLD_DEEP,
         }}
       >
         {how.label}
@@ -197,11 +206,11 @@ export const HowScene: React.FC<{
           opacity: swap < 1 ? 1 : 0,
         }}
       >
-        <Tag text={how.senderTag} color={TEAL} />
+        <Tag text={how.senderTag} bg={EMERALD_DEEP} fg={GOLD} />
         <Phone
           frameColor="#1c1c1a"
           edgeColor="#3a3a36"
-          statusColor="#1c1c1c"
+          statusColor="#1d211f"
           time={how.lockTime}
         >
           <DmScreen
@@ -229,11 +238,11 @@ export const HowScene: React.FC<{
             rotate: `${8 * (1 - swap)}deg`,
           }}
         >
-          <Tag text={how.recipientTag} color={ROSE} />
+          <Tag text={how.recipientTag} bg={GOLD} fg={EMERALD_DEEP} />
           <Phone
-            frameColor="#f3d3da"
-            edgeColor="#dba2b0"
-            statusColor={frame >= T.book + 8 ? "#1c1c1c" : "#ffffff"}
+            frameColor="#d8c49a"
+            edgeColor="#b59c66"
+            statusColor={frame >= T.book + 8 ? "#1d211f" : "#ffffff"}
             time={how.lockTime}
           >
             <LockScreen
@@ -288,7 +297,7 @@ export const HowScene: React.FC<{
               width: i === step ? 54 : 16,
               height: 16,
               borderRadius: 8,
-              backgroundColor: i === step ? ROSE_DEEP : "#e4dcd8",
+              backgroundColor: i === step ? EMERALD : "rgba(26,74,64,0.2)",
             }}
           />
         ))}

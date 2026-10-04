@@ -11,24 +11,24 @@ import { Heart } from "../components/Icons";
 import { LogoBadge } from "../components/Logo";
 import { StarPattern } from "../components/Pattern";
 import { Sfx } from "../components/Sfx";
-import { SANS, SERIF } from "../fonts";
-import type { GiftReelProps, Service } from "../schema";
+import { DISPLAY, SANS, SERIF } from "../fonts";
+import type { GiftReelProps, Partner, Service } from "../schema";
 import { BEAT } from "../timing";
 import {
   CARD,
+  EMERALD_DEEP,
+  GOLD,
+  GOLD_DEEP,
   INK,
   LIGHT_BG,
-  ROSE,
-  ROSE_DEEP,
+  MUTED,
   SAND,
-  TEAL,
-  TEAL_DEEP,
 } from "../theme";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-const ROW_TOP = 450;
+const ROW_TOP = 470;
 const ROW_HEIGHT = 262;
-const ROW_GAP = 32;
+const ROW_GAP = 30;
 const ROW_AT = [BEAT, BEAT * 2, BEAT * 3];
 const NOTE_AT = BEAT * 5;
 
@@ -51,7 +51,7 @@ const ServiceRow: React.FC<{
         borderRadius: 36,
         backgroundColor: CARD,
         boxShadow:
-          "0 26px 60px rgba(10,45,43,0.12), 0 0 0 1px rgba(15,92,87,0.12)",
+          "0 26px 60px rgba(8,34,28,0.12), 0 0 0 1px rgba(201,169,110,0.45)",
         overflow: "hidden",
         opacity: interpolate(frame, [at, at + 6], [0, 1], clamp),
         translate: interpolate(
@@ -97,7 +97,7 @@ const ServiceRow: React.FC<{
             position: "absolute",
             inset: 8,
             borderRadius: 20,
-            border: "1.5px solid rgba(255,255,255,0.8)",
+            border: "1.5px solid rgba(253,249,241,0.8)",
           }}
         />
       </div>
@@ -116,21 +116,21 @@ const ServiceRow: React.FC<{
       >
         <div
           style={{
-            fontFamily: SANS,
-            fontWeight: 800,
-            fontSize: 22,
+            fontFamily: DISPLAY,
+            fontWeight: 600,
+            fontSize: 26,
             letterSpacing: "0.2em",
-            color: ROSE,
+            color: GOLD,
           }}
         >{`0${index + 1}`}</div>
         <div
           style={{
-            fontFamily: SERIF,
-            fontWeight: 900,
-            fontSize: 54,
+            fontFamily: DISPLAY,
+            fontWeight: 700,
+            fontSize: 52,
             lineHeight: 1.05,
-            letterSpacing: "0.01em",
-            color: TEAL_DEEP,
+            letterSpacing: "0.06em",
+            color: EMERALD_DEEP,
           }}
         >
           {service.label}
@@ -140,9 +140,9 @@ const ServiceRow: React.FC<{
             fontFamily: SERIF,
             fontStyle: "italic",
             fontWeight: 500,
-            fontSize: 32,
+            fontSize: 33,
             lineHeight: 1.2,
-            color: ROSE_DEEP,
+            color: GOLD_DEEP,
           }}
         >
           {service.detail}
@@ -157,7 +157,7 @@ const ServiceRow: React.FC<{
           height: ROW_HEIGHT + 80,
           rotate: "20deg",
           background:
-            "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.75) 50%, rgba(255,255,255,0) 100%)",
+            "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,250,236,0.75) 50%, rgba(255,255,255,0) 100%)",
           pointerEvents: "none",
           translate: interpolate(
             frame,
@@ -174,12 +174,12 @@ const ServiceRow: React.FC<{
   );
 };
 
-// Bars 8-9: what can be offered at the partner salon, as an elegant menu of
-// three treatments.
+// Bars 8-9: what can be offered at the salon, as an elegant menu of three
+// treatments under the salon's own logo.
 export const OfferScene: React.FC<{
   readonly offer: GiftReelProps["offer"];
-  readonly partnerLogo: string;
-}> = ({ offer, partnerLogo }) => {
+  readonly partner: Partner;
+}> = ({ offer, partner }) => {
   const frame = useCurrentFrame();
 
   return (
@@ -187,7 +187,7 @@ export const OfferScene: React.FC<{
       name="Offer scene"
       style={{ background: LIGHT_BG, overflow: "hidden" }}
     >
-      <StarPattern id="offer-pattern" color={TEAL} opacity={0.05} size={120} />
+      <StarPattern id="offer-pattern" color={GOLD} opacity={0.08} size={120} />
       <Sfx name="whoosh" at={0} volume={0.35} />
       {ROW_AT.map((at) => (
         <Sfx key={at} name="pop" at={at} volume={0.45} />
@@ -198,53 +198,62 @@ export const OfferScene: React.FC<{
           position: "absolute",
           left: 60,
           right: 60,
-          top: 180,
+          top: 166,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
         <Interactive.Div
-          name="Offer partner"
+          name="Offer salon"
           style={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            gap: 16,
-            padding: "8px 26px 8px 8px",
-            borderRadius: 999,
-            backgroundColor: "rgba(255,255,255,0.75)",
-            boxShadow:
-              "0 10px 30px rgba(10,45,43,0.1), 0 0 0 1px rgba(15,92,87,0.14)",
-            fontFamily: SANS,
-            fontWeight: 800,
-            fontSize: 29,
-            letterSpacing: "0.14em",
-            color: TEAL,
+            gap: 20,
             opacity: interpolate(frame, [0, 8], [0, 1], clamp),
-            scale: interpolate(frame, [0, 14], [0.8, 1], {
+            scale: interpolate(frame, [0, 16], [0.8, 1], {
               ...clamp,
-              easing: Easing.spring({ damping: 12, stiffness: 180, mass: 0.8 }),
+              easing: Easing.spring({ damping: 12, stiffness: 170, mass: 0.8 }),
               output: "perceptual-scale",
             }),
           }}
         >
-          <LogoBadge
-            image={partnerLogo}
-            size={74}
-            ring={false}
-            ringColor={TEAL}
-          />
-          {offer.label}
+          <LogoBadge image={partner.logo} size={96} ring ringColor={GOLD} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <div
+              style={{
+                fontFamily: DISPLAY,
+                fontWeight: 700,
+                fontSize: 50,
+                lineHeight: 1,
+                letterSpacing: "0.08em",
+                color: EMERALD_DEEP,
+              }}
+            >
+              {partner.name}
+            </div>
+            <div
+              style={{
+                fontFamily: SANS,
+                fontWeight: 600,
+                fontSize: 20,
+                letterSpacing: "0.24em",
+                color: MUTED,
+              }}
+            >
+              {partner.city.toUpperCase()}
+            </div>
+          </div>
         </Interactive.Div>
         <Interactive.Div
           name="Offer title"
           style={{
-            marginTop: 26,
+            marginTop: 30,
             fontFamily: SERIF,
             fontStyle: "italic",
             fontWeight: 500,
-            fontSize: 74,
+            fontSize: 72,
             lineHeight: 1.1,
             color: INK,
             textAlign: "center",
@@ -267,7 +276,7 @@ export const OfferScene: React.FC<{
           position: "absolute",
           left: 60,
           right: 60,
-          top: ROW_TOP + 3 * (ROW_HEIGHT + ROW_GAP) + 26,
+          top: ROW_TOP + 3 * (ROW_HEIGHT + ROW_GAP) + 22,
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
@@ -277,7 +286,7 @@ export const OfferScene: React.FC<{
           fontStyle: "italic",
           fontWeight: 500,
           fontSize: 50,
-          color: TEAL_DEEP,
+          color: EMERALD_DEEP,
           opacity: interpolate(frame, [NOTE_AT, NOTE_AT + 8], [0, 1], clamp),
           translate: interpolate(
             frame,
@@ -290,7 +299,7 @@ export const OfferScene: React.FC<{
           ),
         }}
       >
-        <Heart size={40} color={ROSE} />
+        <Heart size={40} color={GOLD} />
         {offer.note}
       </Interactive.Div>
     </AbsoluteFill>

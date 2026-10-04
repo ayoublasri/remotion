@@ -9,20 +9,20 @@ export const serviceSchema = z.object({
 });
 
 export const partnerSchema = z.object({
-  name: z.string().describe("The partner salon whose treatments are offered"),
+  name: z.string().describe("The salon being offered"),
   city: z.string(),
-  logo: z.string().describe("Partner logo inside public/images"),
+  logo: z.string().describe("Salon logo inside public/images"),
   services: z.string(),
 });
 
 export const giftCardSchema = z.object({
   label: z.string(),
   title: z.string(),
-  partnerLine: z.string().describe("Where the treatment takes place"),
+  via: z.string().describe("Printed before the MySalon.ma wordmark"),
 });
 
 export const giftReelSchema = z.object({
-  site: z.string().describe("The platform people write to"),
+  site: z.string().describe("The platform people book the gift through"),
   partner: partnerSchema,
   card: giftCardSchema,
   hook: z.object({
@@ -34,7 +34,7 @@ export const giftReelSchema = z.object({
     recipient: z.string().describe("Handwritten on the gift card"),
     line1: z.string(),
     line2: z.string(),
-    via: z.string(),
+    bookOn: z.string().describe("Printed before the MySalon.ma wordmark"),
   }),
   forWhom: z.object({
     label: z.string(),
@@ -44,7 +44,6 @@ export const giftReelSchema = z.object({
     backdrop: z.string(),
   }),
   offer: z.object({
-    label: z.string(),
     title: z.string(),
     services: z.array(serviceSchema).length(3),
     note: z.string(),
@@ -79,11 +78,8 @@ export const giftReelSchema = z.object({
   cta: z.object({
     recipient: z.string(),
     line1: z.string(),
-    line2: z.string(),
-    partnerLabel: z.string(),
-    lead: z.string(),
+    lead: z.string().describe("Printed before the MySalon.ma wordmark"),
     button: z.string(),
-    footer: z.string(),
   }),
   musicFile: z
     .string()

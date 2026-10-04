@@ -5,19 +5,23 @@ import {
   interpolate,
   useCurrentFrame,
 } from "remotion";
-import { Logo, StarMark } from "../components/Brand";
+import { CoBrand, StarMark } from "../components/Brand";
+import { foil } from "../components/Icons";
 import { LineIcon } from "../components/LineIcons";
 import { Grain, Vignette } from "../components/Overlays";
 import { StarPattern } from "../components/Pattern";
 import { Sfx } from "../components/Sfx";
-import { SANS, SERIF } from "../fonts";
-import type { GiftReelProps } from "../schema";
+import { DISPLAY, SANS, SERIF } from "../fonts";
+import type { GiftReelProps, Partner } from "../schema";
 import { BEAT } from "../timing";
-import { BLUSH, DARK_BG, ROSE_SOFT, TEAL_SOFT } from "../theme";
+import { DARK_BG, GOLD, GOLD_FOIL, GOLD_LIGHT, IVORY, SAGE } from "../theme";
 
 const ICONS = ["flowers", "perfume", "chocolates"] as const;
 const ROW_AT = [0, BEAT, BEAT * 2];
 const STRIKE_AT = [BEAT * 3, BEAT * 3 + 5, BEAT * 3 + 10];
+const LINE1_AT = BEAT * 4;
+const LINE2_AT = BEAT * 4 + 8;
+const NAME_AT = BEAT * 5 + 3;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 const Row: React.FC<{
@@ -42,7 +46,7 @@ const Row: React.FC<{
         }),
       }}
     >
-      <LineIcon kind={ICONS[index]} at={at} size={132} color={ROSE_SOFT} />
+      <LineIcon kind={ICONS[index]} at={at} size={132} color={GOLD} />
       <div style={{ position: "relative" }}>
         <Interactive.Div
           name={`Hook item ${index + 1}`}
@@ -52,12 +56,12 @@ const Row: React.FC<{
             fontWeight: 400,
             fontSize: 90,
             lineHeight: 1.1,
-            color: BLUSH,
+            color: IVORY,
             whiteSpace: "nowrap",
             opacity: interpolate(
               frame,
               [strikeAt, strikeAt + 10],
-              [1, 0.45],
+              [1, 0.4],
               clamp,
             ),
           }}
@@ -70,10 +74,10 @@ const Row: React.FC<{
             left: -8,
             right: -8,
             top: "54%",
-            height: 7,
-            borderRadius: 4,
-            backgroundColor: ROSE_SOFT,
-            boxShadow: "0 0 16px rgba(244,124,151,0.8)",
+            height: 6,
+            borderRadius: 3,
+            backgroundColor: GOLD,
+            boxShadow: "0 0 16px rgba(233,213,166,0.8)",
             transformOrigin: "0% 50%",
             scale: `${interpolate(frame, [strikeAt, strikeAt + 7], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) })} 1`,
             rotate: "-3deg",
@@ -84,10 +88,12 @@ const Row: React.FC<{
   );
 };
 
-// Bars 1-2: the usual gifts get crossed out, then the idea.
-export const HookScene: React.FC<{ readonly hook: GiftReelProps["hook"] }> = ({
-  hook,
-}) => {
+// Bars 1-2: the usual gifts get crossed out, then the idea: offer a moment at
+// the salon.
+export const HookScene: React.FC<{
+  readonly hook: GiftReelProps["hook"];
+  readonly partner: Partner;
+}> = ({ hook, partner }) => {
   const frame = useCurrentFrame();
   const settle = interpolate(frame, [BEAT * 4 - 2, BEAT * 4 + 16], [0, 1], {
     ...clamp,
@@ -99,22 +105,17 @@ export const HookScene: React.FC<{ readonly hook: GiftReelProps["hook"] }> = ({
       name="Hook scene"
       style={{ background: DARK_BG, overflow: "hidden" }}
     >
-      <StarPattern
-        id="hook-pattern"
-        color={TEAL_SOFT}
-        opacity={0.05}
-        size={120}
-      />
+      <StarPattern id="hook-pattern" color={GOLD} opacity={0.06} size={120} />
       <div
         style={{
           position: "absolute",
           right: -330,
           top: -280,
-          opacity: 0.05,
+          opacity: 0.04,
           rotate: `${frame * 0.12}deg`,
         }}
       >
-        <StarMark size={1000} color="#ffffff" />
+        <StarMark size={1000} color={GOLD_LIGHT} />
       </div>
       {ROW_AT.map((at) => (
         <Sfx key={at} name="pop" at={at} volume={0.5} />
@@ -122,35 +123,37 @@ export const HookScene: React.FC<{ readonly hook: GiftReelProps["hook"] }> = ({
       {STRIKE_AT.map((at) => (
         <Sfx key={at} name="strike" at={at} volume={0.55} />
       ))}
-      <Sfx name="sparkle" at={BEAT * 5} volume={0.35} />
+      <Sfx name="sparkle" at={NAME_AT} volume={0.45} />
       <div
         style={{
           position: "absolute",
           left: 0,
           right: 0,
-          top: 176,
+          top: 172,
           display: "flex",
           justifyContent: "center",
           opacity: interpolate(frame, [0, 10], [0, 1], clamp),
         }}
       >
-        <Logo
-          size={58}
-          color="#ffffff"
-          accent={ROSE_SOFT}
-          starColor={TEAL_SOFT}
+        <CoBrand
+          logo={partner.logo}
+          name={partner.name}
+          size={38}
+          nameColor={GOLD}
+          crossColor={SAGE}
+          wordmark={{ color: IVORY, accent: GOLD, star: GOLD }}
         />
       </div>
       <div
         style={{
           position: "absolute",
           left: "50%",
-          top: 520,
+          top: 500,
           display: "flex",
           flexDirection: "column",
           gap: 34,
-          translate: `-50% ${-90 * settle}px`,
-          scale: String(1 - 0.12 * settle),
+          translate: `-50% ${-110 * settle}px`,
+          scale: String(1 - 0.14 * settle),
         }}
       >
         {hook.items.map((item, i) => (
@@ -160,9 +163,9 @@ export const HookScene: React.FC<{ readonly hook: GiftReelProps["hook"] }> = ({
       <div
         style={{
           position: "absolute",
-          left: 60,
-          right: 60,
-          top: 1130,
+          left: 40,
+          right: 40,
+          top: 990,
           textAlign: "center",
         }}
       >
@@ -171,18 +174,18 @@ export const HookScene: React.FC<{ readonly hook: GiftReelProps["hook"] }> = ({
           style={{
             fontFamily: SANS,
             fontWeight: 600,
-            fontSize: 46,
+            fontSize: 44,
             letterSpacing: "0.04em",
-            color: BLUSH,
+            color: SAGE,
             opacity: interpolate(
               frame,
-              [BEAT * 4, BEAT * 4 + 8],
+              [LINE1_AT, LINE1_AT + 8],
               [0, 1],
               clamp,
             ),
             translate: interpolate(
               frame,
-              [BEAT * 4, BEAT * 4 + 16],
+              [LINE1_AT, LINE1_AT + 16],
               ["0px 30px", "0px 0px"],
               {
                 ...clamp,
@@ -196,29 +199,54 @@ export const HookScene: React.FC<{ readonly hook: GiftReelProps["hook"] }> = ({
         <Interactive.Div
           name="Hook line 2"
           style={{
-            marginTop: 14,
+            marginTop: 10,
             fontFamily: SERIF,
             fontStyle: "italic",
             fontWeight: 500,
-            fontSize: 92,
-            lineHeight: 1.08,
-            color: ROSE_SOFT,
-            textShadow: "0 0 40px rgba(232,54,93,0.45)",
+            fontSize: 84,
+            lineHeight: 1.1,
+            color: IVORY,
             opacity: interpolate(
               frame,
-              [BEAT * 5, BEAT * 5 + 8],
+              [LINE2_AT, LINE2_AT + 8],
               [0, 1],
               clamp,
             ),
-            scale: interpolate(frame, [BEAT * 5, BEAT * 5 + 18], [0.86, 1], {
-              ...clamp,
-              easing: Easing.spring({ damping: 14, stiffness: 150, mass: 0.9 }),
-              output: "perceptual-scale",
-            }),
-            filter: `blur(${interpolate(frame, [BEAT * 5, BEAT * 5 + 10], [10, 0], clamp)}px)`,
+            translate: interpolate(
+              frame,
+              [LINE2_AT, LINE2_AT + 16],
+              ["0px 30px", "0px 0px"],
+              {
+                ...clamp,
+                easing: Easing.bezier(0.16, 1, 0.3, 1),
+              },
+            ),
           }}
         >
           {hook.line2}
+        </Interactive.Div>
+        <Interactive.Div
+          name="Hook salon"
+          style={{
+            marginTop: 6,
+            fontFamily: DISPLAY,
+            fontWeight: 700,
+            fontSize: 132,
+            lineHeight: 1.1,
+            letterSpacing: "0.05em",
+            ...foil(GOLD_FOIL),
+            backgroundSize: "200% 100%",
+            backgroundPosition: `${interpolate(frame, [NAME_AT, NAME_AT + 60], [100, 0], clamp)}% 0%`,
+            filter: "drop-shadow(0 0 30px rgba(201,169,110,0.35))",
+            opacity: interpolate(frame, [NAME_AT, NAME_AT + 6], [0, 1], clamp),
+            scale: interpolate(frame, [NAME_AT, NAME_AT + 18], [0.8, 1], {
+              ...clamp,
+              easing: Easing.spring({ damping: 13, stiffness: 150, mass: 0.9 }),
+              output: "perceptual-scale",
+            }),
+          }}
+        >
+          {partner.name}
         </Interactive.Div>
       </div>
       <Vignette />

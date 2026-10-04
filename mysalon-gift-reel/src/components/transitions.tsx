@@ -72,7 +72,7 @@ export const starWipe = (
   props,
 });
 
-// ---------- Ribbon wipe: a raspberry satin ribbon sweeps diagonally across
+// ---------- Ribbon wipe: a champagne satin ribbon sweeps diagonally across
 // the screen and the next scene appears behind it. ----------
 type RibbonWipeProps = { band: number };
 
@@ -129,8 +129,8 @@ const RibbonWipe: React.FC<
           width: length,
           height: band,
           rotate: "-45deg",
-          background: `linear-gradient(180deg, ${SATIN.dark} 0%, ${SATIN.mid} 20%, ${SATIN.light} 46%, #ffd9e1 54%, ${SATIN.mid} 80%, ${SATIN.dark} 100%)`,
-          boxShadow: "0 0 50px rgba(10,45,43,0.35)",
+          background: `linear-gradient(180deg, ${SATIN.dark} 0%, ${SATIN.mid} 20%, ${SATIN.light} 46%, #fff3d6 54%, ${SATIN.mid} 80%, ${SATIN.dark} 100%)`,
+          boxShadow: "0 0 50px rgba(8,34,28,0.35)",
         }}
       >
         <div
@@ -140,7 +140,7 @@ const RibbonWipe: React.FC<
             right: 0,
             top: band * 0.16,
             height: 2,
-            backgroundColor: "rgba(255,240,244,0.6)",
+            backgroundColor: "rgba(255,250,235,0.6)",
           }}
         />
         <div
@@ -150,7 +150,7 @@ const RibbonWipe: React.FC<
             right: 0,
             bottom: band * 0.16,
             height: 2,
-            backgroundColor: "rgba(255,240,244,0.6)",
+            backgroundColor: "rgba(255,250,235,0.6)",
           }}
         />
       </div>

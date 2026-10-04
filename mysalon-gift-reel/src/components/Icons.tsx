@@ -77,7 +77,7 @@ export const Heart: React.FC<{
   </svg>
 );
 
-// Satin bow in raspberry.
+// Champagne satin bow.
 export const Bow: React.FC<{ readonly width: number; readonly id: string }> = ({
   width,
   id,
@@ -124,14 +124,14 @@ export const Bow: React.FC<{ readonly width: number; readonly id: string }> = ({
     <path
       d="M100 62 C82 40 50 34 42 50"
       fill="none"
-      stroke="rgba(255,240,244,0.65)"
+      stroke="rgba(255,250,235,0.65)"
       strokeWidth="3"
       strokeLinecap="round"
     />
     <path
       d="M100 62 C118 40 150 34 158 50"
       fill="none"
-      stroke="rgba(255,240,244,0.65)"
+      stroke="rgba(255,250,235,0.65)"
       strokeWidth="3"
       strokeLinecap="round"
     />
@@ -146,3 +146,11 @@ export const Bow: React.FC<{ readonly width: number; readonly id: string }> = ({
     />
   </svg>
 );
+
+// Text filled with a metallic gradient.
+export const foil = (gradient: string): React.CSSProperties => ({
+  backgroundImage: gradient,
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  color: "transparent",
+});

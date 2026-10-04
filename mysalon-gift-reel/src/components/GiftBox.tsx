@@ -1,10 +1,10 @@
 import { Easing, interpolate, random, useCurrentFrame } from "remotion";
-import { ROSE, ROSE_SOFT, SATIN_BAND, TEAL_SOFT } from "../theme";
+import { GOLD, GOLD_LIGHT, SAGE, SATIN_BAND } from "../theme";
 import { Bow } from "./Icons";
 import { Star } from "./Overlays";
 import { StarPattern } from "./Pattern";
 
-// Front face of the gift box: MySalon teal with a raspberry satin ribbon.
+// Front face of the gift box: deep emerald with a champagne satin ribbon.
 export const BoxBody: React.FC<{
   readonly width: number;
   readonly height: number;
@@ -17,16 +17,11 @@ export const BoxBody: React.FC<{
       borderRadius: "6px 6px 18px 18px",
       overflow: "hidden",
       background:
-        "linear-gradient(100deg, #17736c 0%, #0f5c57 45%, #0a3f3b 100%)",
-      boxShadow: "0 50px 80px rgba(10,45,43,0.35)",
+        "linear-gradient(100deg, #2a6152 0%, #1a4a40 45%, #11372f 100%)",
+      boxShadow: "0 50px 80px rgba(8,34,28,0.35)",
     }}
   >
-    <StarPattern
-      id="box-body-pattern"
-      color={TEAL_SOFT}
-      opacity={0.16}
-      size={56}
-    />
+    <StarPattern id="box-body-pattern" color={GOLD} opacity={0.16} size={56} />
     <div
       style={{
         position: "absolute",
@@ -67,9 +62,9 @@ export const BoxLid: React.FC<{
         borderRadius: 14,
         overflow: "hidden",
         background:
-          "linear-gradient(100deg, #1b7d75 0%, #13665f 45%, #0d4a45 100%)",
+          "linear-gradient(100deg, #2f6a5a 0%, #22574a 45%, #163f35 100%)",
         boxShadow:
-          "0 18px 30px rgba(10,45,43,0.35), inset 0 2px 0 rgba(255,255,255,0.14)",
+          "0 18px 30px rgba(8,34,28,0.35), inset 0 2px 0 rgba(255,255,255,0.12)",
       }}
     >
       <div
@@ -86,9 +81,9 @@ export const BoxLid: React.FC<{
   </div>
 );
 
-const CONFETTI = [ROSE, ROSE_SOFT, TEAL_SOFT, "#ffffff"];
+const CONFETTI = [GOLD, GOLD_LIGHT, "#fffaf0", SAGE];
 
-// Confetti and little stars bursting out of the box from `at`.
+// Gold confetti and little stars bursting out of the box from `at`.
 export const Burst: React.FC<{
   readonly at: number;
   readonly x: number;
@@ -134,11 +129,11 @@ export const Burst: React.FC<{
                 extrapolateRight: "clamp",
               }),
               filter: isStar
-                ? "drop-shadow(0 0 8px rgba(244,124,151,0.9))"
+                ? "drop-shadow(0 0 8px rgba(246,232,198,0.9))"
                 : undefined,
             }}
           >
-            {isStar ? <Star size={size} color={ROSE_SOFT} /> : null}
+            {isStar ? <Star size={size} color={GOLD_LIGHT} /> : null}
           </div>
         );
       })}

@@ -9,10 +9,10 @@ import { Backdrop } from "../components/Backdrop";
 import { Heart } from "../components/Icons";
 import { Twinkles } from "../components/Overlays";
 import { Sfx } from "../components/Sfx";
-import { SANS, SCRIPT, SERIF } from "../fonts";
+import { DISPLAY, SCRIPT, SERIF } from "../fonts";
 import type { GiftReelProps } from "../schema";
 import { BEAT } from "../timing";
-import { BLUSH, ROSE_SOFT, TEAL_INK } from "../theme";
+import { EMERALD_INK, GOLD, GOLD_LIGHT, IVORY } from "../theme";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const NAME_AT = [3, 25, 47];
@@ -37,7 +37,7 @@ const Name: React.FC<{ readonly text: string; readonly at: number }> = ({
         fontFamily: SCRIPT,
         fontSize: Math.min(132, Math.round(2400 / text.length)),
         lineHeight: 1.18,
-        color: BLUSH,
+        color: IVORY,
         whiteSpace: "nowrap",
         padding: "0 30px",
         clipPath: `inset(-20% ${100 - write}% -20% 0%)`,
@@ -69,8 +69,8 @@ export const ForWhomScene: React.FC<{
       <Backdrop
         image={forWhom.backdrop}
         blur={28}
-        tint="rgba(10,45,43,0.88)"
-        base={TEAL_INK}
+        tint="rgba(8,34,28,0.86)"
+        base={EMERALD_INK}
       />
       {NAME_AT.map((at) => (
         <Sfx key={at} name="tick" at={at} volume={0.5} />
@@ -83,7 +83,7 @@ export const ForWhomScene: React.FC<{
           { x: 18, y: 72 },
           { x: 84, y: 70 },
         ]}
-        color={ROSE_SOFT}
+        color={GOLD}
       />
       <AbsoluteFill
         style={{ alignItems: "center", paddingTop: 420, textAlign: "center" }}
@@ -91,12 +91,12 @@ export const ForWhomScene: React.FC<{
         <Interactive.Div
           name="For whom label"
           style={{
-            fontFamily: SANS,
-            fontWeight: 800,
-            fontSize: 42,
+            fontFamily: DISPLAY,
+            fontWeight: 700,
+            fontSize: 46,
             letterSpacing: "0.32em",
             marginRight: "-0.32em",
-            color: ROSE_SOFT,
+            color: GOLD,
             marginBottom: 26,
             opacity: interpolate(frame, [0, 8], [0, 1], clamp),
           }}
@@ -114,7 +114,7 @@ export const ForWhomScene: React.FC<{
         >
           <path
             d="M20 30 L262 30"
-            stroke={ROSE_SOFT}
+            stroke={GOLD}
             strokeWidth="2.4"
             strokeLinecap="round"
             pathLength={1}
@@ -123,7 +123,7 @@ export const ForWhomScene: React.FC<{
           />
           <path
             d="M358 30 L600 30"
-            stroke={ROSE_SOFT}
+            stroke={GOLD}
             strokeWidth="2.4"
             strokeLinecap="round"
             pathLength={1}
@@ -150,7 +150,7 @@ export const ForWhomScene: React.FC<{
             }}
           >
             <foreignObject x="286" y="6" width="48" height="48">
-              <Heart size={48} color={ROSE_SOFT} />
+              <Heart size={48} color={GOLD} />
             </foreignObject>
           </g>
         </svg>
@@ -163,7 +163,7 @@ export const ForWhomScene: React.FC<{
             fontWeight: 400,
             fontSize: 62,
             lineHeight: 1.1,
-            color: "rgba(253,244,241,0.86)",
+            color: "rgba(248,243,234,0.86)",
             opacity: interpolate(
               frame,
               [PAYOFF_AT, PAYOFF_AT + 8],
@@ -191,8 +191,8 @@ export const ForWhomScene: React.FC<{
             fontWeight: 500,
             fontSize: 112,
             lineHeight: 1.1,
-            color: ROSE_SOFT,
-            textShadow: "0 0 40px rgba(232,54,93,0.45)",
+            color: GOLD_LIGHT,
+            textShadow: "0 0 40px rgba(201,169,110,0.45)",
             opacity: interpolate(
               frame,
               [PAYOFF2_AT, PAYOFF2_AT + 8],

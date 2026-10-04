@@ -1,7 +1,7 @@
 {
   "name": "mysalon-gift-reel",
   "version": "1.0.0",
-  "description": "Vertical (9:16) MySalon.ma gift card reel featuring OYA MUSE treatments, built with Remotion",
+  "description": "Vertical (9:16) OYA MUSE gift card reel, booked through MySalon.ma, built with Remotion",
   "private": true,
   "type": "module",
   "scripts": {

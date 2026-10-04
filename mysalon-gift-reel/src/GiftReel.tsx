@@ -22,10 +22,10 @@ import { HowScene } from "./scenes/HowScene";
 import { OfferScene } from "./scenes/OfferScene";
 import { RevealScene } from "./scenes/RevealScene";
 import type { GiftReelProps } from "./schema";
-import { ROSE, ROSE_SOFT, TEAL_INK } from "./theme";
+import { EMERALD_INK, GOLD } from "./theme";
 
 const easing = Easing.bezier(0.65, 0, 0.35, 1);
-const pinkGlow = "rgba(244,124,151,0.95)";
+const goldGlow = "rgba(233,213,166,0.95)";
 
 // Scene lengths include the overlap with the next scene (the transition), so
 // that every scene starts on a downbeat of the 120 BPM soundtrack (60 frames
@@ -65,16 +65,16 @@ export const GiftReel: React.FC<GiftReelProps> = ({
   const { durationInFrames } = useVideoConfig();
 
   return (
-    <AbsoluteFill style={{ backgroundColor: TEAL_INK }}>
+    <AbsoluteFill style={{ backgroundColor: EMERALD_INK }}>
       <TransitionSeries>
         <TransitionSeries.Sequence
           durationInFrames={SCENES.hook.duration}
           name="Hook"
         >
-          <HookScene hook={hook} />
+          <HookScene hook={hook} partner={partner} />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
-          presentation={starWipe({ edgeColor: ROSE_SOFT, glow: pinkGlow })}
+          presentation={starWipe({ edgeColor: GOLD, glow: goldGlow })}
           timing={linearTiming({
             durationInFrames: SCENES.hook.overlap,
             easing,
@@ -84,7 +84,7 @@ export const GiftReel: React.FC<GiftReelProps> = ({
           durationInFrames={SCENES.reveal.duration}
           name="Reveal"
         >
-          <RevealScene reveal={reveal} card={card} partnerLogo={partner.logo} />
+          <RevealScene reveal={reveal} card={card} partner={partner} />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
           presentation={blurZoom()}
@@ -110,7 +110,7 @@ export const GiftReel: React.FC<GiftReelProps> = ({
           durationInFrames={SCENES.offer.duration}
           name="Offer"
         >
-          <OfferScene offer={offer} partnerLogo={partner.logo} />
+          <OfferScene offer={offer} partner={partner} />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
           presentation={slide({ direction: "from-bottom" })}
@@ -126,7 +126,7 @@ export const GiftReel: React.FC<GiftReelProps> = ({
           <HowScene how={how} partner={partner} site={site} />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
-          presentation={irisGlow({ edgeColor: ROSE, glow: pinkGlow })}
+          presentation={irisGlow({ edgeColor: GOLD, glow: goldGlow })}
           timing={linearTiming({
             durationInFrames: SCENES.how.overlap,
             easing,
@@ -136,7 +136,7 @@ export const GiftReel: React.FC<GiftReelProps> = ({
           durationInFrames={SCENES.cta.duration}
           name="CTA"
         >
-          <CtaScene cta={cta} card={card} partnerLogo={partner.logo} />
+          <CtaScene cta={cta} card={card} partner={partner} />
         </TransitionSeries.Sequence>
       </TransitionSeries>
       {musicFile ? (
@@ -147,7 +147,7 @@ export const GiftReel: React.FC<GiftReelProps> = ({
             interpolate(
               frame,
               [0, 6, durationInFrames - 20, durationInFrames - 1],
-              [0, 1, 1, 0],
+              [0, 0.85, 0.85, 0],
               {
                 extrapolateLeft: "clamp",
                 extrapolateRight: "clamp",

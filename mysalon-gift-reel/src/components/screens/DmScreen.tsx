@@ -1,13 +1,12 @@
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
 import { SANS } from "../../fonts";
 import {
+  EMERALD,
+  EMERALD_DEEP,
+  GOLD,
+  GOLD_LIGHT,
   INK,
   MUTED,
-  ROSE,
-  ROSE_SOFT,
-  TEAL,
-  TEAL_DEEP,
-  TEAL_SOFT,
 } from "../../theme";
 import { StarMark } from "../Brand";
 import { CheckIcon, GiftIcon, SendIcon } from "../Icons";
@@ -36,7 +35,7 @@ const TypingDots: React.FC = () => {
         gap: 8,
         padding: "20px 24px",
         borderRadius: 26,
-        backgroundColor: "#efe7e3",
+        backgroundColor: "#efe8dc",
       }}
     >
       {[0, 1, 2].map((i) => (
@@ -92,7 +91,7 @@ export const DmScreen: React.FC<{
   });
 
   return (
-    <AbsoluteFill style={{ backgroundColor: "#fdfaf8" }}>
+    <AbsoluteFill style={{ backgroundColor: "#fbf8f2" }}>
       <div
         style={{
           position: "absolute",
@@ -107,8 +106,8 @@ export const DmScreen: React.FC<{
           alignItems: "center",
           gap: 16,
           paddingLeft: 22,
-          borderBottom: "1px solid rgba(15,92,87,0.12)",
-          backgroundColor: "#fdfaf8",
+          borderBottom: "1px solid rgba(26,74,64,0.12)",
+          backgroundColor: "#fbf8f2",
           zIndex: 2,
         }}
       >
@@ -129,13 +128,13 @@ export const DmScreen: React.FC<{
             width: 62,
             height: 62,
             borderRadius: 31,
-            backgroundColor: TEAL,
+            backgroundColor: EMERALD,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <StarMark size={30} color="#ffffff" />
+          <StarMark size={30} color={GOLD} />
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <div
@@ -153,7 +152,7 @@ export const DmScreen: React.FC<{
               fontFamily: SANS,
               fontWeight: 500,
               fontSize: 18,
-              color: TEAL,
+              color: EMERALD,
             }}
           >
             En ligne
@@ -178,7 +177,7 @@ export const DmScreen: React.FC<{
             maxWidth: 340,
             padding: "18px 22px",
             borderRadius: "26px 26px 8px 26px",
-            backgroundColor: TEAL,
+            backgroundColor: EMERALD,
             color: "#ffffff",
             fontFamily: SANS,
             fontWeight: 600,
@@ -213,7 +212,7 @@ export const DmScreen: React.FC<{
                 maxWidth: 340,
                 padding: "18px 22px",
                 borderRadius: "26px 26px 26px 8px",
-                backgroundColor: "#efe7e3",
+                backgroundColor: "#efe8dc",
                 color: INK,
                 fontFamily: SANS,
                 fontWeight: 600,
@@ -230,13 +229,13 @@ export const DmScreen: React.FC<{
                 overflow: "hidden",
                 backgroundColor: "#ffffff",
                 boxShadow:
-                  "0 12px 30px rgba(10,45,43,0.14), 0 0 0 1px rgba(15,92,87,0.15)",
+                  "0 12px 30px rgba(8,34,28,0.14), 0 0 0 1px rgba(26,74,64,0.15)",
               }}
             >
               <div
                 style={{
                   height: 92,
-                  background: `linear-gradient(120deg, ${TEAL} 0%, ${TEAL_DEEP} 100%)`,
+                  background: `linear-gradient(120deg, ${EMERALD} 0%, ${EMERALD_DEEP} 100%)`,
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
@@ -244,7 +243,7 @@ export const DmScreen: React.FC<{
                   padding: "0 22px",
                 }}
               >
-                <GiftIcon size={38} color={ROSE_SOFT} />
+                <GiftIcon size={38} color={GOLD} />
                 <div>
                   <div
                     style={{
@@ -263,7 +262,7 @@ export const DmScreen: React.FC<{
                       fontFamily: SANS,
                       fontWeight: 600,
                       fontSize: 19,
-                      color: TEAL_SOFT,
+                      color: GOLD_LIGHT,
                     }}
                   >
                     {giftDetail}
@@ -276,8 +275,8 @@ export const DmScreen: React.FC<{
                     position: "relative",
                     height: 70,
                     borderRadius: 35,
-                    backgroundColor: paid ? TEAL : ROSE,
-                    color: "#ffffff",
+                    backgroundColor: paid ? EMERALD : GOLD,
+                    color: paid ? "#ffffff" : EMERALD_DEEP,
                     display: "flex",
                     flexDirection: "row",
                     alignItems: "center",
@@ -297,9 +296,9 @@ export const DmScreen: React.FC<{
                     ),
                   }}
                 >
-                  {paid ? <CheckIcon size={30} color="#ffffff" /> : null}
+                  {paid ? <CheckIcon size={30} color={GOLD} /> : null}
                   {paid ? paidLabel : payLabel}
-                  <TapRing at={tapAt} color={ROSE} />
+                  <TapRing at={tapAt} color={EMERALD} />
                 </div>
               </div>
             </div>
@@ -316,11 +315,11 @@ export const DmScreen: React.FC<{
               gap: 12,
               padding: "14px 22px",
               borderRadius: 999,
-              backgroundColor: "rgba(15,92,87,0.1)",
+              backgroundColor: "rgba(26,74,64,0.1)",
               fontFamily: SANS,
               fontWeight: 700,
               fontSize: 22,
-              color: TEAL_DEEP,
+              color: EMERALD_DEEP,
               ...pop(frame, sentAt),
             }}
           >
@@ -329,13 +328,13 @@ export const DmScreen: React.FC<{
                 width: 34,
                 height: 34,
                 borderRadius: 17,
-                backgroundColor: TEAL,
+                backgroundColor: EMERALD,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <CheckIcon size={22} color="#ffffff" />
+              <CheckIcon size={22} color={GOLD} />
             </div>
             {sent}
           </div>
@@ -350,7 +349,7 @@ export const DmScreen: React.FC<{
           height: 70,
           borderRadius: 35,
           backgroundColor: "#ffffff",
-          boxShadow: "0 0 0 1px rgba(15,92,87,0.14)",
+          boxShadow: "0 0 0 1px rgba(26,74,64,0.14)",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
@@ -368,7 +367,7 @@ export const DmScreen: React.FC<{
             width: 50,
             height: 50,
             borderRadius: 25,
-            backgroundColor: TEAL,
+            backgroundColor: EMERALD,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

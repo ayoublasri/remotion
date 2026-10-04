@@ -1,13 +1,12 @@
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
-import { SANS } from "../../fonts";
+import { DISPLAY, SANS } from "../../fonts";
 import {
+  EMERALD,
+  EMERALD_DEEP,
+  GOLD,
+  GOLD_LIGHT,
   INK,
   MUTED,
-  ROSE,
-  ROSE_SOFT,
-  TEAL,
-  TEAL_DEEP,
-  TEAL_SOFT,
 } from "../../theme";
 import { StarMark } from "../Brand";
 import { CheckIcon } from "../Icons";
@@ -82,7 +81,7 @@ export const BookingScreen: React.FC<{
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: "#fdfaf8",
+        backgroundColor: "#fbf8f2",
         translate: interpolate(
           frame,
           [enterAt, enterAt + 16],
@@ -112,7 +111,7 @@ export const BookingScreen: React.FC<{
           color: MUTED,
         }}
       >
-        <StarMark size={16} color={TEAL} />
+        <StarMark size={16} color={EMERALD} />
         {site}
       </div>
       <div style={{ position: "absolute", left: 26, right: 26, top: 130 }}>
@@ -123,22 +122,23 @@ export const BookingScreen: React.FC<{
             alignItems: "center",
             gap: 16,
             paddingBottom: 22,
-            borderBottom: "1px solid rgba(15,92,87,0.12)",
+            borderBottom: "1px solid rgba(26,74,64,0.12)",
           }}
         >
           <LogoBadge
             image={partnerLogo}
             size={76}
             ring={false}
-            ringColor={TEAL}
+            ringColor={EMERALD}
           />
           <div>
             <div
               style={{
-                fontFamily: SANS,
-                fontWeight: 800,
-                fontSize: 30,
-                color: INK,
+                fontFamily: DISPLAY,
+                fontWeight: 700,
+                fontSize: 32,
+                letterSpacing: "0.06em",
+                color: EMERALD_DEEP,
               }}
             >
               {partnerName}
@@ -162,7 +162,7 @@ export const BookingScreen: React.FC<{
               height: 76,
               borderRadius: 20,
               backgroundColor: "#ffffff",
-              border: `3px solid ${valid ? TEAL : ROSE_SOFT}`,
+              border: `3px solid ${valid ? EMERALD : GOLD}`,
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
@@ -180,7 +180,7 @@ export const BookingScreen: React.FC<{
               <span
                 style={{
                   opacity: caretOn ? 1 : 0,
-                  color: ROSE,
+                  color: GOLD,
                   fontWeight: 500,
                 }}
               >
@@ -193,7 +193,7 @@ export const BookingScreen: React.FC<{
                   width: 46,
                   height: 46,
                   borderRadius: 23,
-                  backgroundColor: TEAL,
+                  backgroundColor: EMERALD,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -219,7 +219,7 @@ export const BookingScreen: React.FC<{
               fontFamily: SANS,
               fontWeight: 700,
               fontSize: 21,
-              color: TEAL,
+              color: EMERALD,
               opacity: interpolate(frame, [typeTo + 4, typeTo + 10], [0, 1], {
                 extrapolateLeft: "clamp",
                 extrapolateRight: "clamp",
@@ -242,10 +242,10 @@ export const BookingScreen: React.FC<{
                     flex: 1,
                     height: 96,
                     borderRadius: 20,
-                    backgroundColor: selected ? TEAL : "#ffffff",
+                    backgroundColor: selected ? EMERALD : "#ffffff",
                     boxShadow: selected
                       ? "none"
-                      : "0 0 0 1px rgba(15,92,87,0.16)",
+                      : "0 0 0 1px rgba(26,74,64,0.16)",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -258,7 +258,7 @@ export const BookingScreen: React.FC<{
                       fontFamily: SANS,
                       fontWeight: 600,
                       fontSize: 19,
-                      color: selected ? TEAL_SOFT : MUTED,
+                      color: selected ? GOLD_LIGHT : MUTED,
                     }}
                   >
                     {day}
@@ -298,10 +298,10 @@ export const BookingScreen: React.FC<{
                     width: 128,
                     height: 62,
                     borderRadius: 16,
-                    backgroundColor: selected ? TEAL : "#ffffff",
+                    backgroundColor: selected ? EMERALD : "#ffffff",
                     boxShadow: selected
                       ? "none"
-                      : "0 0 0 1px rgba(15,92,87,0.16)",
+                      : "0 0 0 1px rgba(26,74,64,0.16)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -313,7 +313,7 @@ export const BookingScreen: React.FC<{
                 >
                   {s}
                   {i === slotIndex ? (
-                    <TapRing at={slotAt} color={ROSE} />
+                    <TapRing at={slotAt} color={GOLD} />
                   ) : null}
                 </div>
               );
@@ -329,7 +329,7 @@ export const BookingScreen: React.FC<{
           bottom: 56,
           height: 84,
           borderRadius: 42,
-          backgroundColor: TEAL,
+          backgroundColor: EMERALD,
           color: "#ffffff",
           display: "flex",
           alignItems: "center",
@@ -350,7 +350,7 @@ export const BookingScreen: React.FC<{
         }}
       >
         Confirmer
-        <TapRing at={confirmAt} color={ROSE} />
+        <TapRing at={confirmAt} color={GOLD} />
       </div>
       <div
         style={{
@@ -360,8 +360,8 @@ export const BookingScreen: React.FC<{
           top: 70,
           borderRadius: 28,
           padding: "20px 22px",
-          backgroundColor: TEAL_DEEP,
-          boxShadow: "0 24px 50px rgba(10,45,43,0.4)",
+          backgroundColor: EMERALD_DEEP,
+          boxShadow: "0 24px 50px rgba(8,34,28,0.4)",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
@@ -387,14 +387,14 @@ export const BookingScreen: React.FC<{
             width: 64,
             height: 64,
             borderRadius: 32,
-            backgroundColor: ROSE,
+            backgroundColor: GOLD,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
           }}
         >
-          <CheckIcon size={36} color="#ffffff" />
+          <CheckIcon size={36} color={EMERALD_DEEP} />
         </div>
         <div>
           <div
@@ -413,7 +413,7 @@ export const BookingScreen: React.FC<{
               fontFamily: SANS,
               fontWeight: 600,
               fontSize: 21,
-              color: TEAL_SOFT,
+              color: GOLD_LIGHT,
             }}
           >
             {confirmDetail}

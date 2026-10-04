@@ -2,11 +2,20 @@ import { loadFont } from "@remotion/fonts";
 import { staticFile } from "remotion";
 
 // Bundled in public/fonts (SIL Open Font License): renders offline.
-// Playfair Display and Inter are the MySalon.ma brand fonts; Great Vibes is
-// the handwriting on the gift card.
+// Cinzel echoes the OYA MUSE lettering, Playfair Display and Inter are the
+// MySalon.ma brand fonts, Great Vibes is the handwriting on the gift card.
+export const DISPLAY = "Cinzel";
 export const SERIF = "Playfair Display";
 export const SANS = "Inter";
 export const SCRIPT = "Great Vibes";
+
+for (const weight of ["400", "600", "700"]) {
+  loadFont({
+    family: DISPLAY,
+    url: staticFile(`fonts/cinzel-latin-${weight}-normal.woff2`),
+    weight,
+  });
+}
 
 loadFont({
   family: SERIF,

@@ -7,7 +7,14 @@ import {
   useCurrentFrame,
 } from "remotion";
 import { SANS } from "../../fonts";
-import { INK, MUTED, ROSE, TEAL, TEAL_DEEP, TEAL_INK } from "../../theme";
+import {
+  EMERALD,
+  EMERALD_DEEP,
+  EMERALD_INK,
+  GOLD,
+  INK,
+  MUTED,
+} from "../../theme";
 import { StarMark } from "../Brand";
 
 // Step 2: the person you chose receives the gift and its code on their phone.
@@ -43,7 +50,7 @@ export const LockScreen: React.FC<{
   );
 
   return (
-    <AbsoluteFill style={{ backgroundColor: TEAL_INK }}>
+    <AbsoluteFill style={{ backgroundColor: EMERALD_INK }}>
       <Img
         src={staticFile(`images/${wallpaper}`)}
         style={{
@@ -58,7 +65,7 @@ export const LockScreen: React.FC<{
       <AbsoluteFill
         style={{
           background:
-            "linear-gradient(180deg, rgba(10,45,43,0.6) 0%, rgba(10,45,43,0.25) 45%, rgba(10,45,43,0.72) 100%)",
+            "linear-gradient(180deg, rgba(8,34,28,0.6) 0%, rgba(8,34,28,0.25) 45%, rgba(8,34,28,0.72) 100%)",
         }}
       />
       <div
@@ -94,7 +101,7 @@ export const LockScreen: React.FC<{
           top: 380,
           borderRadius: 32,
           padding: "20px 22px 24px",
-          backgroundColor: "rgba(253,250,248,0.95)",
+          backgroundColor: "rgba(253,249,241,0.95)",
           boxShadow: "0 24px 50px rgba(0,0,0,0.3)",
           opacity: interpolate(frame, [notifAt, notifAt + 6], [0, 1], {
             extrapolateLeft: "clamp",
@@ -125,13 +132,13 @@ export const LockScreen: React.FC<{
               width: 44,
               height: 44,
               borderRadius: 12,
-              backgroundColor: TEAL,
+              backgroundColor: EMERALD,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <StarMark size={24} color="#ffffff" />
+            <StarMark size={24} color={GOLD} />
           </div>
           <div
             style={{
@@ -175,7 +182,7 @@ export const LockScreen: React.FC<{
             fontWeight: 500,
             fontSize: 23,
             lineHeight: 1.35,
-            color: "#4a4744",
+            color: "#4a4842",
           }}
         >
           {body}
@@ -186,16 +193,16 @@ export const LockScreen: React.FC<{
             display: "inline-block",
             padding: "12px 24px",
             borderRadius: 16,
-            border: `3px dashed ${ROSE}`,
-            backgroundColor: "rgba(232,54,93,0.08)",
+            border: `3px dashed ${GOLD}`,
+            backgroundColor: "rgba(201,169,110,0.08)",
             fontFamily: SANS,
             fontWeight: 800,
             fontSize: 32,
             letterSpacing: "0.08em",
-            color: TEAL_DEEP,
+            color: EMERALD_DEEP,
             scale: String(pulse),
             transformOrigin: "0% 50%",
-            boxShadow: `0 0 ${36 * glow}px rgba(232,54,93,${0.7 * glow})`,
+            boxShadow: `0 0 ${36 * glow}px rgba(201,169,110,${0.7 * glow})`,
           }}
         >
           {code}
