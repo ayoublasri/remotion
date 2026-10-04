@@ -5,6 +5,7 @@ import {
   interpolate,
   useCurrentFrame,
 } from "remotion";
+import { GiftCard } from "../components/GiftCard";
 import { StarPattern } from "../components/Pattern";
 import { Phone, PHONE_WIDTH } from "../components/Phone";
 import { BookingScreen } from "../components/screens/BookingScreen";
@@ -12,30 +13,32 @@ import { DmScreen } from "../components/screens/DmScreen";
 import { LockScreen } from "../components/screens/LockScreen";
 import { Sfx } from "../components/Sfx";
 import { DISPLAY, SANS, SERIF } from "../fonts";
-import type { GiftReelProps, Partner } from "../schema";
+import type { GiftCardContent, GiftReelProps, Partner } from "../schema";
 import { BAR } from "../timing";
 import { EMERALD, EMERALD_DEEP, GOLD, LIGHT_BG, MUTED } from "../theme";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
-// One bar per step: two seconds each.
-const STEP_AT = [0, BAR, BAR * 2];
+// Two bars per step: four seconds each, nothing rushed.
+const STEP_AT = [0, BAR * 2, BAR * 4];
 const PHONE_LEFT = (1080 - PHONE_WIDTH) / 2;
 const PHONE_TOP = 470;
 
 const T = {
-  request: 4,
-  reply: 20,
-  tap: 34,
-  sent: 44,
+  keyword: 6,
+  reply: 26,
+  pick: 58,
+  pay: 86,
+  sent: 102,
   swap: STEP_AT[1],
   notif: STEP_AT[1] + 10,
-  pulse: STEP_AT[1] + 26,
+  pulse: STEP_AT[1] + 28,
+  card: STEP_AT[1] + 56,
   book: STEP_AT[2],
-  typeFrom: STEP_AT[2] + 10,
-  typeTo: STEP_AT[2] + 20,
-  slot: STEP_AT[2] + 28,
-  confirm: STEP_AT[2] + 38,
+  typeFrom: STEP_AT[2] + 14,
+  typeTo: STEP_AT[2] + 30,
+  slot: STEP_AT[2] + 54,
+  confirm: STEP_AT[2] + 76,
 };
 
 const Caption: React.FC<{
@@ -60,13 +63,13 @@ const Caption: React.FC<{
         textAlign: "center",
         opacity: interpolate(
           frame,
-          [at, at + 5, out - 2, out + 3],
+          [at, at + 6, out - 2, out + 3],
           [0, 1, 1, 0],
           clamp,
         ),
         translate: interpolate(
           frame,
-          [at, at + 12, out - 2, out + 5],
+          [at, at + 14, out - 2, out + 5],
           ["0px 40px", "0px 0px", "0px 0px", "0px -40px"],
           {
             ...clamp,
@@ -101,7 +104,7 @@ const Caption: React.FC<{
             boxSizing: "border-box",
             boxShadow:
               "0 10px 24px rgba(8,34,28,0.25), inset 0 0 0 2px rgba(201,169,110,0.7)",
-            scale: interpolate(frame, [at, at + 10], [0.4, 1], {
+            scale: interpolate(frame, [at, at + 12], [0.4, 1], {
               ...clamp,
               easing: Easing.out(Easing.back(2)),
             }),
@@ -168,15 +171,17 @@ const Tag: React.FC<{
   </div>
 );
 
-// Bars 7-9: how it works in three two-second steps, on two phones. You send
-// the keyword by DM and pay, she gets her code, she books when she likes.
+// Bars 9-14: how it works, in three four-second steps on two phones. You
+// write the keyword, pick the treatment and pay in the chat; she receives
+// her digital gift card; she books when she likes.
 export const HowScene: React.FC<{
   readonly how: GiftReelProps["how"];
+  readonly card: GiftCardContent;
   readonly partner: Partner;
   readonly site: string;
-}> = ({ how, partner, site }) => {
+}> = ({ how, card, partner, site }) => {
   const frame = useCurrentFrame();
-  const swap = interpolate(frame, [T.swap, T.swap + 12], [0, 1], {
+  const swap = interpolate(frame, [T.swap, T.swap + 14], [0, 1], {
     ...clamp,
     easing: Easing.bezier(0.65, 0, 0.35, 1),
   });
@@ -188,12 +193,14 @@ export const HowScene: React.FC<{
       style={{ background: LIGHT_BG, overflow: "hidden" }}
     >
       <StarPattern id="how-pattern" color={GOLD} opacity={0.08} size={120} />
-      <Sfx name="pop" at={T.request} volume={0.45} />
+      <Sfx name="pop" at={T.keyword} volume={0.45} />
       <Sfx name="pop" at={T.reply} volume={0.35} />
-      <Sfx name="tick" at={T.tap} volume={0.55} />
+      <Sfx name="tick" at={T.pick} volume={0.5} />
+      <Sfx name="tick" at={T.pay} volume={0.55} />
       <Sfx name="success" at={T.sent} volume={0.3} />
       <Sfx name="whoosh" at={T.swap} volume={0.4} />
       <Sfx name="ding" at={T.notif} volume={0.55} />
+      <Sfx name="sparkle" at={T.card} volume={0.35} />
       <Sfx name="whoosh" at={T.book} volume={0.35} />
       <Sfx name="tick" at={T.typeTo + 2} volume={0.45} />
       <Sfx name="tick" at={T.slot} volume={0.45} />
@@ -230,16 +237,19 @@ export const HowScene: React.FC<{
           time={how.lockTime}
         >
           <DmScreen
-            request={how.dmKeyword}
+            keyword={how.dmKeyword}
             reply={how.dmReply}
-            giftLabel={how.giftLabel}
-            giftDetail={how.giftDetail}
+            salonLine={`${partner.name} · ${partner.city}`}
+            salonLogo={partner.logo}
+            options={how.options}
+            pickIndex={how.pickIndex}
             payLabel={how.payLabel}
             paidLabel={how.paidLabel}
             sent={how.dmSent}
-            requestAt={T.request}
+            keywordAt={T.keyword}
             replyAt={T.reply}
-            tapAt={T.tap}
+            pickAt={T.pick}
+            payAt={T.pay}
             sentAt={T.sent}
           />
         </Phone>
@@ -270,7 +280,21 @@ export const HowScene: React.FC<{
               code={how.code}
               notifAt={T.notif}
               pulseAt={T.pulse}
-            />
+              cardAt={T.card}
+            >
+              <div style={{ scale: "0.64", transformOrigin: "0% 0%" }}>
+                <GiftCard
+                  id="phone-card"
+                  content={card}
+                  partner={partner}
+                  recipients={[how.recipient]}
+                  writeAt={T.card + 14}
+                  writeEvery={1000}
+                  shineAt={T.card + 30}
+                  recipientSize={64}
+                />
+              </div>
+            </LockScreen>
             {frame >= T.book ? (
               <BookingScreen
                 partnerLogo={partner.logo}

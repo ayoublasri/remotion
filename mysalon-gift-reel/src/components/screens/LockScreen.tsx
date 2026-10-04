@@ -17,7 +17,10 @@ import {
 } from "../../theme";
 import { StarMark } from "../Brand";
 
-// Step 2: the person you chose receives the gift and its code on their phone.
+const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
+
+// Step 2: the person you chose receives the gift on her phone: a notification
+// with her code, then the digital gift card itself (passed as children).
 export const LockScreen: React.FC<{
   readonly wallpaper: string;
   readonly time: string;
@@ -27,26 +30,32 @@ export const LockScreen: React.FC<{
   readonly code: string;
   readonly notifAt: number;
   readonly pulseAt: number;
-}> = ({ wallpaper, time, date, title, body, code, notifAt, pulseAt }) => {
+  readonly cardAt: number;
+  readonly children: React.ReactNode;
+}> = ({
+  wallpaper,
+  time,
+  date,
+  title,
+  body,
+  code,
+  notifAt,
+  pulseAt,
+  cardAt,
+  children,
+}) => {
   const frame = useCurrentFrame();
   const pulse = interpolate(
     frame,
     [pulseAt, pulseAt + 6, pulseAt + 14],
     [1, 1.1, 1],
-    {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-      easing: Easing.inOut(Easing.quad),
-    },
+    { ...clamp, easing: Easing.inOut(Easing.quad) },
   );
   const glow = interpolate(
     frame,
     [pulseAt, pulseAt + 6, pulseAt + 30],
     [0, 1, 0.45],
-    {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    },
+    clamp,
   );
 
   return (
@@ -65,7 +74,7 @@ export const LockScreen: React.FC<{
       <AbsoluteFill
         style={{
           background:
-            "linear-gradient(180deg, rgba(8,34,28,0.6) 0%, rgba(8,34,28,0.25) 45%, rgba(8,34,28,0.72) 100%)",
+            "linear-gradient(180deg, rgba(8,34,28,0.6) 0%, rgba(8,34,28,0.3) 40%, rgba(8,34,28,0.75) 100%)",
         }}
       />
       <div
@@ -73,19 +82,19 @@ export const LockScreen: React.FC<{
           position: "absolute",
           left: 0,
           right: 0,
-          top: 120,
+          top: 96,
           textAlign: "center",
           color: "#ffffff",
         }}
       >
-        <div style={{ fontFamily: SANS, fontWeight: 600, fontSize: 24 }}>
+        <div style={{ fontFamily: SANS, fontWeight: 600, fontSize: 22 }}>
           {date}
         </div>
         <div
           style={{
             fontFamily: SANS,
             fontWeight: 700,
-            fontSize: 124,
+            fontSize: 112,
             lineHeight: 1.05,
             letterSpacing: "-0.02em",
           }}
@@ -98,22 +107,18 @@ export const LockScreen: React.FC<{
           position: "absolute",
           left: 16,
           right: 16,
-          top: 380,
-          borderRadius: 32,
-          padding: "20px 22px 24px",
+          top: 300,
+          borderRadius: 30,
+          padding: "18px 20px 20px",
           backgroundColor: "rgba(253,249,241,0.95)",
           boxShadow: "0 24px 50px rgba(0,0,0,0.3)",
-          opacity: interpolate(frame, [notifAt, notifAt + 6], [0, 1], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-          }),
+          opacity: interpolate(frame, [notifAt, notifAt + 6], [0, 1], clamp),
           translate: interpolate(
             frame,
             [notifAt, notifAt + 16],
             ["0px -160px", "0px 0px"],
             {
-              extrapolateLeft: "clamp",
-              extrapolateRight: "clamp",
+              ...clamp,
               easing: Easing.spring({ damping: 14, stiffness: 170, mass: 0.8 }),
             },
           ),
@@ -129,23 +134,23 @@ export const LockScreen: React.FC<{
         >
           <div
             style={{
-              width: 44,
-              height: 44,
-              borderRadius: 12,
+              width: 40,
+              height: 40,
+              borderRadius: 11,
               backgroundColor: EMERALD,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <StarMark size={24} color={GOLD} />
+            <StarMark size={22} color={GOLD} />
           </div>
           <div
             style={{
               flex: 1,
               fontFamily: SANS,
               fontWeight: 700,
-              fontSize: 19,
+              fontSize: 18,
               letterSpacing: "0.08em",
               color: MUTED,
             }}
@@ -156,7 +161,7 @@ export const LockScreen: React.FC<{
             style={{
               fontFamily: SANS,
               fontWeight: 500,
-              fontSize: 18,
+              fontSize: 17,
               color: MUTED,
             }}
           >
@@ -165,10 +170,10 @@ export const LockScreen: React.FC<{
         </div>
         <div
           style={{
-            marginTop: 14,
+            marginTop: 12,
             fontFamily: SANS,
             fontWeight: 800,
-            fontSize: 28,
+            fontSize: 27,
             lineHeight: 1.2,
             color: INK,
           }}
@@ -177,10 +182,10 @@ export const LockScreen: React.FC<{
         </div>
         <div
           style={{
-            marginTop: 6,
+            marginTop: 5,
             fontFamily: SANS,
             fontWeight: 500,
-            fontSize: 23,
+            fontSize: 21,
             lineHeight: 1.35,
             color: "#4a4842",
           }}
@@ -189,20 +194,20 @@ export const LockScreen: React.FC<{
         </div>
         <div
           style={{
-            marginTop: 16,
+            marginTop: 14,
             display: "inline-block",
-            padding: "12px 24px",
-            borderRadius: 16,
+            padding: "10px 22px",
+            borderRadius: 14,
             border: `3px dashed ${GOLD}`,
-            backgroundColor: "rgba(201,169,110,0.08)",
+            backgroundColor: "rgba(201,169,110,0.12)",
             fontFamily: SANS,
             fontWeight: 800,
-            fontSize: 32,
+            fontSize: 30,
             letterSpacing: "0.08em",
             color: EMERALD_DEEP,
             scale: String(pulse),
             transformOrigin: "0% 50%",
-            boxShadow: `0 0 ${36 * glow}px rgba(201,169,110,${0.7 * glow})`,
+            boxShadow: `0 0 ${36 * glow}px rgba(201,169,110,${0.9 * glow})`,
           }}
         >
           {code}
@@ -211,8 +216,27 @@ export const LockScreen: React.FC<{
       <div
         style={{
           position: "absolute",
+          left: 25,
+          top: 640,
+          opacity: interpolate(frame, [cardAt, cardAt + 6], [0, 1], clamp),
+          translate: interpolate(
+            frame,
+            [cardAt, cardAt + 18],
+            ["0px 420px", "0px 0px"],
+            {
+              ...clamp,
+              easing: Easing.bezier(0.16, 1, 0.3, 1),
+            },
+          ),
+        }}
+      >
+        {children}
+      </div>
+      <div
+        style={{
+          position: "absolute",
           left: "50%",
-          bottom: 22,
+          bottom: 16,
           width: 150,
           height: 6,
           marginLeft: -75,

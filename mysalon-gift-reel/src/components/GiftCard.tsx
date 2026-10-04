@@ -1,6 +1,6 @@
 import { Easing, interpolate, useCurrentFrame } from "remotion";
 import { DISPLAY, SANS, SCRIPT, SERIF } from "../fonts";
-import type { GiftCardContent } from "../schema";
+import type { GiftCardContent, Partner } from "../schema";
 import {
   EMERALD,
   EMERALD_DEEP,
@@ -18,16 +18,15 @@ import { StarPattern } from "./Pattern";
 export const CARD_WIDTH = 660;
 export const CARD_HEIGHT = 412;
 
-// The gift card: an OYA MUSE experience, issued via MySalon.ma. Ivory stock,
-// the khatam star pattern, double gold rules, a champagne sash tied across the
-// corner and the recipient's name written by hand. With several names, they
-// are rewritten one after the other every `writeEvery` frames.
+// The MySalon.ma digital gift card: ivory stock with the khatam star pattern,
+// double gold rules, a champagne sash tied across the corner, the featured
+// salon where the experience takes place, and the recipient's name written by
+// hand. With several names, they are rewritten one after the other every
+// `writeEvery` frames.
 export const GiftCard: React.FC<{
   readonly id: string;
   readonly content: GiftCardContent;
-  readonly logo: string;
-  readonly name: string;
-  readonly city: string;
+  readonly partner: Partner;
   readonly recipients: string[];
   readonly writeAt: number;
   readonly writeEvery: number;
@@ -36,9 +35,7 @@ export const GiftCard: React.FC<{
 }> = ({
   id,
   content,
-  logo,
-  name,
-  city,
+  partner,
   recipients,
   writeAt,
   writeEvery,
@@ -51,7 +48,7 @@ export const GiftCard: React.FC<{
     Math.min(recipients.length - 1, Math.floor((frame - writeAt) / writeEvery)),
   );
   const startedAt = writeAt + index * writeEvery;
-  const writeLength = recipients.length > 1 ? Math.min(10, writeEvery - 3) : 24;
+  const writeLength = recipients.length > 1 ? Math.min(14, writeEvery - 3) : 24;
   const write = interpolate(
     frame,
     [startedAt, startedAt + writeLength],
@@ -117,74 +114,74 @@ export const GiftCard: React.FC<{
       >
         <Bow width={150} id={`${id}-bow`} />
       </div>
+      <div style={{ position: "absolute", left: 46, top: 42 }}>
+        <Logo size={36} color={INK} accent={GOLD_DEEP} starColor={EMERALD} />
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          left: 48,
+          top: 92,
+          fontFamily: SANS,
+          fontWeight: 800,
+          fontSize: 15,
+          letterSpacing: "0.3em",
+          color: GOLD_DEEP,
+        }}
+      >
+        {content.label}
+      </div>
       <div
         style={{
           position: "absolute",
           left: 46,
-          top: 42,
+          top: 134,
+          fontFamily: SERIF,
+          fontStyle: "italic",
+          fontWeight: 500,
+          fontSize: 42,
+          lineHeight: 1.1,
+          color: INK,
+          whiteSpace: "nowrap",
+        }}
+      >
+        {content.title}
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          left: 46,
+          top: 198,
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          gap: 18,
+          gap: 14,
         }}
       >
-        <LogoBadge image={logo} size={84} ring={false} ringColor={GOLD} />
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <div
-            style={{
-              fontFamily: DISPLAY,
-              fontWeight: 700,
-              fontSize: 24,
-              letterSpacing: "0.2em",
-              color: GOLD_DEEP,
-            }}
-          >
-            {content.label}
-          </div>
-          <div
-            style={{
-              fontFamily: SANS,
-              fontWeight: 600,
-              fontSize: 15,
-              letterSpacing: "0.22em",
-              color: MUTED,
-            }}
-          >
-            {city.toUpperCase()}
-          </div>
-        </div>
-      </div>
-      <div style={{ position: "absolute", left: 48, top: 148 }}>
-        <div
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 40,
-            lineHeight: 1,
-            color: INK,
-          }}
-        >
-          {content.title}
-        </div>
+        <LogoBadge
+          image={partner.logo}
+          size={50}
+          ring={false}
+          ringColor={GOLD}
+        />
         <div
           style={{
             fontFamily: DISPLAY,
             fontWeight: 700,
-            fontSize: 68,
-            lineHeight: 1.08,
-            letterSpacing: "0.04em",
+            fontSize: 25,
+            letterSpacing: "0.06em",
             color: EMERALD_DEEP,
+            whiteSpace: "nowrap",
           }}
         >
-          {name}
+          {`${content.at} ${partner.name} · ${partner.city}`}
         </div>
       </div>
       <div
         style={{
           position: "absolute",
           left: 48,
-          top: 268,
+          top: 280,
           right: 40,
           display: "flex",
           flexDirection: "row",
@@ -243,26 +240,16 @@ export const GiftCard: React.FC<{
       <div
         style={{
           position: "absolute",
-          right: 40,
-          bottom: 34,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 10,
+          right: 42,
+          bottom: 32,
+          fontFamily: SANS,
+          fontWeight: 600,
+          fontSize: 15,
+          letterSpacing: "0.1em",
+          color: MUTED,
         }}
       >
-        <div
-          style={{
-            fontFamily: SANS,
-            fontWeight: 500,
-            fontSize: 15,
-            letterSpacing: "0.06em",
-            color: MUTED,
-          }}
-        >
-          {content.via}
-        </div>
-        <Logo size={25} color={INK} accent={GOLD_DEEP} starColor={EMERALD} />
+        mysalon.ma
       </div>
       <div
         style={{

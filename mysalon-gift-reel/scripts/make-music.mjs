@@ -1,6 +1,6 @@
 // Generates the royalty-free soundtrack for the gift reel, produced like a
 // club record: a catchy, energetic house track at 120 BPM (exactly 15 frames
-// per beat and 60 frames per bar at 30 fps), 12 bars: a 24-second loop.
+// per beat and 60 frames per bar at 30 fps), 18 bars: a 36-second loop.
 //
 // Sound: a tuned, layered kick; 808-style metallic hats, a swung shaker,
 // congas and rims; a rolling tech-house bass; pumping supersaw chords and
@@ -23,7 +23,7 @@ const SR = 44100;
 const BPM = 120;
 const BEAT = 60 / BPM;
 const BAR = BEAT * 4;
-const BARS = 12;
+const BARS = 18;
 const TAIL = 0.4;
 const LENGTH = BARS * BAR + TAIL;
 const N = Math.ceil(LENGTH * SR);
@@ -54,16 +54,17 @@ const at16 = (bar, s) => at(bar, s / 4) + (s % 2 === 1 ? SWING : 0);
 // ---------- song map (0-based bars), matching the reel ----------
 //   0     hook: the groove from the first frame, music filtered, hook teaser
 //   1     build: snare roll, riser, high-pass sweep, a beat of silence
-//   2-5   reveal + montage: DROP 1 (full groove, hook + vocal chops)
-//   6-7   how it works: rolling groove, house stabs and plucks (room for UI)
-//   8     build: roll, riser, high-pass sweep, stutter, silence
-//   9-11  call to action: DROP 2, everything plus ride and the octave hook,
+//   2-4   reveal: DROP 1 (full groove, hook + vocal chops)
+//   5-7   where: the groove keeps rolling under the salon and its photos
+//   8-12  how it works: lighter groove, stabs and plucks, vocals come back
+//   13    build: roll, riser, high-pass sweep, stutter, silence
+//   14-17 call to action: DROP 2, everything plus ride and the octave hook,
 //         then a record stop on the last beat (the reel loops to the hook)
 const DROP = 2;
-const MONTAGE = 4;
-const HOW = 6;
-const BUILD = 8;
-const CTA = 9;
+const MONTAGE = 5;
+const HOW = 8;
+const BUILD = 13;
+const CTA = 14;
 
 const CHORDS = {
   Am: { notes: [57, 60, 64, 67], root: 33 },
@@ -71,7 +72,26 @@ const CHORDS = {
   C: { notes: [55, 60, 62, 64], root: 36 },
   G: { notes: [55, 59, 62, 64], root: 31 },
 };
-const PLAN = ["F", "G", "Am", "F", "C", "G", "Am", "F", "G", "Am", "F", "C"];
+const PLAN = [
+  "F",
+  "G",
+  "Am",
+  "F",
+  "C",
+  "G",
+  "Am",
+  "F",
+  "C",
+  "G",
+  "Am",
+  "F",
+  "G",
+  "Am",
+  "F",
+  "C",
+  "G",
+  "Am",
+];
 
 // The hook, one bar per chord: [beat, midi, length in beats].
 const HOOK = {
@@ -800,6 +820,7 @@ for (let bar = 0; bar < BARS; bar++) {
   // by the vocal chops on both drops.
   if (intro) playHook(bar, 0.14, 2200);
   if (build1) playVox(bar, 0.1);
+  if (how && bar >= HOW + 2) playVox(bar, 0.12);
   if (drop1) {
     playHook(bar, 0.2, 7500);
     playVox(bar, 0.16);

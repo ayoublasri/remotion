@@ -5,28 +5,40 @@ import {
   interpolate,
   useCurrentFrame,
 } from "remotion";
-import { CoBrand, StarMark } from "../components/Brand";
+import { Logo, StarMark } from "../components/Brand";
 import { GiftCard } from "../components/GiftCard";
-import { SendIcon } from "../components/Icons";
+import { foil, SendIcon } from "../components/Icons";
+import { LogoBadge } from "../components/Logo";
 import { Flash, Twinkles } from "../components/Overlays";
 import { StarPattern } from "../components/Pattern";
 import { Sfx } from "../components/Sfx";
 import { Starburst } from "../components/Starburst";
-import { SANS, SERIF } from "../fonts";
+import { DISPLAY, SANS, SERIF } from "../fonts";
 import type { GiftCardContent, GiftReelProps, Partner } from "../schema";
 import { BEAT } from "../timing";
-import { DARK_BG, EMERALD_INK, GOLD, GOLD_LIGHT, IVORY, SAGE } from "../theme";
+import {
+  DARK_BG,
+  EMERALD_INK,
+  GOLD,
+  GOLD_FOIL,
+  GOLD_LIGHT,
+  IVORY,
+  SAGE,
+} from "../theme";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 const AT = {
+  logo: 0,
   card: 2,
-  write: 12,
-  dream: 6,
-  dreamLine: 14,
-  gift: BEAT * 2,
-  button: BEAT * 2 + 8,
-  sign: BEAT * 4,
+  write: 14,
+  line1: 6,
+  line2: 12,
+  lead: 28,
+  button: 38,
+  featured: 70,
+  share: 104,
+  shine: 90,
 };
 
 const rise = (frame: number, at: number) => ({
@@ -37,10 +49,9 @@ const rise = (frame: number, at: number) => ({
   }),
 });
 
-// Bars 10-12 (second drop): the two-sided call to action. If you dream of it,
-// send the reel to the person who should offer it; if you want to offer it,
-// DM the keyword. The last beat powers down like a record stop and the reel
-// loops back to "ARRÊTE".
+// Bars 15-18 (second drop): the invite. Offer a beauty experience, by DM to
+// MySalon.ma; the featured salon signs it; those who dream of it send the
+// reel on. The last beat powers down like a record stop and the reel loops.
 export const CtaScene: React.FC<{
   readonly cta: GiftReelProps["cta"];
   readonly card: GiftCardContent;
@@ -48,7 +59,7 @@ export const CtaScene: React.FC<{
 }> = ({ cta, card, partner }) => {
   const frame = useCurrentFrame();
   const float = Math.sin(frame / 18) * 7;
-  const powerDown = interpolate(frame, [BEAT * 11, BEAT * 12], [0, 1], {
+  const powerDown = interpolate(frame, [BEAT * 15, BEAT * 16], [0, 1], {
     ...clamp,
     easing: Easing.in(Easing.quad),
   });
@@ -80,24 +91,50 @@ export const CtaScene: React.FC<{
         </div>
         <Twinkles
           points={[
-            { x: 10, y: 16 },
-            { x: 90, y: 22 },
-            { x: 8, y: 50 },
-            { x: 92, y: 46 },
+            { x: 10, y: 14 },
+            { x: 90, y: 20 },
+            { x: 8, y: 44 },
+            { x: 92, y: 40 },
           ]}
           color={GOLD}
         />
-        <Sfx name="pop" at={AT.dream} volume={0.45} />
-        <Sfx name="pop" at={AT.gift} volume={0.45} />
-        <Sfx name="stamp" at={AT.button} volume={0.5} />
-        <Sfx name="sparkle" at={AT.sign} volume={0.35} />
+        <Sfx name="stamp" at={AT.line2} volume={0.5} />
+        <Sfx name="pop" at={AT.button} volume={0.5} />
+        <Sfx name="sparkle" at={AT.featured} volume={0.35} />
+        <Sfx name="pop" at={AT.share} volume={0.35} />
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 176,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              scale: interpolate(frame, [AT.logo, AT.logo + 14], [0, 1], {
+                ...clamp,
+                easing: Easing.spring({
+                  damping: 11,
+                  stiffness: 160,
+                  mass: 0.9,
+                }),
+                output: "perceptual-scale",
+              }),
+            }}
+          >
+            <Logo size={64} color={IVORY} accent={GOLD} starColor={GOLD} />
+          </div>
+        </div>
         <div
           style={{
             position: "absolute",
             left: 540 - 330,
-            top: 430 - 206 + float,
+            top: 470 - 206 + float,
             scale: String(
-              0.62 *
+              0.6 *
                 interpolate(frame, [AT.card, AT.card + 12], [0.5, 1], {
                   ...clamp,
                   easing: Easing.out(Easing.back(1.4)),
@@ -110,22 +147,20 @@ export const CtaScene: React.FC<{
           <GiftCard
             id="cta-card"
             content={card}
-            logo={partner.logo}
-            name={partner.name}
-            city={partner.city}
+            partner={partner}
             recipients={[cta.recipient]}
             writeAt={AT.write}
             writeEvery={1000}
-            shineAt={AT.sign + 6}
-            recipientSize={70}
+            shineAt={AT.shine}
+            recipientSize={66}
           />
         </div>
         <div
           style={{
             position: "absolute",
-            left: 40,
-            right: 40,
-            top: 650,
+            left: 30,
+            right: 30,
+            top: 640,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -133,70 +168,73 @@ export const CtaScene: React.FC<{
           }}
         >
           <Interactive.Div
-            name="Dream ask"
+            name="CTA line 1"
             style={{
-              fontFamily: SANS,
-              fontWeight: 800,
-              fontSize: 74,
-              letterSpacing: "0.01em",
+              fontFamily: DISPLAY,
+              fontWeight: 700,
+              fontSize: 56,
+              lineHeight: 1.1,
+              letterSpacing: "0.12em",
+              marginRight: "-0.12em",
               color: IVORY,
-              ...rise(frame, AT.dream),
-            }}
-          >
-            {cta.dreamAsk}
-          </Interactive.Div>
-          <Interactive.Div
-            name="Dream line"
-            style={{
-              marginTop: 10,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 16,
-              fontFamily: SERIF,
-              fontStyle: "italic",
-              fontWeight: 500,
-              fontSize: 50,
-              color: GOLD_LIGHT,
-              ...rise(frame, AT.dreamLine),
-            }}
-          >
-            <SendIcon size={44} color={GOLD} />
-            {cta.dreamLine}
-          </Interactive.Div>
-          <div
-            style={{
-              marginTop: 44,
-              width: 520,
-              height: 2,
-              background:
-                "linear-gradient(90deg, rgba(201,169,110,0) 0%, #c9a96e 50%, rgba(201,169,110,0) 100%)",
+              scale: interpolate(frame, [AT.line1, AT.line1 + 12], [1.4, 1], {
+                ...clamp,
+                easing: Easing.out(Easing.cubic),
+              }),
               opacity: interpolate(
                 frame,
-                [AT.gift - 4, AT.gift + 4],
+                [AT.line1, AT.line1 + 5],
                 [0, 1],
                 clamp,
               ),
             }}
-          />
+          >
+            {cta.line1}
+          </Interactive.Div>
           <Interactive.Div
-            name="Gift ask"
+            name="CTA line 2"
             style={{
-              marginTop: 44,
-              fontFamily: SANS,
-              fontWeight: 800,
+              fontFamily: DISPLAY,
+              fontWeight: 700,
               fontSize: 74,
-              letterSpacing: "0.01em",
-              color: IVORY,
-              ...rise(frame, AT.gift),
+              lineHeight: 1.15,
+              letterSpacing: "0.03em",
+              whiteSpace: "nowrap",
+              ...foil(GOLD_FOIL),
+              backgroundSize: "200% 100%",
+              backgroundPosition: `${interpolate(frame, [AT.line2, AT.line2 + 70], [100, 0], clamp)}% 0%`,
+              filter: "drop-shadow(0 0 30px rgba(201,169,110,0.35))",
+              scale: interpolate(frame, [AT.line2, AT.line2 + 12], [1.5, 1], {
+                ...clamp,
+                easing: Easing.out(Easing.cubic),
+              }),
+              opacity: interpolate(
+                frame,
+                [AT.line2, AT.line2 + 5],
+                [0, 1],
+                clamp,
+              ),
             }}
           >
-            {cta.giftAsk}
+            {cta.line2}
+          </Interactive.Div>
+          <Interactive.Div
+            name="CTA lead"
+            style={{
+              marginTop: 34,
+              fontFamily: SANS,
+              fontWeight: 600,
+              fontSize: 36,
+              color: SAGE,
+              ...rise(frame, AT.lead),
+            }}
+          >
+            {cta.lead}
           </Interactive.Div>
           <div
             style={{
-              marginTop: 24,
-              scale: interpolate(frame, [AT.button, AT.button + 12], [0, 1], {
+              marginTop: 22,
+              scale: interpolate(frame, [AT.button, AT.button + 14], [0, 1], {
                 ...clamp,
                 easing: Easing.spring({
                   damping: 11,
@@ -216,19 +254,20 @@ export const CtaScene: React.FC<{
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 22,
-                padding: "0 64px",
-                height: 136,
-                borderRadius: 68,
+                padding: "0 62px",
+                height: 132,
+                borderRadius: 66,
                 background:
                   "linear-gradient(135deg, #f1e2bd 0%, #d4b47a 45%, #b08d4f 100%)",
                 color: EMERALD_INK,
                 fontFamily: SANS,
                 fontWeight: 800,
-                fontSize: 52,
+                fontSize: 50,
+                whiteSpace: "nowrap",
                 boxShadow:
                   "0 26px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,248,230,0.5)",
                 scale:
-                  frame > AT.button + 12
+                  frame > AT.button + 14
                     ? interpolate(
                         (frame - AT.button) % (BEAT * 2),
                         [0, 4, 24],
@@ -238,9 +277,9 @@ export const CtaScene: React.FC<{
                     : 1,
               }}
             >
-              <SendIcon size={50} color={EMERALD_INK} />
+              <SendIcon size={48} color={EMERALD_INK} />
               {cta.button}
-              {[AT.sign, AT.sign + 50].map((at) => (
+              {[AT.shine, AT.shine + 60].map((at) => (
                 <div
                   key={at}
                   style={{
@@ -257,25 +296,86 @@ export const CtaScene: React.FC<{
                       frame,
                       [at, at + 22],
                       ["-200px 0px", "1000px 0px"],
-                      {
-                        ...clamp,
-                        easing: Easing.bezier(0.4, 0, 0.4, 1),
-                      },
+                      { ...clamp, easing: Easing.bezier(0.4, 0, 0.4, 1) },
                     ),
                   }}
                 />
               ))}
             </Interactive.Div>
           </div>
-          <div style={{ marginTop: 60, ...rise(frame, AT.sign) }}>
-            <CoBrand
-              logo={partner.logo}
-              name={partner.name}
-              size={32}
-              nameColor={GOLD}
-              crossColor={SAGE}
-              wordmark={{ color: IVORY, accent: GOLD, star: GOLD }}
+          <Interactive.Div
+            name="CTA featured"
+            style={{
+              marginTop: 40,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 16,
+              padding: "8px 28px 8px 8px",
+              borderRadius: 999,
+              backgroundColor: "rgba(201,169,110,0.12)",
+              boxShadow: "inset 0 0 0 1.5px rgba(201,169,110,0.55)",
+              fontFamily: DISPLAY,
+              fontWeight: 700,
+              fontSize: 27,
+              letterSpacing: "0.08em",
+              color: GOLD_LIGHT,
+              whiteSpace: "nowrap",
+              ...rise(frame, AT.featured),
+            }}
+          >
+            <LogoBadge
+              image={partner.logo}
+              size={62}
+              ring={false}
+              ringColor={GOLD}
             />
+            <span>
+              <span
+                style={{
+                  fontFamily: SANS,
+                  fontWeight: 700,
+                  fontSize: 20,
+                  letterSpacing: "0.22em",
+                  color: SAGE,
+                }}
+              >
+                {cta.featuredLabel}
+              </span>
+              {` ${partner.name} · ${partner.city}`}
+            </span>
+          </Interactive.Div>
+          <div style={{ marginTop: 56, ...rise(frame, AT.share) }}>
+            <Interactive.Div
+              name="Share ask"
+              style={{
+                fontFamily: SANS,
+                fontWeight: 800,
+                fontSize: 48,
+                color: IVORY,
+              }}
+            >
+              {cta.shareAsk}
+            </Interactive.Div>
+            <Interactive.Div
+              name="Share line"
+              style={{
+                marginTop: 8,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 14,
+                fontFamily: SERIF,
+                fontStyle: "italic",
+                fontWeight: 500,
+                fontSize: 40,
+                color: GOLD_LIGHT,
+              }}
+            >
+              <SendIcon size={36} color={GOLD} />
+              {cta.shareLine}
+            </Interactive.Div>
           </div>
         </div>
       </AbsoluteFill>

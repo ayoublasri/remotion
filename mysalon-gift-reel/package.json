@@ -1,13 +1,13 @@
 {
   "name": "mysalon-gift-reel",
   "version": "1.0.0",
-  "description": "Vertical (9:16) 24 s viral reel: gift an OYA MUSE experience, booked through MySalon.ma (Remotion)",
+  "description": "Vertical (9:16) 36 s reel: offer a beauty experience via MySalon.ma, featuring OYA MUSE (Remotion)",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "remotion studio",
     "render": "remotion render GiftReel out/mysalon-gift-reel.mp4",
-    "cover": "remotion still GiftReel out/cover-card.png --frame=192",
+    "cover": "remotion still GiftReel out/cover-card.png --frame=240",
     "cover:hook": "remotion still GiftReel out/cover-hook.png --frame=52",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",

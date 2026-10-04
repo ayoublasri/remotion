@@ -5,23 +5,22 @@ import {
   interpolate,
   useCurrentFrame,
 } from "remotion";
-import { StarMark } from "../components/Brand";
+import { Logo, StarMark } from "../components/Brand";
 import { LineIcon } from "../components/LineIcons";
 import { Grain, Vignette } from "../components/Overlays";
 import { StarPattern } from "../components/Pattern";
 import { Sfx } from "../components/Sfx";
 import { SANS, SERIF } from "../fonts";
 import type { GiftReelProps } from "../schema";
-import { BEAT } from "../timing";
 import { DARK_BG, EMERALD_INK, GOLD, GOLD_LIGHT, IVORY, SAGE } from "../theme";
 
 const ICONS = ["flowers", "perfume", "chocolates"] as const;
 // The first row is already on screen at frame 0: the hook reads as a full
-// sentence before anyone can scroll away.
-const ROW_AT = [-8, BEAT, BEAT * 2];
-const STRIKE_AT = [8, BEAT + 8, BEAT * 2 + 8];
-const TURN_AT = BEAT * 4;
-const TEASE_AT = BEAT * 5 + 9;
+// sentence before anyone can scroll away. Then one idea at a time.
+const ROW_AT = [-8, 22, 44];
+const STRIKE_AT = [64, 72, 80];
+const TURN_AT = 92;
+const TEASE_AT = 102;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 const Row: React.FC<{ readonly index: number; readonly text: string }> = ({
@@ -39,8 +38,8 @@ const Row: React.FC<{ readonly index: number; readonly text: string }> = ({
         flexDirection: "row",
         alignItems: "center",
         gap: 30,
-        opacity: interpolate(frame, [at, at + 5], [0, 1], clamp),
-        translate: interpolate(frame, [at, at + 12], ["0px 46px", "0px 0px"], {
+        opacity: interpolate(frame, [at, at + 6], [0, 1], clamp),
+        translate: interpolate(frame, [at, at + 14], ["0px 46px", "0px 0px"], {
           ...clamp,
           easing: Easing.bezier(0.16, 1, 0.3, 1),
         }),
@@ -79,7 +78,7 @@ const Row: React.FC<{ readonly index: number; readonly text: string }> = ({
             backgroundColor: GOLD,
             boxShadow: "0 0 18px rgba(233,213,166,0.85)",
             transformOrigin: "0% 50%",
-            scale: `${interpolate(frame, [strikeAt, strikeAt + 5], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) })} 1`,
+            scale: `${interpolate(frame, [strikeAt, strikeAt + 6], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) })} 1`,
             rotate: "-3deg",
           }}
         />
@@ -89,16 +88,16 @@ const Row: React.FC<{ readonly index: number; readonly text: string }> = ({
 };
 
 // Bars 1-2: "ARRÊTE D'OFFRIR des fleurs" on the very first frame, the usual
-// gifts crossed out on the beat, then the turn: "Offre plutôt une vraie…".
+// gifts crossed out one by one, then the turn: "Cette fois, offrez mieux."
 export const HookScene: React.FC<{ readonly hook: GiftReelProps["hook"] }> = ({
   hook,
 }) => {
   const frame = useCurrentFrame();
-  const settle = interpolate(frame, [BEAT * 3, BEAT * 4], [0, 1], {
+  const settle = interpolate(frame, [TURN_AT - 10, TURN_AT + 10], [0, 1], {
     ...clamp,
     easing: Easing.bezier(0.65, 0, 0.35, 1),
   });
-  const punch = interpolate(frame, [0, 7], [1.16, 1], {
+  const punch = interpolate(frame, [0, 7], [1.14, 1], {
     ...clamp,
     easing: Easing.out(Easing.cubic),
   });
@@ -128,6 +127,19 @@ export const HookScene: React.FC<{ readonly hook: GiftReelProps["hook"] }> = ({
         <Sfx key={at} name="strike" at={at} volume={0.6} />
       ))}
       <Sfx name="whoosh" at={TURN_AT} volume={0.4} />
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: 196,
+          display: "flex",
+          justifyContent: "center",
+          opacity: interpolate(frame, [0, 8], [0, 1], clamp),
+        }}
+      >
+        <Logo size={52} color={IVORY} accent={GOLD} starColor={GOLD} />
+      </div>
       <div
         style={{
           position: "absolute",
@@ -190,7 +202,7 @@ export const HookScene: React.FC<{ readonly hook: GiftReelProps["hook"] }> = ({
           flexDirection: "column",
           gap: 28,
           translate: `-50% ${-36 * settle}px`,
-          scale: String(1 - 0.18 * settle),
+          scale: String(1 - 0.16 * settle),
         }}
       >
         {hook.items.map((item, i) => (
