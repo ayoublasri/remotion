@@ -1,4 +1,4 @@
-# Posting kit: "Offrir une expérience beauté"
+# Posting kit: "Offrez une expérience beauté chez OYA MUSE"
 
 Everything needed to publish the reel (`out/mysalon-gift-reel.mp4`) from the MySalon.ma account.
 
@@ -6,15 +6,13 @@ Everything needed to publish the reel (`out/mysalon-gift-reel.mp4`) from the MyS
 
 ```text
 Arrête d'offrir des fleurs 🥀
-Offrir une expérience beauté n'a jamais été aussi simple ✨
-Vous choisissez le soin, vous payez en ligne, elle reçoit sa carte cadeau digitale et réserve quand elle veut, chez l'un de nos salons partenaires à Témara.
-
-✦ À la une : OYA MUSE · ongles, cils, sourcils 💅
+Cette fois, offrez une expérience beauté chez OYA MUSE, à Témara ✨
+Manucure russe, lash lift ou brow lift : vous choisissez le soin, vous payez en ligne, elle reçoit sa carte cadeau digitale et réserve quand elle veut.
 
 🎁 Pour offrir : écrivez « CADEAU » en DM.
 😏 Vous en rêvez ? Envoyez ce reel à la bonne personne.
 
-#idéecadeau #cartecadeau #cadeaupourelle #temara #rabat #oyamuse #mysalonma
+#idéecadeau #cartecadeau #cadeaupourelle #temara #rabat #oyamuse #manucurerusse #lashlift #browlift #mysalonma
 ```
 
 The first line repeats the on-screen hook (it is what shows under the reel before "plus"). Keep the hashtags to these
@@ -23,10 +21,11 @@ few, relevant ones.
 ## Pinned first comment
 
 ```text
-Pour offrir : écrivez CADEAU en DM 🎁 On s'occupe de tout : soin au choix, paiement, et sa carte cadeau digitale.
+Pour offrir : écrivez CADEAU en DM 🎁 Manucure russe 120 DH · Lash lift 250 DH · Brow lift 200 DH. On s'occupe de tout : paiement en ligne, et sa carte cadeau digitale arrive sur son téléphone.
 ```
 
-Post it yourself right after publishing and pin it.
+Post it yourself right after publishing and pin it. Check the prices with OYA MUSE first; they are also on screen
+(`services.items[].price` in `src/Root.tsx`, leave a price empty to hide it).
 
 ## DM auto-reply for "CADEAU"
 
@@ -35,7 +34,9 @@ like ManyChat), so nobody waits:
 
 ```text
 Avec plaisir 🎁 Quel soin souhaitez-vous offrir chez OYA MUSE (Témara) ?
-1. Ongles  2. Cils  3. Sourcils
+1. Manucure russe + vernis permanent (120 DH)
+2. Lash lift (250 DH)
+3. Brow lift (200 DH)
 Répondez avec le numéro et le prénom de la personne : on vous envoie le paiement, puis sa carte cadeau digitale.
 ```
 
@@ -43,10 +44,12 @@ Every DM that mentions a treatment is a sale: answer with the payment link, then
 
 ## Cover
 
-- **Profile grid:** `out/cover-card.png` (the digital gift card under "Offrir une expérience beauté n'a jamais été
-  aussi simple"). Elegant on the grid, and it shows what the offer is.
+- **Profile grid:** `out/cover-card.png` (the digital gift card under "Offrez une expérience beauté chez OYA
+  MUSE"). Elegant on the grid, and it says what the offer is.
+- `out/cover-soin.png` (the manucure russe photo under the salon's name) is the prettier alternative if you want the
+  grid to show the salon's work.
 - **In the feed** people see the first frame, which is already the hook ("ARRÊTE D'OFFRIR… des fleurs").
-- `out/cover-hook.png` is an alternative cover if you prefer the hook on the grid too.
+  `out/cover-hook.png` is that frame, if you prefer the hook on the grid too.
 
 ## Publishing
 
@@ -57,8 +60,8 @@ Every DM that mentions a treatment is a sale: answer with the payment link, then
   share the reel to your Story with a "Message" sticker.
 - **Re-post around gifting moments:** Saint-Valentin (14 February), Fête des mères (last Sunday of May), Aïd,
   birthdays and the end of the year. Change `reveal.names` to fit the moment (for example "Maman" first in May).
-- **Other partner salons:** switch `partner` and `where.shots` in `src/Root.tsx`, re-render, and post the same reel
-  featuring another salon.
+- **Another salon:** switch `partner`, `services.items` and `how.options` in `src/Root.tsx`, re-render, and post the
+  same reel for another salon on the platform.
 
 ## Boosting
 

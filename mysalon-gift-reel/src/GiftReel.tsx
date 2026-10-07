@@ -8,7 +8,7 @@ import { CtaScene } from "./scenes/CtaScene";
 import { HookScene } from "./scenes/HookScene";
 import { HowScene } from "./scenes/HowScene";
 import { RevealScene } from "./scenes/RevealScene";
-import { WhereScene } from "./scenes/WhereScene";
+import { ServicesScene } from "./scenes/ServicesScene";
 import type { GiftReelProps } from "./schema";
 import { EMERALD_INK, GOLD } from "./theme";
 
@@ -18,17 +18,17 @@ const goldGlow = "rgba(233,213,166,0.95)";
 // A 36-second, loopable cut. Scene lengths include the overlap with the next
 // scene (the transition), so that every scene starts on a downbeat of the
 // 120 BPM soundtrack (60 frames per bar):
-//   bars 1-2   Hook      0 - 120   "ARRÊTE D'OFFRIR...", build, silence
-//   bars 3-5   Reveal  120 - 300   drop: the statement, the card, the names
-//   bars 6-8   Where   300 - 480   partner salons, the featured one, photos
-//   bars 9-14  How     480 - 840   three four-second steps, build at the end
-//   bars 15-18 CTA     840 - 1080  second drop, the invite, record stop
+//   bars 1-2   Hook       0 - 120   "ARRÊTE D'OFFRIR...", build, silence
+//   bars 3-5   Reveal   120 - 300   drop: offer OYA MUSE, the card, the names
+//   bars 6-11  Services 300 - 660   the treatments, two bars each, photos big
+//   bars 12-15 How      660 - 900   two four-second steps, build at the end
+//   bars 16-18 CTA      900 - 1080  second drop, the invite, record stop
 export const SCENES = {
   hook: { duration: 132, overlap: 12 },
   reveal: { duration: 190, overlap: 10 },
-  where: { duration: 190, overlap: 10 },
-  how: { duration: 372, overlap: 12 },
-  cta: { duration: 240, overlap: 0 },
+  services: { duration: 372, overlap: 12 },
+  how: { duration: 252, overlap: 12 },
+  cta: { duration: 180, overlap: 0 },
 };
 
 export const GIFT_REEL_DURATION = Object.values(SCENES).reduce(
@@ -37,12 +37,11 @@ export const GIFT_REEL_DURATION = Object.values(SCENES).reduce(
 );
 
 export const GiftReel: React.FC<GiftReelProps> = ({
-  site,
   partner,
   card,
   hook,
   reveal,
-  where,
+  services,
   how,
   cta,
   musicFile,
@@ -77,15 +76,15 @@ export const GiftReel: React.FC<GiftReelProps> = ({
           })}
         />
         <TransitionSeries.Sequence
-          durationInFrames={SCENES.where.duration}
-          name="Where"
+          durationInFrames={SCENES.services.duration}
+          name="Services"
         >
-          <WhereScene where={where} partner={partner} />
+          <ServicesScene services={services} partner={partner} />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
           presentation={slide({ direction: "from-right" })}
           timing={linearTiming({
-            durationInFrames: SCENES.where.overlap,
+            durationInFrames: SCENES.services.overlap,
             easing,
           })}
         />
@@ -93,7 +92,7 @@ export const GiftReel: React.FC<GiftReelProps> = ({
           durationInFrames={SCENES.how.duration}
           name="How it works"
         >
-          <HowScene how={how} card={card} partner={partner} site={site} />
+          <HowScene how={how} card={card} partner={partner} />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition
           presentation={irisGlow({ edgeColor: GOLD, glow: goldGlow })}

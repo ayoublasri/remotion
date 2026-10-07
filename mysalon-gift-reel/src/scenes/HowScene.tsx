@@ -8,7 +8,6 @@ import {
 import { GiftCard } from "../components/GiftCard";
 import { StarPattern } from "../components/Pattern";
 import { Phone, PHONE_WIDTH } from "../components/Phone";
-import { BookingScreen } from "../components/screens/BookingScreen";
 import { DmScreen } from "../components/screens/DmScreen";
 import { LockScreen } from "../components/screens/LockScreen";
 import { Sfx } from "../components/Sfx";
@@ -20,7 +19,7 @@ import { EMERALD, EMERALD_DEEP, GOLD, LIGHT_BG, MUTED } from "../theme";
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 // Two bars per step: four seconds each, nothing rushed.
-const STEP_AT = [0, BAR * 2, BAR * 4];
+const STEP_AT = [0, BAR * 2];
 const PHONE_LEFT = (1080 - PHONE_WIDTH) / 2;
 const PHONE_TOP = 470;
 
@@ -34,11 +33,6 @@ const T = {
   notif: STEP_AT[1] + 10,
   pulse: STEP_AT[1] + 28,
   card: STEP_AT[1] + 56,
-  book: STEP_AT[2],
-  typeFrom: STEP_AT[2] + 14,
-  typeTo: STEP_AT[2] + 30,
-  slot: STEP_AT[2] + 54,
-  confirm: STEP_AT[2] + 76,
 };
 
 const Caption: React.FC<{
@@ -171,21 +165,20 @@ const Tag: React.FC<{
   </div>
 );
 
-// Bars 9-14: how it works, in three four-second steps on two phones. You
+// Bars 12-15: how it works, in two four-second steps on two phones. You
 // write the keyword, pick the treatment and pay in the chat; she receives
-// her digital gift card; she books when she likes.
+// her digital gift card and books when she likes.
 export const HowScene: React.FC<{
   readonly how: GiftReelProps["how"];
   readonly card: GiftCardContent;
   readonly partner: Partner;
-  readonly site: string;
-}> = ({ how, card, partner, site }) => {
+}> = ({ how, card, partner }) => {
   const frame = useCurrentFrame();
   const swap = interpolate(frame, [T.swap, T.swap + 14], [0, 1], {
     ...clamp,
     easing: Easing.bezier(0.65, 0, 0.35, 1),
   });
-  const step = frame >= STEP_AT[2] ? 2 : frame >= STEP_AT[1] ? 1 : 0;
+  const step = frame >= STEP_AT[1] ? 1 : 0;
 
   return (
     <AbsoluteFill
@@ -201,10 +194,6 @@ export const HowScene: React.FC<{
       <Sfx name="whoosh" at={T.swap} volume={0.4} />
       <Sfx name="ding" at={T.notif} volume={0.55} />
       <Sfx name="sparkle" at={T.card} volume={0.35} />
-      <Sfx name="whoosh" at={T.book} volume={0.35} />
-      <Sfx name="tick" at={T.typeTo + 2} volume={0.45} />
-      <Sfx name="tick" at={T.slot} volume={0.45} />
-      <Sfx name="success" at={T.confirm + 4} volume={0.5} />
       {how.steps.map((s, i) => (
         <Caption
           key={s.title}
@@ -268,7 +257,7 @@ export const HowScene: React.FC<{
           <Phone
             frameColor="#d8c49a"
             edgeColor="#b59c66"
-            statusColor={frame >= T.book + 8 ? "#1d211f" : "#ffffff"}
+            statusColor="#ffffff"
             time={how.lockTime}
           >
             <LockScreen
@@ -295,26 +284,6 @@ export const HowScene: React.FC<{
                 />
               </div>
             </LockScreen>
-            {frame >= T.book ? (
-              <BookingScreen
-                partnerLogo={partner.logo}
-                partnerName={partner.name}
-                partnerInfo={`${partner.city} · ${partner.services}`}
-                site={site}
-                code={how.code}
-                validLabel={how.validLabel}
-                dates={how.dates}
-                slots={how.slots}
-                slotIndex={how.slotIndex}
-                confirmTitle={how.confirmTitle}
-                confirmDetail={how.confirmDetail}
-                enterAt={T.book}
-                typeFrom={T.typeFrom}
-                typeTo={T.typeTo}
-                slotAt={T.slot}
-                confirmAt={T.confirm}
-              />
-            ) : null}
           </Phone>
         </div>
       ) : null}
@@ -330,7 +299,7 @@ export const HowScene: React.FC<{
           gap: 16,
         }}
       >
-        {[0, 1, 2].map((i) => (
+        {[0, 1].map((i) => (
           <div
             key={i}
             style={{

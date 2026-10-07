@@ -4,11 +4,10 @@ import { CtaScene } from "./scenes/CtaScene";
 import { HookScene } from "./scenes/HookScene";
 import { HowScene } from "./scenes/HowScene";
 import { RevealScene } from "./scenes/RevealScene";
-import { WhereScene } from "./scenes/WhereScene";
+import { ServicesScene } from "./scenes/ServicesScene";
 import { giftReelSchema, type GiftReelProps } from "./schema";
 
 const defaultProps: GiftReelProps = {
-  site: "mysalon.ma",
   partner: {
     name: "OYA MUSE",
     city: "Témara",
@@ -28,98 +27,85 @@ const defaultProps: GiftReelProps = {
     tease: "offrez mieux.",
   },
   reveal: {
-    line1: "Offrir une expérience beauté",
-    line2: "N'A JAMAIS ÉTÉ",
-    line3: "AUSSI SIMPLE.",
-    withLabel: "avec",
+    line1: "Offrez une expérience beauté",
+    line2: "CHEZ OYA MUSE",
+    line3: "TÉMARA · ONGLES · CILS · SOURCILS",
+    withLabel: "via",
     names: ["Maman", "Ma chérie", "Ma best", "Ma femme"],
     caption: "Pour qui vous voulez.",
   },
-  where: {
-    line1: "À Témara,",
-    line2: "dans l'un de nos salons partenaires.",
-    salons: [
-      { name: "NEW STAR BEAUTY", logo: "newstar-logo.jpg" },
-      { name: "OYA MUSE", logo: "oya-logo.jpg" },
-    ],
-    featuredLabel: "✦ À LA UNE",
-    shots: [
+  services: {
+    subtitle: "TÉMARA · LES SOINS À OFFRIR",
+    items: [
       {
-        image: "nails-pearl.jpg",
-        focusX: 55,
-        focusY: 30,
+        kicker: "ONGLES",
+        name: "MANUCURE RUSSE",
+        detail: "+ vernis permanent",
+        price: "120 DH",
         framed: false,
-        label: "ONGLES",
-        detail: "Manucure & vernis permanent",
+        photos: [
+          { image: "nails-pearl.jpg", focusX: 55, focusY: 30 },
+          { image: "nails-pink-florals.jpg", focusX: 50, focusY: 35 },
+        ],
       },
       {
-        image: "lash-lift-generated.jpg",
-        focusX: 50,
-        focusY: 50,
+        kicker: "CILS",
+        name: "LASH LIFT",
+        detail: "Cils rehaussés, effet naturel",
+        price: "250 DH",
         framed: true,
-        label: "CILS",
-        detail: "Lash lift",
+        photos: [{ image: "lash-lift-generated.jpg", focusX: 50, focusY: 50 }],
       },
       {
-        image: "brow-lift-generated.jpg",
-        focusX: 50,
-        focusY: 40,
+        kicker: "SOURCILS",
+        name: "BROW LIFT",
+        detail: "Sourcils restructurés",
+        price: "200 DH",
         framed: true,
-        label: "SOURCILS",
-        detail: "Brow lift",
+        photos: [{ image: "brow-lift-generated.jpg", focusX: 50, focusY: 40 }],
       },
     ],
   },
   how: {
     steps: [
       {
-        title: "Choisissez le soin",
-        subtitle: "Écrivez « CADEAU » en DM et payez en ligne.",
+        title: "Écrivez « CADEAU » en DM",
+        subtitle: "Choisissez le soin et payez en ligne. C'est tout.",
       },
       {
         title: "Elle reçoit sa carte cadeau",
-        subtitle: "Digitale, directement sur son téléphone.",
-      },
-      {
-        title: "Elle réserve quand elle veut",
-        subtitle: "Chez OYA MUSE, sur mysalon.ma.",
+        subtitle: "Digitale, sur son téléphone. Elle réserve quand elle veut.",
       },
     ],
     senderTag: "VOUS",
     recipientTag: "ELLE",
     dmKeyword: "CADEAU",
-    dmReply: "Avec plaisir ! Quel soin souhaitez-vous offrir ?",
+    dmReply: "Avec plaisir ! Quel soin souhaitez-vous offrir ?",
     options: [
-      "Ongles · Manucure & vernis",
+      "Ongles · Manucure russe",
       "Cils · Lash lift",
       "Sourcils · Brow lift",
     ],
     pickIndex: 1,
     payLabel: "Payer",
     paidLabel: "Payé",
-    dmSent: "Carte cadeau envoyée !",
+    dmSent: "Carte cadeau envoyée !",
     lockTime: "10:24",
     lockDate: "samedi 10 octobre",
-    notifTitle: "Vous avez reçu un cadeau !",
+    notifTitle: "Vous avez reçu un cadeau !",
     notifBody: "Une expérience beauté chez OYA MUSE vous attend.",
     code: "CADEAU-K7M2",
     recipient: "Sara",
-    validLabel: "Cadeau validé : soin offert",
-    dates: ["Ven 16", "Sam 17", "Lun 19"],
-    slots: ["10:00", "11:30", "14:00", "15:30", "17:00", "18:30"],
-    slotIndex: 2,
-    confirmTitle: "Rendez-vous confirmé",
-    confirmDetail: "Sam 17 · 14:00 · OYA MUSE",
     wallpaper: "nails-pearl.jpg",
   },
   cta: {
     recipient: "quelqu'un de spécial",
     line1: "OFFREZ UNE",
     line2: "EXPÉRIENCE BEAUTÉ",
-    lead: "Pour offrir, c'est par message :",
-    button: "Écrivez « CADEAU » en DM",
-    featuredLabel: "À LA UNE",
-    shareAsk: "Vous en rêvez ?",
+    atLabel: "chez",
+    lead: "Pour offrir, c'est par message :",
+    button: "Écrivez « CADEAU » en DM",
+    shareAsk: "Vous en rêvez ?",
     shareLine: "Envoyez ce reel à qui doit vous l'offrir.",
   },
   musicFile: "music/gift-theme.mp3",
@@ -160,12 +146,12 @@ export const RemotionRoot: React.FC = () => {
           }}
         />
         <Composition
-          id="Where"
-          component={WhereScene}
-          durationInFrames={SCENES.where.duration}
+          id="Services"
+          component={ServicesScene}
+          durationInFrames={SCENES.services.duration}
           {...scene}
           defaultProps={{
-            where: defaultProps.where,
+            services: defaultProps.services,
             partner: defaultProps.partner,
           }}
         />
@@ -178,7 +164,6 @@ export const RemotionRoot: React.FC = () => {
             how: defaultProps.how,
             card: defaultProps.card,
             partner: defaultProps.partner,
-            site: defaultProps.site,
           }}
         />
         <Composition

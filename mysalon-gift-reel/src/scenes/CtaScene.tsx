@@ -34,11 +34,11 @@ const AT = {
   write: 14,
   line1: 6,
   line2: 12,
-  lead: 28,
-  button: 38,
-  featured: 70,
-  share: 104,
-  shine: 90,
+  salon: 24,
+  lead: 36,
+  button: 46,
+  shine: 80,
+  share: 96,
 };
 
 const rise = (frame: number, at: number) => ({
@@ -49,9 +49,9 @@ const rise = (frame: number, at: number) => ({
   }),
 });
 
-// Bars 15-18 (second drop): the invite. Offer a beauty experience, by DM to
-// MySalon.ma; the featured salon signs it; those who dream of it send the
-// reel on. The last beat powers down like a record stop and the reel loops.
+// Bars 16-18 (second drop): the invite. Offer a beauty experience at the
+// salon, by DM to MySalon.ma; those who dream of it send the reel on. The
+// last beat powers down like a record stop and the reel loops.
 export const CtaScene: React.FC<{
   readonly cta: GiftReelProps["cta"];
   readonly card: GiftCardContent;
@@ -59,7 +59,7 @@ export const CtaScene: React.FC<{
 }> = ({ cta, card, partner }) => {
   const frame = useCurrentFrame();
   const float = Math.sin(frame / 18) * 7;
-  const powerDown = interpolate(frame, [BEAT * 15, BEAT * 16], [0, 1], {
+  const powerDown = interpolate(frame, [BEAT * 11, BEAT * 12], [0, 1], {
     ...clamp,
     easing: Easing.in(Easing.quad),
   });
@@ -99,8 +99,8 @@ export const CtaScene: React.FC<{
           color={GOLD}
         />
         <Sfx name="stamp" at={AT.line2} volume={0.5} />
+        <Sfx name="sparkle" at={AT.salon} volume={0.35} />
         <Sfx name="pop" at={AT.button} volume={0.5} />
-        <Sfx name="sparkle" at={AT.featured} volume={0.35} />
         <Sfx name="pop" at={AT.share} volume={0.35} />
         <div
           style={{
@@ -219,9 +219,52 @@ export const CtaScene: React.FC<{
             {cta.line2}
           </Interactive.Div>
           <Interactive.Div
+            name="CTA salon"
+            style={{
+              marginTop: 26,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 16,
+              padding: "8px 30px 8px 8px",
+              borderRadius: 999,
+              backgroundColor: "rgba(201,169,110,0.12)",
+              boxShadow: "inset 0 0 0 1.5px rgba(201,169,110,0.55)",
+              fontFamily: DISPLAY,
+              fontWeight: 700,
+              fontSize: 30,
+              letterSpacing: "0.08em",
+              color: GOLD_LIGHT,
+              whiteSpace: "nowrap",
+              ...rise(frame, AT.salon),
+            }}
+          >
+            <LogoBadge
+              image={partner.logo}
+              size={66}
+              ring={false}
+              ringColor={GOLD}
+            />
+            <span>
+              <span
+                style={{
+                  fontFamily: SERIF,
+                  fontStyle: "italic",
+                  fontWeight: 500,
+                  fontSize: 32,
+                  letterSpacing: 0,
+                  color: SAGE,
+                }}
+              >
+                {cta.atLabel}
+              </span>
+              {` ${partner.name} · ${partner.city}`}
+            </span>
+          </Interactive.Div>
+          <Interactive.Div
             name="CTA lead"
             style={{
-              marginTop: 34,
+              marginTop: 40,
               fontFamily: SANS,
               fontWeight: 600,
               fontSize: 36,
@@ -303,49 +346,7 @@ export const CtaScene: React.FC<{
               ))}
             </Interactive.Div>
           </div>
-          <Interactive.Div
-            name="CTA featured"
-            style={{
-              marginTop: 40,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 16,
-              padding: "8px 28px 8px 8px",
-              borderRadius: 999,
-              backgroundColor: "rgba(201,169,110,0.12)",
-              boxShadow: "inset 0 0 0 1.5px rgba(201,169,110,0.55)",
-              fontFamily: DISPLAY,
-              fontWeight: 700,
-              fontSize: 27,
-              letterSpacing: "0.08em",
-              color: GOLD_LIGHT,
-              whiteSpace: "nowrap",
-              ...rise(frame, AT.featured),
-            }}
-          >
-            <LogoBadge
-              image={partner.logo}
-              size={62}
-              ring={false}
-              ringColor={GOLD}
-            />
-            <span>
-              <span
-                style={{
-                  fontFamily: SANS,
-                  fontWeight: 700,
-                  fontSize: 20,
-                  letterSpacing: "0.22em",
-                  color: SAGE,
-                }}
-              >
-                {cta.featuredLabel}
-              </span>
-              {` ${partner.name} · ${partner.city}`}
-            </span>
-          </Interactive.Div>
-          <div style={{ marginTop: 56, ...rise(frame, AT.share) }}>
+          <div style={{ marginTop: 54, ...rise(frame, AT.share) }}>
             <Interactive.Div
               name="Share ask"
               style={{

@@ -55,16 +55,17 @@ const at16 = (bar, s) => at(bar, s / 4) + (s % 2 === 1 ? SWING : 0);
 //   0     hook: the groove from the first frame, music filtered, hook teaser
 //   1     build: snare roll, riser, high-pass sweep, a beat of silence
 //   2-4   reveal: DROP 1 (full groove, hook + vocal chops)
-//   5-7   where: the groove keeps rolling under the salon and its photos
-//   8-12  how it works: lighter groove, stabs and plucks, vocals come back
-//   13    build: roll, riser, high-pass sweep, stutter, silence
-//   14-17 call to action: DROP 2, everything plus ride and the octave hook,
+//   5-10  services: the groove keeps rolling under the photos, the lead and
+//         the vocal chops answering each other a bar at a time
+//   11-13 how it works: lighter groove, stabs and plucks, vocals come back
+//   14    build: roll, riser, high-pass sweep, stutter, silence
+//   15-17 call to action: DROP 2, everything plus ride and the octave hook,
 //         then a record stop on the last beat (the reel loops to the hook)
 const DROP = 2;
 const MONTAGE = 5;
-const HOW = 8;
-const BUILD = 13;
-const CTA = 14;
+const HOW = 11;
+const BUILD = 14;
+const CTA = 15;
 
 const CHORDS = {
   Am: { notes: [57, 60, 64, 67], root: 33 },
@@ -85,12 +86,12 @@ const PLAN = [
   "G",
   "Am",
   "F",
+  "C",
+  "G",
   "G",
   "Am",
   "F",
   "C",
-  "G",
-  "Am",
 ];
 
 // The hook, one bar per chord: [beat, midi, length in beats].
@@ -704,6 +705,7 @@ for (let bar = 0; bar < BARS; bar++) {
   const intro = bar < DROP - 1;
   const build1 = bar === DROP - 1;
   const drop1 = bar >= DROP && bar < HOW;
+  const montage = bar >= MONTAGE && bar < HOW;
   const how = bar >= HOW && bar < BUILD;
   const build2 = bar === BUILD;
   const drop2 = bar >= CTA;
@@ -820,10 +822,16 @@ for (let bar = 0; bar < BARS; bar++) {
   // by the vocal chops on both drops.
   if (intro) playHook(bar, 0.14, 2200);
   if (build1) playVox(bar, 0.1);
-  if (how && bar >= HOW + 2) playVox(bar, 0.12);
-  if (drop1) {
+  if (how && bar >= HOW + 1) playVox(bar, 0.12);
+  if (drop1 && !montage) {
     playHook(bar, 0.2, 7500);
     playVox(bar, 0.16);
+  }
+  // Under the photos, the lead and the vocal chops answer each other, a bar
+  // each, so the groove breathes while the treatments are read.
+  if (montage) {
+    if ((bar - MONTAGE) % 2 === 0) playHook(bar, 0.2, 7500);
+    else playVox(bar, 0.16);
   }
   if (drop2) {
     playHook(bar, 0.2, 8000);

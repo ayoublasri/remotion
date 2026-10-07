@@ -32,10 +32,10 @@ const NAMES_AT = BEAT * 4;
 const NAME_EVERY = BEAT * 2;
 const CAPTION_AT = BEAT * 8;
 
-// Bars 3-5 (the drop): "Offrir une expérience beauté n'a jamais été aussi
-// simple", the gift box pops open and the digital gift card floats out, its
-// name rewritten every second (Maman, Ma chérie, Ma best, Ma femme): whoever
-// is watching sees their person.
+// Bars 3-5 (the drop): "Offrez une expérience beauté chez OYA MUSE", the
+// gift box pops open and the digital gift card floats out, its name rewritten
+// every second (Maman, Ma chérie, Ma best, Ma femme): whoever is watching sees
+// their person.
 export const RevealScene: React.FC<{
   readonly reveal: GiftReelProps["reveal"];
   readonly card: GiftCardContent;
@@ -192,17 +192,18 @@ export const RevealScene: React.FC<{
         <Interactive.Div
           name="Reveal line 3"
           style={{
-            fontFamily: DISPLAY,
+            marginTop: 18,
+            fontFamily: SANS,
             fontWeight: 700,
-            fontSize: 84,
-            lineHeight: 1.1,
-            letterSpacing: "0.04em",
-            color: EMERALD_DEEP,
-            scale: interpolate(frame, [10, 20], [1.5, 1], {
+            fontSize: 26,
+            letterSpacing: "0.3em",
+            marginRight: "-0.3em",
+            color: GOLD_DEEP,
+            opacity: interpolate(frame, [12, 18], [0, 1], clamp),
+            translate: interpolate(frame, [12, 24], ["0px 16px", "0px 0px"], {
               ...clamp,
-              easing: Easing.out(Easing.cubic),
+              easing: Easing.bezier(0.16, 1, 0.3, 1),
             }),
-            opacity: interpolate(frame, [10, 14], [0, 1], clamp),
           }}
         >
           {reveal.line3}
