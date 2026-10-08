@@ -12,16 +12,19 @@ import { DmScreen } from "../components/screens/DmScreen";
 import { LockScreen } from "../components/screens/LockScreen";
 import { Sfx } from "../components/Sfx";
 import { DISPLAY, SANS, SERIF } from "../fonts";
+import { SAFE } from "../layout";
 import type { GiftCardContent, GiftReelProps, Partner } from "../schema";
 import { BAR } from "../timing";
-import { EMERALD, EMERALD_DEEP, GOLD, LIGHT_BG, MUTED } from "../theme";
+import { EMERALD_DEEP, GOLD, LIGHT_BG, MUTED } from "../theme";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
-// Two bars per step: four seconds each, nothing rushed.
+// Four seconds per step, nothing rushed.
 const STEP_AT = [0, BAR * 2];
+// The phone is drawn at 500 x 1000 and shown smaller, inside the safe area.
+const PHONE_SCALE = 0.88;
 const PHONE_LEFT = (1080 - PHONE_WIDTH) / 2;
-const PHONE_TOP = 470;
+const PHONE_TOP = 540;
 
 const T = {
   keyword: 6,
@@ -48,9 +51,9 @@ const Caption: React.FC<{
     <div
       style={{
         position: "absolute",
-        left: 40,
-        right: 40,
-        top: 210,
+        left: SAFE.left,
+        right: 1080 - SAFE.right,
+        top: SAFE.top + 4,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -82,9 +85,9 @@ const Caption: React.FC<{
       >
         <div
           style={{
-            width: 74,
-            height: 74,
-            borderRadius: 37,
+            width: 68,
+            height: 68,
+            borderRadius: 34,
             flexShrink: 0,
             backgroundColor: EMERALD_DEEP,
             color: GOLD,
@@ -93,7 +96,7 @@ const Caption: React.FC<{
             justifyContent: "center",
             fontFamily: DISPLAY,
             fontWeight: 700,
-            fontSize: 40,
+            fontSize: 36,
             paddingTop: 4,
             boxSizing: "border-box",
             boxShadow:
@@ -112,7 +115,7 @@ const Caption: React.FC<{
             fontFamily: SERIF,
             fontStyle: "italic",
             fontWeight: 500,
-            fontSize: 64,
+            fontSize: 56,
             lineHeight: 1.08,
             color: EMERALD_DEEP,
             whiteSpace: "nowrap",
@@ -125,11 +128,13 @@ const Caption: React.FC<{
         name={`Step ${index + 1} subtitle`}
         style={{
           marginTop: 12,
+          maxWidth: 760,
           fontFamily: SANS,
           fontWeight: 600,
-          fontSize: 34,
+          fontSize: 32,
           lineHeight: 1.25,
           color: MUTED,
+          whiteSpace: "pre-line",
         }}
       >
         {subtitle}
@@ -147,7 +152,7 @@ const Tag: React.FC<{
     style={{
       position: "absolute",
       left: PHONE_WIDTH / 2,
-      top: -58,
+      top: -62,
       translate: "-50% 0px",
       padding: "8px 26px",
       borderRadius: 999,
@@ -155,7 +160,7 @@ const Tag: React.FC<{
       color: fg,
       fontFamily: DISPLAY,
       fontWeight: 700,
-      fontSize: 24,
+      fontSize: 26,
       letterSpacing: "0.18em",
       whiteSpace: "nowrap",
       boxShadow: "0 10px 24px rgba(8,34,28,0.2)",
@@ -165,9 +170,9 @@ const Tag: React.FC<{
   </div>
 );
 
-// Bars 12-15: how it works, in two four-second steps on two phones. You
-// write the keyword, pick the treatment and pay in the chat; she receives
-// her digital gift card and books when she likes.
+// Scene 4: how it works, in two four-second steps on two phones. You write
+// the keyword, pick the treatment and pay in the chat; she receives her
+// digital gift card and books when she likes.
 export const HowScene: React.FC<{
   readonly how: GiftReelProps["how"];
   readonly card: GiftCardContent;
@@ -178,7 +183,6 @@ export const HowScene: React.FC<{
     ...clamp,
     easing: Easing.bezier(0.65, 0, 0.35, 1),
   });
-  const step = frame >= STEP_AT[1] ? 1 : 0;
 
   return (
     <AbsoluteFill
@@ -210,11 +214,13 @@ export const HowScene: React.FC<{
           translate: `${-1150 * swap}px 0px`,
           rotate: `${-8 * swap}deg`,
           opacity: swap < 1 ? 1 : 0,
+          transformOrigin: "50% 0%",
           scale: String(
-            interpolate(frame, [0, 10], [0.92, 1], {
-              ...clamp,
-              easing: Easing.out(Easing.cubic),
-            }),
+            PHONE_SCALE *
+              interpolate(frame, [0, 10], [0.92, 1], {
+                ...clamp,
+                easing: Easing.out(Easing.cubic),
+              }),
           ),
         }}
       >
@@ -251,6 +257,8 @@ export const HowScene: React.FC<{
             top: PHONE_TOP,
             translate: `${900 * (1 - swap)}px 0px`,
             rotate: `${8 * (1 - swap)}deg`,
+            transformOrigin: "50% 0%",
+            scale: String(PHONE_SCALE),
           }}
         >
           <Tag text={how.recipientTag} bg={GOLD} fg={EMERALD_DEEP} />
@@ -287,30 +295,6 @@ export const HowScene: React.FC<{
           </Phone>
         </div>
       ) : null}
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: PHONE_TOP + 1000 + 40,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          gap: 16,
-        }}
-      >
-        {[0, 1].map((i) => (
-          <div
-            key={i}
-            style={{
-              width: i === step ? 54 : 16,
-              height: 16,
-              borderRadius: 8,
-              backgroundColor: i === step ? EMERALD : "rgba(26,74,64,0.2)",
-            }}
-          />
-        ))}
-      </div>
     </AbsoluteFill>
   );
 };

@@ -1,12 +1,19 @@
-# Posting kit: "Offrez une expérience beauté chez OYA MUSE"
+# Posting kit: "Vous ne savez pas quoi lui offrir ?"
 
-Everything needed to publish the reel (`out/mysalon-gift-reel.mp4`) from the MySalon.ma account.
+Everything needed to publish the reel (`out/mysalon-gift-reel.mp4`, silent) from the MySalon.ma account.
+
+## Audio
+
+The file has no sound on purpose. In the Instagram editor, add a trending sound (calm, elegant, or whatever is
+trending that week in Morocco) and keep it at a moderate volume: there is no voice-over to cover. A reel with an
+Instagram sound gets recommended more than one with imported audio. If you prefer the reel's own soundtrack, render
+`npm run render:sound` and post that file instead.
 
 ## Caption
 
 ```text
-Arrête d'offrir des fleurs 🥀
-Cette fois, offrez une expérience beauté chez OYA MUSE, à Témara ✨
+Vous ne savez pas quoi lui offrir ? 🎁
+Offrez une expérience beauté chez OYA MUSE, à Témara ✨
 Manucure russe, lash lift ou brow lift : vous choisissez le soin, vous payez en ligne, elle reçoit sa carte cadeau digitale et réserve quand elle veut.
 
 🎁 Pour offrir : écrivez « CADEAU » en DM.
@@ -44,12 +51,12 @@ Every DM that mentions a treatment is a sale: answer with the payment link, then
 
 ## Cover
 
-- **Profile grid:** `out/cover-card.png` (the digital gift card under "Offrez une expérience beauté chez OYA
-  MUSE"). Elegant on the grid, and it says what the offer is.
+- **Profile grid:** `out/cover-card.png` ("Offrez une expérience beauté à votre chérie", the card, "chez OYA MUSE ·
+  Témara"). It says what the offer is, and all of it fits the grid's centred 4:5 crop.
 - `out/cover-soin.png` (the manucure russe photo under the salon's name) is the prettier alternative if you want the
   grid to show the salon's work.
-- **In the feed** people see the first frame, which is already the hook ("ARRÊTE D'OFFRIR… des fleurs").
-  `out/cover-hook.png` is that frame, if you prefer the hook on the grid too.
+- **In the feed** people see the first frames, which are already the question. `out/cover-hook.png` is that frame,
+  if you prefer the question on the grid too.
 
 ## Publishing
 
@@ -59,7 +66,7 @@ Every DM that mentions a treatment is a sale: answer with the payment link, then
 - **First hour:** reply to every comment (a short reply plus a question keeps the thread going), answer DMs fast, and
   share the reel to your Story with a "Message" sticker.
 - **Re-post around gifting moments:** Saint-Valentin (14 February), Fête des mères (last Sunday of May), Aïd,
-  birthdays and the end of the year. Change `reveal.names` to fit the moment (for example "Maman" first in May).
+  birthdays and the end of the year. Change `reveal.recipients` to fit the moment (for example "maman" alone in May).
 - **Another salon:** switch `partner`, `services.items` and `how.options` in `src/Root.tsx`, re-render, and post the
   same reel for another salon on the platform.
 
@@ -71,14 +78,14 @@ occasions. Start small, keep the version that brings the most "CADEAU" messages.
 
 ## What to watch
 
-- **3-second hold rate and average watch time:** is the hook stopping the scroll?
+- **3-second hold rate and average watch time:** is the question stopping the scroll?
 - **Shares / sends and saves:** the strongest reach signals; the "Envoyez ce reel…" line is there for this.
 - **DMs with CADEAU:** the business result.
 
 ## Next variants to test
 
-Same reel, different first line (edit `hook` in `src/Root.tsx`):
+Same reel, different question (edit `hook` in `src/Root.tsx`):
 
-- "Elle a déjà tout ? Offrez-lui ça."
-- "Le cadeau qu'on n'oublie pas."
-- "POV : vous offrez enfin un vrai cadeau."
+- "Son anniversaire approche ?" / "Vous avez une idée ?"
+- "Elle a déjà tout ?" / "Pas ça."
+- "Encore des fleurs ?" / "Cette fois, offrez mieux."

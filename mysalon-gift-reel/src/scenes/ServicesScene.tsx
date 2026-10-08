@@ -11,18 +11,20 @@ import { LogoBadge } from "../components/Logo";
 import { Flash } from "../components/Overlays";
 import { Sfx } from "../components/Sfx";
 import { DISPLAY, SANS, SERIF } from "../fonts";
+import { SAFE, SAFE_WIDTH } from "../layout";
 import type { GiftReelProps, Partner, Service } from "../schema";
 import { BAR } from "../timing";
 import { EMERALD_INK, GOLD, GOLD_LIGHT, IVORY } from "../theme";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
-// Two bars (four seconds) per treatment; with two photos, each gets a bar.
+// Four seconds per treatment; with two photos, each gets two seconds.
 export const SERVICE = BAR * 2;
 
-const FRAME_WIDTH = 1000;
-const FRAME_HEIGHT = 571;
-const FRAME_TOP = 540;
+// The framed photo fills the safe width and stops above the icon band.
+const FRAME_WIDTH = SAFE_WIDTH;
+const FRAME_HEIGHT = 490;
+const FRAME_TOP = 560;
 
 // One photo, held: full-bleed with a slow push-in, or, for small photos, a
 // framed card over a blurred fill of the same photo.
@@ -81,11 +83,11 @@ const Photo: React.FC<{
       <div
         style={{
           position: "absolute",
-          left: (1080 - FRAME_WIDTH) / 2,
+          left: SAFE.left,
           top: FRAME_TOP,
           width: FRAME_WIDTH,
           height: FRAME_HEIGHT,
-          borderRadius: 34,
+          borderRadius: 32,
           overflow: "hidden",
           boxShadow:
             "0 50px 110px rgba(0,0,0,0.5), 0 0 0 5px rgba(246,232,198,0.92)",
@@ -121,7 +123,7 @@ const Header: React.FC<{
         position: "absolute",
         left: 0,
         right: 0,
-        top: 130,
+        top: SAFE.top,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -138,15 +140,15 @@ const Header: React.FC<{
           ),
         }}
       >
-        <LogoBadge image={partner.logo} size={104} ring ringColor={GOLD} />
+        <LogoBadge image={partner.logo} size={96} ring ringColor={GOLD} />
       </div>
       <Interactive.Div
         name="Services salon"
         style={{
-          marginTop: 18,
+          marginTop: 16,
           fontFamily: DISPLAY,
           fontWeight: 700,
-          fontSize: 46,
+          fontSize: 42,
           lineHeight: 1,
           letterSpacing: "0.14em",
           marginRight: "-0.14em",
@@ -160,10 +162,10 @@ const Header: React.FC<{
       <Interactive.Div
         name="Services subtitle"
         style={{
-          marginTop: 12,
+          marginTop: 10,
           fontFamily: SANS,
           fontWeight: 700,
-          fontSize: 23,
+          fontSize: 22,
           letterSpacing: "0.3em",
           marginRight: "-0.3em",
           color: IVORY,
@@ -178,7 +180,7 @@ const Header: React.FC<{
 };
 
 // The treatment, like a menu line: category, name, detail and price, set
-// left so it stays clear of the Instagram buttons.
+// left and kept clear of the Instagram buttons and caption.
 const Caption: React.FC<{
   readonly service: Service;
   readonly index: number;
@@ -200,9 +202,9 @@ const Caption: React.FC<{
     <div
       style={{
         position: "absolute",
-        left: 64,
-        right: 150,
-        bottom: 400,
+        left: SAFE.left,
+        right: 1080 - SAFE.iconsRight,
+        bottom: 1920 - SAFE.bottom,
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
@@ -223,7 +225,7 @@ const Caption: React.FC<{
           style={{
             fontFamily: SANS,
             fontWeight: 700,
-            fontSize: 26,
+            fontSize: 24,
             letterSpacing: "0.32em",
             color: GOLD_LIGHT,
             textShadow: shadow,
@@ -238,7 +240,7 @@ const Caption: React.FC<{
           marginTop: 16,
           fontFamily: DISPLAY,
           fontWeight: 700,
-          fontSize: 88,
+          fontSize: 72,
           lineHeight: 1,
           letterSpacing: "0.05em",
           color: IVORY,
@@ -256,7 +258,7 @@ const Caption: React.FC<{
           fontFamily: SERIF,
           fontStyle: "italic",
           fontWeight: 500,
-          fontSize: 48,
+          fontSize: 44,
           color: GOLD_LIGHT,
           textShadow: shadow,
           ...rise(8),
@@ -268,14 +270,14 @@ const Caption: React.FC<{
         <Interactive.Div
           name={`Service ${index + 1} price`}
           style={{
-            marginTop: 22,
-            padding: "10px 26px",
+            marginTop: 20,
+            padding: "9px 24px",
             borderRadius: 999,
             boxShadow: "inset 0 0 0 2px rgba(201,169,110,0.8)",
             backgroundColor: "rgba(8,34,28,0.35)",
             fontFamily: SANS,
             fontWeight: 700,
-            fontSize: 30,
+            fontSize: 28,
             letterSpacing: "0.08em",
             color: GOLD_LIGHT,
             ...rise(14),
@@ -288,8 +290,8 @@ const Caption: React.FC<{
   );
 };
 
-// Bars 6-11: the treatments to offer, two bars each, the photo big and clear
-// under the salon's name: ONGLES, CILS, SOURCILS.
+// Scene 3: the treatments to offer, four seconds each, the photo big and
+// clear under the salon's name: ONGLES, CILS, SOURCILS.
 export const ServicesScene: React.FC<{
   readonly services: GiftReelProps["services"];
   readonly partner: Partner;
@@ -325,7 +327,7 @@ export const ServicesScene: React.FC<{
       <AbsoluteFill
         style={{
           background:
-            "linear-gradient(180deg, rgba(8,34,28,0.72) 0%, rgba(8,34,28,0.28) 17%, rgba(8,34,28,0) 30%, rgba(8,34,28,0) 60%, rgba(8,34,28,0.68) 80%, rgba(8,34,28,0.9) 100%)",
+            "linear-gradient(180deg, rgba(8,34,28,0.72) 0%, rgba(8,34,28,0.3) 20%, rgba(8,34,28,0) 34%, rgba(8,34,28,0) 54%, rgba(8,34,28,0.66) 74%, rgba(8,34,28,0.9) 100%)",
         }}
       />
       <Header partner={partner} subtitle={services.subtitle} />

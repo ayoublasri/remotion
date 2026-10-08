@@ -5,37 +5,37 @@ import {
   interpolate,
   useCurrentFrame,
 } from "remotion";
-import { Logo } from "../components/Brand";
 import { GiftCard } from "../components/GiftCard";
 import { BoxBody, BoxLid, Burst } from "../components/GiftBox";
+import { LogoBadge } from "../components/Logo";
 import { Flash, Twinkles } from "../components/Overlays";
 import { StarPattern } from "../components/Pattern";
 import { Sfx } from "../components/Sfx";
 import { Starburst } from "../components/Starburst";
-import { DISPLAY, SANS, SERIF } from "../fonts";
+import { DISPLAY, SCRIPT, SERIF } from "../fonts";
+import { SAFE } from "../layout";
 import type { GiftCardContent, GiftReelProps, Partner } from "../schema";
-import { BEAT } from "../timing";
 import { EMERALD_DEEP, GOLD, GOLD_DEEP, IVORY, LIGHT_BG } from "../theme";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 const BOX_LEFT = 310;
-const BOX_TOP = 1090;
+const BOX_TOP = 1060;
 const BOX_WIDTH = 460;
 const BOX_HEIGHT = 340;
-const LID_AT = BEAT;
+const LID_AT = 15;
 const RISE_FROM = LID_AT + 4;
 const RISE_TO = RISE_FROM + 26;
-const CARD_Y = 850;
-const WITH_AT = BEAT * 2;
-const NAMES_AT = BEAT * 4;
-const NAME_EVERY = BEAT * 2;
-const CAPTION_AT = BEAT * 8;
+const CARD_Y = 870;
+const WORDS_AT = 30;
+const WORD_EVERY = 30;
+const SALON_AT = 56;
+const WORD_SLOT = 430;
 
-// Bars 3-5 (the drop): "Offrez une expérience beauté chez OYA MUSE", the
-// gift box pops open and the digital gift card floats out, its name rewritten
-// every second (Maman, Ma chérie, Ma best, Ma femme): whoever is watching sees
-// their person.
+// Scene 2, the answer: "Offrez une expérience beauté à votre maman / amie /
+// sœur / femme / chérie", a word a second, while the gift box pops open and
+// the digital gift card floats out with the same name written on it; then
+// "chez OYA MUSE · Témara".
 export const RevealScene: React.FC<{
   readonly reveal: GiftReelProps["reveal"];
   readonly card: GiftCardContent;
@@ -75,9 +75,9 @@ export const RevealScene: React.FC<{
       : interpolate(rise, [0, 1], [35, 0]);
   const halo = interpolate(frame, [LID_AT, LID_AT + 20], [0, 1], clamp);
   const cardInFront = frame >= RISE_FROM + 14;
-  const sinceName = (frame - NAMES_AT) % NAME_EVERY;
-  const namePunch =
-    frame >= NAMES_AT ? interpolate(sinceName, [0, 6], [1.03, 1], clamp) : 1;
+  const sinceWord = (frame - WORDS_AT) % WORD_EVERY;
+  const wordPunch =
+    frame >= WORDS_AT ? interpolate(sinceWord, [0, 6], [1.03, 1], clamp) : 1;
 
   const giftCard = (
     <div
@@ -85,7 +85,7 @@ export const RevealScene: React.FC<{
         position: "absolute",
         left: 540 - 330,
         top: cardY - 206,
-        scale: String(cardScale * namePunch),
+        scale: String(cardScale * wordPunch),
         transform: `perspective(1600px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`,
         opacity: interpolate(frame, [RISE_FROM, RISE_FROM + 3], [0, 1], clamp),
       }}
@@ -94,9 +94,9 @@ export const RevealScene: React.FC<{
         id="reveal-card"
         content={card}
         partner={partner}
-        recipients={reveal.names}
-        writeAt={NAMES_AT}
-        writeEvery={NAME_EVERY}
+        recipients={reveal.recipients.map((r) => r.card)}
+        writeAt={WORDS_AT}
+        writeEvery={WORD_EVERY}
         shineAt={RISE_TO + 2}
         recipientSize={66}
       />
@@ -111,9 +111,14 @@ export const RevealScene: React.FC<{
       <StarPattern id="reveal-pattern" color={GOLD} opacity={0.08} size={120} />
       <Sfx name="sparkle" at={LID_AT} volume={0.4} />
       <Sfx name="whoosh" at={RISE_FROM} volume={0.25} />
-      <Sfx name="pop" at={WITH_AT} volume={0.4} />
-      {reveal.names.map((n, i) => (
-        <Sfx key={n} name="tick" at={NAMES_AT + i * NAME_EVERY} volume={0.4} />
+      <Sfx name="pop" at={SALON_AT} volume={0.4} />
+      {reveal.recipients.map((r, i) => (
+        <Sfx
+          key={r.word}
+          name="tick"
+          at={WORDS_AT + i * WORD_EVERY}
+          volume={0.4}
+        />
       ))}
       <AbsoluteFill
         style={{ opacity: halo, translate: `0px ${cardY - 960}px` }}
@@ -134,19 +139,19 @@ export const RevealScene: React.FC<{
       </AbsoluteFill>
       <Twinkles
         points={[
-          { x: 12, y: 38 },
-          { x: 88, y: 42 },
-          { x: 9, y: 58 },
-          { x: 91, y: 56 },
+          { x: 14, y: 40 },
+          { x: 86, y: 44 },
+          { x: 12, y: 60 },
+          { x: 88, y: 58 },
         ]}
         color={GOLD}
       />
       <div
         style={{
           position: "absolute",
-          left: 30,
-          right: 30,
-          top: 170,
+          left: SAFE.left,
+          right: 1080 - SAFE.right,
+          top: SAFE.top + 10,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -159,10 +164,10 @@ export const RevealScene: React.FC<{
             fontFamily: SERIF,
             fontStyle: "italic",
             fontWeight: 500,
-            fontSize: 66,
-            lineHeight: 1.05,
+            fontSize: 60,
+            lineHeight: 1.1,
             color: GOLD_DEEP,
-            scale: interpolate(frame, [0, 10], [1.4, 1], {
+            scale: interpolate(frame, [0, 10], [1.3, 1], {
               ...clamp,
               easing: Easing.out(Easing.cubic),
             }),
@@ -170,70 +175,136 @@ export const RevealScene: React.FC<{
         >
           {reveal.line1}
         </Interactive.Div>
-        <Interactive.Div
-          name="Reveal line 2"
-          style={{
-            marginTop: 10,
-            fontFamily: DISPLAY,
-            fontWeight: 700,
-            fontSize: 84,
-            lineHeight: 1.1,
-            letterSpacing: "0.04em",
-            color: EMERALD_DEEP,
-            scale: interpolate(frame, [4, 14], [1.5, 1], {
-              ...clamp,
-              easing: Easing.out(Easing.cubic),
-            }),
-            opacity: interpolate(frame, [4, 8], [0, 1], clamp),
-          }}
-        >
-          {reveal.line2}
-        </Interactive.Div>
-        <Interactive.Div
-          name="Reveal line 3"
-          style={{
-            marginTop: 18,
-            fontFamily: SANS,
-            fontWeight: 700,
-            fontSize: 26,
-            letterSpacing: "0.3em",
-            marginRight: "-0.3em",
-            color: GOLD_DEEP,
-            opacity: interpolate(frame, [12, 18], [0, 1], clamp),
-            translate: interpolate(frame, [12, 24], ["0px 16px", "0px 0px"], {
-              ...clamp,
-              easing: Easing.bezier(0.16, 1, 0.3, 1),
-            }),
-          }}
-        >
-          {reveal.line3}
-        </Interactive.Div>
         <div
           style={{
-            marginTop: 26,
+            marginTop: 6,
+            height: 160,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 22,
+            opacity: interpolate(
+              frame,
+              [WORDS_AT, WORDS_AT + 6],
+              [0, 1],
+              clamp,
+            ),
+            translate: interpolate(
+              frame,
+              [WORDS_AT, WORDS_AT + 14],
+              ["0px 30px", "0px 0px"],
+              { ...clamp, easing: Easing.bezier(0.16, 1, 0.3, 1) },
+            ),
+          }}
+        >
+          <Interactive.Div
+            name="Reveal lead"
+            style={{
+              fontFamily: SERIF,
+              fontStyle: "italic",
+              fontWeight: 500,
+              fontSize: 60,
+              color: EMERALD_DEEP,
+              whiteSpace: "nowrap",
+              paddingBottom: 10,
+            }}
+          >
+            {reveal.lead}
+          </Interactive.Div>
+          <div style={{ position: "relative", width: WORD_SLOT, height: 160 }}>
+            {reveal.recipients.map((r, i) => {
+              const at = WORDS_AT + i * WORD_EVERY;
+              const last = i === reveal.recipients.length - 1;
+              const out = last ? 100000 : at + WORD_EVERY;
+              return (
+                <Interactive.Div
+                  key={r.word}
+                  name={`Recipient ${r.word}`}
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    height: 160,
+                    display: "flex",
+                    alignItems: "center",
+                    fontFamily: SCRIPT,
+                    fontSize: 128,
+                    lineHeight: 1,
+                    color: EMERALD_DEEP,
+                    whiteSpace: "nowrap",
+                    paddingBottom: 22,
+                    opacity: interpolate(
+                      frame,
+                      [at, at + 6, out - 5, out],
+                      [0, 1, 1, 0],
+                      clamp,
+                    ),
+                    translate: interpolate(
+                      frame,
+                      [at, at + 12],
+                      ["0px 24px", "0px 0px"],
+                      { ...clamp, easing: Easing.bezier(0.16, 1, 0.3, 1) },
+                    ),
+                  }}
+                >
+                  {r.word}
+                </Interactive.Div>
+              );
+            })}
+          </div>
+        </div>
+        <div
+          style={{
+            marginTop: 8,
             display: "inline-flex",
             flexDirection: "row",
             alignItems: "center",
-            gap: 16,
-            padding: "14px 34px",
+            gap: 14,
+            padding: "8px 30px 8px 8px",
             borderRadius: 999,
             backgroundColor: EMERALD_DEEP,
             boxShadow:
               "0 18px 40px rgba(8,34,28,0.25), inset 0 0 0 1.5px rgba(201,169,110,0.6)",
-            fontFamily: SANS,
-            fontWeight: 600,
-            fontSize: 30,
+            fontFamily: DISPLAY,
+            fontWeight: 700,
+            fontSize: 27,
+            letterSpacing: "0.08em",
             color: IVORY,
-            opacity: interpolate(frame, [WITH_AT, WITH_AT + 6], [0, 1], clamp),
-            scale: interpolate(frame, [WITH_AT, WITH_AT + 14], [0.7, 1], {
+            whiteSpace: "nowrap",
+            opacity: interpolate(
+              frame,
+              [SALON_AT, SALON_AT + 6],
+              [0, 1],
+              clamp,
+            ),
+            scale: interpolate(frame, [SALON_AT, SALON_AT + 14], [0.7, 1], {
               ...clamp,
               easing: Easing.spring({ damping: 12, stiffness: 180, mass: 0.8 }),
               output: "perceptual-scale",
             }),
           }}
         >
-          {reveal.withLabel}
-          <Logo size={36} color={IVORY} accent={GOLD} starColor={GOLD} />
+          <LogoBadge
+            image={partner.logo}
+            size={54}
+            ring={false}
+            ringColor={GOLD}
+          />
+          <span>
+            <span
+              style={{
+                fontFamily: SERIF,
+                fontStyle: "italic",
+                fontWeight: 500,
+                fontSize: 30,
+                letterSpacing: 0,
+                color: GOLD,
+              }}
+            >
+              {reveal.atLabel}
+            </span>
+            {` ${partner.name} · ${partner.city}`}
+          </span>
         </div>
       </div>
       {cardInFront ? null : giftCard}
@@ -255,52 +326,15 @@ export const RevealScene: React.FC<{
           position: "absolute",
           left: BOX_LEFT - 20,
           top: BOX_TOP - 80,
-          translate: `${lidUp * 260}px ${(1 - enter) * 700 + sink * 1100 - lidUp * 900 + (frame < LID_AT ? -Math.abs(wiggle) * 2 : 0)}px`,
+          translate: `${lidUp * 380}px ${(1 - enter) * 700 + sink * 1100 - lidUp * 900 + (frame < LID_AT ? -Math.abs(wiggle) * 2 : 0)}px`,
           rotate: `${wiggle + lidUp * 38}deg`,
-          opacity: interpolate(
-            frame,
-            [LID_AT + 12, LID_AT + 22],
-            [1, 0],
-            clamp,
-          ),
+          opacity: interpolate(frame, [LID_AT + 8, LID_AT + 18], [1, 0], clamp),
         }}
       >
         <BoxLid width={BOX_WIDTH + 40} height={100} />
       </div>
       <Burst at={LID_AT} x={540} y={BOX_TOP - 30} count={30} />
       {cardInFront ? giftCard : null}
-      <Interactive.Div
-        name="Reveal caption"
-        style={{
-          position: "absolute",
-          left: 40,
-          right: 40,
-          top: 1130,
-          textAlign: "center",
-          fontFamily: SERIF,
-          fontStyle: "italic",
-          fontWeight: 500,
-          fontSize: 74,
-          color: EMERALD_DEEP,
-          opacity: interpolate(
-            frame,
-            [CAPTION_AT, CAPTION_AT + 6],
-            [0, 1],
-            clamp,
-          ),
-          translate: interpolate(
-            frame,
-            [CAPTION_AT, CAPTION_AT + 14],
-            ["0px 36px", "0px 0px"],
-            {
-              ...clamp,
-              easing: Easing.bezier(0.16, 1, 0.3, 1),
-            },
-          ),
-        }}
-      >
-        {reveal.caption}
-      </Interactive.Div>
       <Flash at={1} peak={0.55} />
     </AbsoluteFill>
   );
