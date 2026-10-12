@@ -7,69 +7,50 @@ import {
   staticFile,
   useCurrentFrame,
 } from "remotion";
-import { Logo } from "./components/Brand";
 import { CaptionBlock } from "./components/Captions";
+import { Counter } from "./components/Counter";
 import { Flash } from "./components/Overlays";
 import { Sfx, SoundContext } from "./components/Sfx";
+import { StoryChips } from "./components/StoryChip";
 import "./fonts";
-import { SAFE } from "./layout";
-import type { InvitationReelProps, Shot } from "./schema";
+import type { InvitationReelProps, Scene, ShotScene } from "./schema";
 import { EndCard } from "./scenes/EndCard";
-import { INK, MINT, WHITE } from "./theme";
+import { MessagesSceneView } from "./scenes/MessagesScene";
+import { NotificationSceneView } from "./scenes/NotificationScene";
+import { INK } from "./theme";
 
 export const FPS = 30;
-// The end card fades in over the last frames of the last shot.
+// The end card fades in over the last frames of the scene before it.
 const FADE = 8;
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
-export const shotLength = (shot: Shot) =>
-  Math.round(((shot.to - shot.from) / shot.rate) * FPS);
+export const sceneLength = (scene: Scene) =>
+  scene.kind === "shot"
+    ? Math.round(((scene.to - scene.from) / scene.rate) * FPS)
+    : scene.duration;
 
-// Where every shot and the end card start, in frames of the reel.
+// Where every scene starts, in frames of the reel.
 export const timeline = (props: InvitationReelProps) => {
-  const lengths = props.shots.map(shotLength);
+  const lengths = props.scenes.map(sceneLength);
   const starts: number[] = [];
   let t = 0;
-  for (const length of lengths) {
+  props.scenes.forEach((scene, i) => {
+    if (scene.kind === "end") {
+      t -= FADE;
+    }
     starts.push(t);
-    t += length;
-  }
-  const endStart = t - FADE;
-  return { lengths, starts, endStart, total: endStart + props.end.duration };
+    t += lengths[i];
+  });
+  return { lengths, starts, total: t };
 };
 
-const Wordmark: React.FC = () => (
-  <div
-    style={{
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: SAFE.top + 6,
-      display: "flex",
-      justifyContent: "center",
-    }}
-  >
-    <div
-      style={{
-        padding: "10px 24px",
-        borderRadius: 999,
-        backgroundColor: "rgba(10,40,38,0.45)",
-        backdropFilter: "blur(10px)",
-      }}
-    >
-      <Logo size={30} color={WHITE} accent={MINT} starColor={MINT} />
-    </div>
-  </div>
-);
-
-// One shot of the ad video, slowed down, with its captions and sounds.
+// A shot of the ad video, slowed down, with a punch-in on the cut.
 const ShotView: React.FC<{
-  readonly shot: Shot;
+  readonly scene: ShotScene;
   readonly length: number;
   readonly video: string;
-  readonly wordmark: boolean;
-}> = ({ shot, length, video, wordmark }) => {
+}> = ({ scene, length, video }) => {
   const frame = useCurrentFrame();
   const punch = interpolate(frame, [0, 14], [1.06, 1], {
     ...clamp,
@@ -77,42 +58,25 @@ const ShotView: React.FC<{
   });
 
   return (
-    <AbsoluteFill name={`Shot ${shot.id}`} style={{ overflow: "hidden" }}>
+    <AbsoluteFill style={{ overflow: "hidden" }}>
       <AbsoluteFill style={{ scale: String(punch) }}>
         <OffthreadVideo
           src={staticFile(video)}
-          trimBefore={Math.round(shot.from * FPS)}
-          playbackRate={shot.rate}
+          trimBefore={Math.round(scene.from * FPS)}
+          playbackRate={scene.rate}
           muted
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
       </AbsoluteFill>
-      {wordmark ? <Wordmark /> : null}
-      {shot.captions.map((caption, i) => (
-        <CaptionBlock
-          key={caption.lines.join("|")}
-          caption={caption}
-          shotLength={length}
-          name={`${shot.id} caption ${i + 1}`}
+      {scene.counter ? (
+        <Counter
+          label={scene.counter.label}
+          to={scene.counter.to}
+          at={scene.counter.at}
+          end={length}
         />
-      ))}
-      {shot.captions.map((caption) => (
-        <Sfx
-          key={`pop-${caption.at}`}
-          name="pop"
-          at={caption.at}
-          volume={0.55}
-        />
-      ))}
-      {shot.sounds.map((sound) => (
-        <Sfx
-          key={`${sound.name}-${sound.at}`}
-          name={sound.name}
-          at={sound.at}
-          volume={sound.volume}
-        />
-      ))}
-      {shot.flash ? (
+      ) : null}
+      {scene.flash ? (
         <>
           <Flash at={0} peak={0.3} />
           <Sfx name="whoosh" at={0} volume={0.55} />
@@ -122,36 +86,73 @@ const ShotView: React.FC<{
   );
 };
 
-// 17 seconds: the ad video's shots, each slowed down and captioned for salon
-// owners, then the end card. See Root.tsx for the shots.
+// Captions, day chips and sounds shared by every kind of scene.
+const SceneOverlay: React.FC<{
+  readonly scene: Scene;
+  readonly length: number;
+}> = ({ scene, length }) => (
+  <>
+    <StoryChips chips={scene.chips} />
+    {scene.captions.map((caption, i) => (
+      <CaptionBlock
+        key={caption.lines.join("|")}
+        caption={caption}
+        shotLength={length}
+        name={`${scene.id} caption ${i + 1}`}
+      />
+    ))}
+    {scene.captions.map((caption) => (
+      <Sfx key={`pop-${caption.at}`} name="pop" at={caption.at} volume={0.55} />
+    ))}
+    {scene.sounds.map((sound) => (
+      <Sfx
+        key={`${sound.name}-${sound.at}`}
+        name={sound.name}
+        at={sound.at}
+        volume={sound.volume}
+      />
+    ))}
+  </>
+);
+
+const SceneView: React.FC<{
+  readonly scene: Scene;
+  readonly length: number;
+  readonly video: string;
+}> = ({ scene, length, video }) => {
+  switch (scene.kind) {
+    case "shot":
+      return <ShotView scene={scene} length={length} video={video} />;
+    case "messages":
+      return <MessagesSceneView scene={scene} />;
+    case "notification":
+      return <NotificationSceneView scene={scene} />;
+    case "end":
+      return <EndCard scene={scene} fadeIn={FADE} />;
+  }
+};
+
+// Thirty seconds, told as a story: Sara, nail artist in Témara, her Monday
+// night of DMs, MySalon installed on Tuesday, Nada booking by herself on
+// Thursday, the agenda filling, the reminder going out alone, and a month
+// later. The scenes are props, see Root.tsx.
 export const InvitationReel: React.FC<InvitationReelProps> = (props) => {
-  const { lengths, starts, endStart } = timeline(props);
+  const { lengths, starts } = timeline(props);
 
   return (
     <SoundContext.Provider value={props.sfx}>
       <AbsoluteFill style={{ backgroundColor: INK }}>
-        {props.shots.map((shot, i) => (
+        {props.scenes.map((scene, i) => (
           <Sequence
-            key={shot.id}
+            key={scene.id}
             from={starts[i]}
             durationInFrames={lengths[i]}
-            name={shot.id}
+            name={scene.id}
           >
-            <ShotView
-              shot={shot}
-              length={lengths[i]}
-              video={props.video}
-              wordmark={props.wordmarkFrom !== null && i >= props.wordmarkFrom}
-            />
+            <SceneView scene={scene} length={lengths[i]} video={props.video} />
+            <SceneOverlay scene={scene} length={lengths[i]} />
           </Sequence>
         ))}
-        <Sequence
-          from={endStart}
-          durationInFrames={props.end.duration}
-          name="End card"
-        >
-          <EndCard end={props.end} fadeIn={FADE} />
-        </Sequence>
       </AbsoluteFill>
     </SoundContext.Provider>
   );

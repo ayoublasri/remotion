@@ -85,3 +85,32 @@ if (!done) {
   process.exit(1);
 }
 console.log(`wrote ${output}`);
+
+// Two frozen frames of the ad, for the scenes built on top of it: the DMs
+// (end of the first shot) and the confirmed booking (end of the booking).
+const stills = [
+  ["still-dms.jpg", 2.05],
+  ["still-confirm.jpg", 5.4],
+];
+const ffmpeg = candidates.find((c) => c === "ffmpeg" || existsSync(c));
+for (const [name, second] of stills) {
+  execFileSync(
+    ffmpeg,
+    [
+      "-y",
+      "-v",
+      "error",
+      "-ss",
+      String(second),
+      "-i",
+      output,
+      "-frames:v",
+      "1",
+      "-q:v",
+      "2",
+      path.join(outDir, name),
+    ],
+    { stdio: "inherit" },
+  );
+  console.log(`wrote ${path.join(outDir, name)}`);
+}

@@ -1,18 +1,20 @@
-# Posting kit: "Tes clientes réservent encore par DM ?"
+# Posting kit: Sara's story
 
 For the MySalon.ma account, aimed at salon owners (coiffeuses, esthéticiennes, nail artists) in Morocco.
 
 ## Audio
 
-The file carries only its sound effects (dings, whoosh, chime). In the Instagram editor add a trending sound and keep
-the original audio on: a punchy, confident track for the first 3 seconds (the DMs piling up), nothing slow. A reel
-with an Instagram sound gets recommended more than one with imported audio.
+The file carries only its sound effects (dings, pops, chime, ticks). In the Instagram editor add a trending sound
+and keep the original audio on. Pick something warm and upbeat with a clear beat, not a slow ballad: the story moves
+every 3 to 4 seconds. A reel with an Instagram sound gets recommended more than one with imported audio.
 
 ## Caption
 
 ```text
-Tes clientes réservent encore par DM ? 😩
-Un lien dans ta bio, un QR sur ton comptoir : elles réservent seules, ton agenda se remplit, les rappels WhatsApp partent tout seuls.
+Lundi, 23h14. Sara, nail artist à Témara, a 47 DM et n'a pas encore dîné 😩
+Mardi, elle installe MySalon : un lien dans sa bio, un QR sur le comptoir.
+Jeudi, Nada réserve sa manucure russe toute seule, samedi 11h. Sara n'a rien eu à faire.
+Un mois plus tard : 0 DM le soir, agenda plein.
 
 MySalon.ma, fait au Maroc 🇲🇦
 0 commission · 0 paiement en ligne
@@ -40,9 +42,9 @@ Change "24 h" to whatever you really deliver.
 
 ## Cover
 
-- **Profile grid:** `out/cover-end.png` (the end card: MySalon.ma, Fait au Maroc, DM « INVITATION »). It says what
-  the offer is, inside the grid's centred crop.
-- `out/cover-hook.png` (the phone with the DMs and the question) if you prefer the hook on the grid.
+- **Profile grid:** `out/cover-end.png` (Sara : 0 DM le soir. Agenda plein. MySalon.ma, DM « INVITATION »). The
+  result and the offer in one image, inside the grid's centred crop.
+- `out/cover-hook.png` (the phone with the DMs, "Sara, nail artist à Témara") if you prefer the hook on the grid.
 
 ## Publishing
 
@@ -57,6 +59,7 @@ Change "24 h" to whatever you really deliver.
 
 ## What to watch
 
-- **3-second hold rate:** does the DM-chaos hook stop salon owners?
+- **3-second hold rate:** does Sara's Monday night stop salon owners?
+- **Average watch time:** the story is 30 s; above 15 s means they followed it to Nada's booking.
 - **Saves and sends:** owners sending it to a partner or a colleague.
 - **DMs with INVITATION:** the business result.

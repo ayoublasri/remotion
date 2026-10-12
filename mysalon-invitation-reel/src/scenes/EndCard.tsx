@@ -12,20 +12,10 @@ import { Flash } from "../components/Overlays";
 import { Sfx } from "../components/Sfx";
 import { SANS } from "../fonts";
 import { SAFE } from "../layout";
-import type { InvitationReelProps } from "../schema";
+import type { EndScene } from "../schema";
 import { BEIGE, BEIGE_DEEP, INK, MUTED, TEAL, WHITE } from "../theme";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-
-const AT = {
-  logo: 4,
-  kicker: 10,
-  madeIn: 18,
-  perks: 26,
-  lead: 40,
-  cta: 50,
-  site: 64,
-};
 
 const rise = (frame: number, at: number) => ({
   opacity: interpolate(frame, [at, at + 6], [0, 1], clamp),
@@ -35,13 +25,29 @@ const rise = (frame: number, at: number) => ({
   }),
 });
 
-// The end card, rebuilt crisp: MySalon.ma, made in Morocco, the perks and the
-// one thing to do: DM « INVITATION ».
+const parse = (line: string) =>
+  line
+    .split("*")
+    .map((part, i) => ({ text: part, highlight: i % 2 === 1 }))
+    .filter((p) => p.text.length > 0);
+
+// A month later: the result of the story in big ink lines, then the brand,
+// made in Morocco, the perks and the one thing to do: DM « INVITATION ».
 export const EndCard: React.FC<{
-  readonly end: InvitationReelProps["end"];
+  readonly scene: EndScene;
   readonly fadeIn: number;
-}> = ({ end, fadeIn }) => {
+}> = ({ scene, fadeIn }) => {
   const frame = useCurrentFrame();
+  const b = scene.brandAt;
+  const AT = {
+    kicker: b,
+    logo: b + 4,
+    madeIn: b + 14,
+    perks: b + 20,
+    lead: b + 32,
+    cta: b + 42,
+    site: b + 56,
+  };
   const pulse = interpolate(
     (frame - AT.cta) % 40,
     [0, 4, 24],
@@ -53,7 +59,7 @@ export const EndCard: React.FC<{
     <AbsoluteFill
       name="End card"
       style={{
-        background: `radial-gradient(70% 45% at 50% 42%, ${WHITE} 0%, ${BEIGE} 55%, ${BEIGE_DEEP} 100%)`,
+        background: `radial-gradient(70% 45% at 50% 40%, ${WHITE} 0%, ${BEIGE} 55%, ${BEIGE_DEEP} 100%)`,
         overflow: "hidden",
         opacity: interpolate(frame, [0, fadeIn], [0, 1], clamp),
       }}
@@ -76,7 +82,44 @@ export const EndCard: React.FC<{
           position: "absolute",
           left: SAFE.left,
           right: 1080 - SAFE.right,
-          top: 560,
+          top: 400,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
+        {scene.result.map((line, i) => (
+          <Interactive.Div
+            key={line}
+            name={`Result line ${i + 1}`}
+            style={{
+              fontFamily: SANS,
+              fontWeight: 800,
+              fontSize: 60,
+              lineHeight: 1.25,
+              color: INK,
+              whiteSpace: "nowrap",
+              ...rise(frame, fadeIn + 4 + i * 12),
+            }}
+          >
+            {parse(line).map((part, j) => (
+              <span
+                key={`${part.text}-${j}`}
+                style={{ color: part.highlight ? TEAL : INK }}
+              >
+                {part.text}
+              </span>
+            ))}
+          </Interactive.Div>
+        ))}
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          left: SAFE.left,
+          right: 1080 - SAFE.right,
+          top: 660,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -95,11 +138,11 @@ export const EndCard: React.FC<{
             ...rise(frame, AT.kicker),
           }}
         >
-          {end.kicker}
+          {scene.kicker}
         </Interactive.Div>
         <div
           style={{
-            marginTop: 22,
+            marginTop: 20,
             scale: interpolate(frame, [AT.logo, AT.logo + 16], [0.6, 1], {
               ...clamp,
               easing: Easing.out(Easing.back(1.4)),
@@ -107,43 +150,43 @@ export const EndCard: React.FC<{
             opacity: interpolate(frame, [AT.logo, AT.logo + 5], [0, 1], clamp),
           }}
         >
-          <Logo size={96} color={INK} accent={TEAL} starColor={TEAL} />
+          <Logo size={92} color={INK} accent={TEAL} starColor={TEAL} />
         </div>
         <Interactive.Div
           name="End made in"
           style={{
-            marginTop: 44,
+            marginTop: 36,
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
             gap: 18,
             fontFamily: SANS,
             fontWeight: 700,
-            fontSize: 44,
+            fontSize: 42,
             color: INK,
             ...rise(frame, AT.madeIn),
           }}
         >
-          {end.madeIn}
-          <MoroccanFlag height={44} />
+          {scene.madeIn}
+          <MoroccanFlag height={42} />
         </Interactive.Div>
         <Interactive.Div
           name="End perks"
           style={{
-            marginTop: 12,
+            marginTop: 10,
             fontFamily: SANS,
             fontWeight: 600,
-            fontSize: 32,
+            fontSize: 30,
             color: MUTED,
             ...rise(frame, AT.perks),
           }}
         >
-          {end.perks}
+          {scene.perks}
         </Interactive.Div>
         <Interactive.Div
           name="End lead"
           style={{
-            marginTop: 70,
+            marginTop: 56,
             fontFamily: SANS,
             fontWeight: 600,
             fontSize: 32,
@@ -151,7 +194,7 @@ export const EndCard: React.FC<{
             ...rise(frame, AT.lead),
           }}
         >
-          {end.lead}
+          {scene.lead}
         </Interactive.Div>
         <div
           style={{
@@ -184,13 +227,13 @@ export const EndCard: React.FC<{
             }}
           >
             <SendIcon size={42} color={WHITE} />
-            {end.cta}
+            {scene.cta}
           </Interactive.Div>
         </div>
         <Interactive.Div
           name="End site"
           style={{
-            marginTop: 26,
+            marginTop: 24,
             fontFamily: SANS,
             fontWeight: 700,
             fontSize: 30,
@@ -199,7 +242,7 @@ export const EndCard: React.FC<{
             ...rise(frame, AT.site),
           }}
         >
-          {end.site}
+          {scene.site}
         </Interactive.Div>
       </div>
       <Flash at={fadeIn} peak={0.35} />
