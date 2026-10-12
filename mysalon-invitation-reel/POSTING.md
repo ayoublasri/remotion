@@ -4,9 +4,9 @@ For the MySalon.ma account, aimed at salon owners (coiffeuses, esthéticiennes, 
 
 ## Audio
 
-The file carries only its sound effects (dings, pops, chime, ticks). In the Instagram editor add a trending sound
-and keep the original audio on. Pick something warm and upbeat with a clear beat, not a slow ballad: the story moves
-every 3 to 4 seconds. A reel with an Instagram sound gets recommended more than one with imported audio.
+The file carries its own soundtrack, an Afrobeats track made for this cut (it builds when Sara installs MySalon and
+drops to a final chord on the end card), plus the sound effects. Post it as is, with "original audio". If you would
+rather use a trending Instagram sound, render `npm run render:silent` and add the sound in the editor.
 
 ## Caption
 
@@ -60,6 +60,6 @@ Change "24 h" to whatever you really deliver.
 ## What to watch
 
 - **3-second hold rate:** does Sara's Monday night stop salon owners?
-- **Average watch time:** the story is 45 s; above 25 s means they followed it to Nada's booking.
+- **Average watch time:** the story is 48 s; above 25 s means they followed it to Nada's booking.
 - **Saves and sends:** owners sending it to a partner or a colleague.
 - **DMs with INVITATION:** the business result.

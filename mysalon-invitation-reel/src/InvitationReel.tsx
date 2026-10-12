@@ -1,3 +1,4 @@
+import { Audio } from "@remotion/media";
 import {
   AbsoluteFill,
   Easing,
@@ -14,6 +15,8 @@ import { Sfx, SoundContext } from "./components/Sfx";
 import { StoryChips } from "./components/StoryChip";
 import "./fonts";
 import type { InvitationReelProps, Scene, ShotScene } from "./schema";
+import { ArrivalSceneView } from "./scenes/ArrivalScene";
+import { ChatSceneView } from "./scenes/ChatScene";
 import { EndCard } from "./scenes/EndCard";
 import { MessagesSceneView } from "./scenes/MessagesScene";
 import { NotificationSceneView } from "./scenes/NotificationScene";
@@ -151,6 +154,10 @@ const SceneView: React.FC<{
       return <MessagesSceneView scene={scene} />;
     case "notification":
       return <NotificationSceneView scene={scene} />;
+    case "chat":
+      return <ChatSceneView scene={scene} />;
+    case "arrival":
+      return <ArrivalSceneView scene={scene} />;
     case "end":
       return <EndCard scene={scene} fadeIn={FADE} />;
   }
@@ -177,6 +184,15 @@ export const InvitationReel: React.FC<InvitationReelProps> = (props) => {
             <SceneOverlay scene={scene} length={lengths[i]} />
           </Sequence>
         ))}
+        {props.music ? (
+          <Audio
+            name="Music"
+            src={staticFile(props.music)}
+            volume={(f) =>
+              interpolate(f, [0, 30], [0, props.musicVolume], clamp)
+            }
+          />
+        ) : null}
       </AbsoluteFill>
     </SoundContext.Provider>
   );

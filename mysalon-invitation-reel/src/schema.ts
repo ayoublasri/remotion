@@ -102,6 +102,56 @@ export const notificationSceneSchema = z.object({
   body: z.string(),
 });
 
+// Nada's WhatsApp on a frozen frame of the ad: the reminder, her reply.
+export const chatSceneSchema = z.object({
+  kind: z.literal("chat"),
+  ...sceneBase,
+  duration: z.number().describe("Frames"),
+  still: z
+    .string()
+    .describe("Frame of the ad inside public/, from npm run prep"),
+  at: z.number().describe("Frame of the scene when the chat slides in"),
+  contact: z.string(),
+  status: z.string(),
+  dateLabel: z.string(),
+  messages: z
+    .array(
+      z.object({
+        from: z.enum(["them", "me"]),
+        text: z.string(),
+        time: z.string(),
+        at: z.number().describe("Frame of the scene when it arrives"),
+      }),
+    )
+    .min(1)
+    .max(4),
+  note: z.string().describe("System line under the messages"),
+  noteAt: z.number(),
+});
+
+// The client checked in on the salon's MySalon, the loyalty card stamped.
+export const arrivalSceneSchema = z.object({
+  kind: z.literal("arrival"),
+  ...sceneBase,
+  duration: z.number().describe("Frames"),
+  still: z
+    .string()
+    .describe("Frame of the ad inside public/, from npm run prep"),
+  at: z.number().describe("Frame of the scene when the card slides in"),
+  app: z.string(),
+  time: z.string(),
+  client: z.string(),
+  detail: z.string(),
+  status: z.string(),
+  checkAt: z.number(),
+  points: z.object({
+    label: z.string(),
+    from: z.number().describe("Stamps before the visit"),
+    max: z.number(),
+  }),
+  stampAt: z.number(),
+});
+
 // The end card: the result of the story, then the brand and the call to action.
 export const endSceneSchema = z.object({
   kind: z.literal("end"),
@@ -125,6 +175,8 @@ export const sceneSchema = z.discriminatedUnion("kind", [
   shotSceneSchema,
   messagesSceneSchema,
   notificationSceneSchema,
+  chatSceneSchema,
+  arrivalSceneSchema,
   endSceneSchema,
 ]);
 
@@ -132,6 +184,11 @@ export const invitationReelSchema = z.object({
   video: z.string().describe("Clip inside public/, made by npm run prep"),
   scenes: z.array(sceneSchema).min(1),
   sfx: z.boolean().describe("Play the sound effects"),
+  music: z
+    .string()
+    .nullable()
+    .describe("Soundtrack inside public/, or null for none"),
+  musicVolume: z.number().min(0).max(1),
 });
 
 export type Caption = z.infer<typeof captionSchema>;
@@ -139,6 +196,8 @@ export type Chip = z.infer<typeof chipSchema>;
 export type ShotScene = z.infer<typeof shotSceneSchema>;
 export type MessagesScene = z.infer<typeof messagesSceneSchema>;
 export type NotificationScene = z.infer<typeof notificationSceneSchema>;
+export type ChatScene = z.infer<typeof chatSceneSchema>;
+export type ArrivalScene = z.infer<typeof arrivalSceneSchema>;
 export type EndScene = z.infer<typeof endSceneSchema>;
 export type Scene = z.infer<typeof sceneSchema>;
 export type InvitationReelProps = z.infer<typeof invitationReelSchema>;

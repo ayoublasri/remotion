@@ -187,30 +187,59 @@ const defaultProps: InvitationReelProps = {
       sounds: [],
     },
     {
-      kind: "shot",
+      kind: "chat",
       id: "Vendredi",
-      keys: [
-        { frame: 0, second: 7.5 },
-        { frame: 50, second: 7.95 },
-        { frame: 80, second: 7.95 },
-        { frame: 130, second: 8.35 },
-        { frame: 165, second: 8.35 },
+      duration: 150,
+      still: "video/still-phone.jpg",
+      at: 6,
+      contact: "Sara Nails",
+      status: "en ligne",
+      dateLabel: "VENDREDI",
+      messages: [
+        {
+          from: "them",
+          text: `Bonjour Nada, petit rappel de Sara Nails${NBSP}: votre manucure russe est demain, samedi à 11:00. À demain${NBSP}!`,
+          time: "20:00",
+          at: 20,
+        },
+        {
+          from: "me",
+          text: `Parfait, à demain${NBSP}!`,
+          time: "20:02",
+          at: 84,
+        },
       ],
-      flash: true,
-      counter: null,
-      chips: [
-        { text: "VENDREDI · 20:00", at: 0 },
-        { text: "SAMEDI · 11:00", at: 82 },
-      ],
+      note: "Rappel envoyé automatiquement par MySalon",
+      noteAt: 58,
+      chips: [{ text: "VENDREDI · 20:00", at: 0 }],
       captions: [
         {
-          at: 4,
-          until: 78,
+          at: 32,
+          until: null,
           lines: ["Rappel *WhatsApp* envoyé à Nada.", "Automatiquement."],
           size: 44,
         },
+      ],
+      sounds: [],
+    },
+    {
+      kind: "arrival",
+      id: "Samedi",
+      duration: 110,
+      still: "video/still-phone.jpg",
+      at: 4,
+      app: "MYSALON",
+      time: "Samedi · 11:02",
+      client: "Nada",
+      detail: "Manucure russe · 11:00",
+      status: "Arrivée",
+      checkAt: 26,
+      points: { label: "Points fidélité", from: 3, max: 5 },
+      stampAt: 56,
+      chips: [{ text: "SAMEDI · 11:02", at: 0 }],
+      captions: [
         {
-          at: 84,
+          at: 40,
           until: null,
           lines: ["Nada arrive.", "*+1 point* fidélité."],
           size: 48,
@@ -221,7 +250,7 @@ const defaultProps: InvitationReelProps = {
     {
       kind: "end",
       id: "Un mois plus tard",
-      duration: 180,
+      duration: 160,
       chips: [{ text: "UN MOIS PLUS TARD", at: 8 }],
       result: [`Sara${NBSP}: *0 DM* le soir.`, "Agenda *plein*."],
       brandAt: 60,
@@ -236,6 +265,9 @@ const defaultProps: InvitationReelProps = {
     },
   ],
   sfx: true,
+  // Synthesised Afrobeats track, see scripts/make-music.mjs.
+  music: "music/afro-theme.mp3",
+  musicVolume: 0.7,
 };
 
 export const RemotionRoot: React.FC = () => {

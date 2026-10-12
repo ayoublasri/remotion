@@ -1,26 +1,27 @@
 # MySalon.ma Invitation Reel: Sara's story
 
-A 45-second vertical reel (1080 x 1920, 30 fps) for salon owners, built from the 10-second AI-generated MySalon.ma
+A 48-second vertical reel (1080 x 1920, 30 fps) for salon owners, built from the 10-second AI-generated MySalon.ma
 ad (`assets/source.mp4`). Instead of a montage, it tells one story with names, days and actions, slowly enough to
 follow, so a scroller understands the product without reading a word of explanation:
 
-| Time    | Chip                              | What happens                                                                                                                                                                         |
-| ------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 0–5 s   | LUNDI · 23:14                     | The DMs pile up on the salon counter. **Sara, nail artist à Témara.** 47 DM ce soir. Elle n'a pas encore dîné.                                                                       |
-| 5–12 s  | LUNDI · 23:16                     | On a frozen frame of the ad, the messages keep arriving with names (Nada, Imane, Salma, Hajar) and the unread badge climbs. Sara répond à tout, entre deux clientes. Tous les soirs. |
-| 12–17 s | MARDI                             | Sara installe MySalon : un lien dans sa bio, un QR sur le comptoir.                                                                                                                  |
-| 17–25 s | JEUDI · 14:02                     | Nada ouvre le lien de Sara, picks manucure russe, samedi 11:00. Confirmé. Sara est en pleine pose.                                                                                   |
-| 25–29 s | JEUDI · 14:03                     | Sara's phone gets the booking notification. Sara n'a rien eu à faire. 0 DM échangé.                                                                                                  |
-| 29–34 s | CETTE SEMAINE                     | The agenda fills on the tablet while a counter climbs to +12 réservations.                                                                                                           |
-| 34–39 s | VENDREDI · 20:00 → SAMEDI · 11:00 | Rappel WhatsApp envoyé à Nada, automatiquement. Nada arrive, +1 point fidélité.                                                                                                      |
-| 39–45 s | UN MOIS PLUS TARD                 | **Sara : 0 DM le soir. Agenda plein.** Then MySalon.ma, Fait au Maroc, 0 commission · 0 paiement en ligne, **DM « INVITATION »**, mysalon.ma.                                        |
+| Time    | Chip                              | What happens                                                                                                                                                                                                     |
+| ------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0–5 s   | LUNDI · 23:14                     | The DMs pile up on the salon counter. **Sara, nail artist à Témara.** 47 DM ce soir. Elle n'a pas encore dîné.                                                                                                   |
+| 5–12 s  | LUNDI · 23:16                     | On a frozen frame of the ad, the messages keep arriving with names (Nada, Imane, Salma, Hajar) and the unread badge climbs. Sara répond à tout, entre deux clientes. Tous les soirs.                             |
+| 12–17 s | MARDI                             | Sara installe MySalon : un lien dans sa bio, un QR sur le comptoir.                                                                                                                                              |
+| 17–25 s | JEUDI · 14:02                     | Nada ouvre le lien de Sara, picks manucure russe, samedi 11:00. Confirmé. Sara est en pleine pose.                                                                                                               |
+| 25–29 s | JEUDI · 14:03                     | Sara's phone gets the booking notification. Sara n'a rien eu à faire. 0 DM échangé.                                                                                                                              |
+| 29–34 s | CETTE SEMAINE                     | The agenda fills on the tablet while a counter climbs to +12 réservations.                                                                                                                                       |
+| 34–43 s | VENDREDI · 20:00 → SAMEDI · 11:02 | Nada's WhatsApp, drawn: the reminder from Sara Nails arrives by itself ("Rappel envoyé automatiquement par MySalon"), she answers "Parfait, à demain !". Then her check-in card and a loyalty stamp, 3/5 to 4/5. |
+| 42–48 s | UN MOIS PLUS TARD                 | **Sara : 0 DM le soir. Agenda plein.** Then MySalon.ma, Fait au Maroc, 0 commission · 0 paiement en ligne, **DM « INVITATION »**, mysalon.ma.                                                                    |
 
 The ad's shots are slowed down (from a 60 fps motion-interpolated copy) and held on a frame wherever the story
-needs time, so nothing stutters and every caption stays two to four seconds; the two built scenes grow out of frozen
-frames of the footage, so the whole thing feels like one film. Every caption, chip and counter sits inside the
-Instagram safe area (`src/layout.ts`). Sound: dings for the DMs, pops for each message, a chime for the confirmed
-booking, ticks for the bookings, a whoosh on each cut. No music: add a trending sound in the Instagram editor
-(`npm run render:silent` renders without the effects too).
+needs time, so nothing stutters and every caption stays two to four seconds; the four drawn scenes (the message stack, the booking notification, Nada's WhatsApp, her check-in) grow out of
+frozen frames of the footage, so the whole thing feels like one film, and every word on those screens is real,
+not AI-garbled. Every caption, chip and counter sits inside the
+Instagram safe area (`src/layout.ts`). Sound: a synthesised Afrobeats track that follows the story (see below), plus dings for the DMs, pops for each
+message, a chime for the confirmed booking, ticks for the bookings, a whoosh on each cut. `npm run render:silent`
+renders without any sound, if you prefer an Instagram sound.
 
 ## Run it
 
@@ -33,6 +34,7 @@ npm run render         # -> out/mysalon-invitation-reel.mp4 (with sound effects)
 npm run render:silent  # -> out/mysalon-invitation-reel-silent.mp4
 npm run cover          # the hook frame -> out/cover-hook.png
 npm run cover:end      # the end card -> out/cover-end.png
+npm run music          # regenerate the soundtrack -> public/music/afro-theme.wav (then encode to mp3)
 ```
 
 `npm run prep` motion-interpolates the 24 fps ad to 60 fps and scales it to 1080 x 1920 with ffmpeg's
@@ -45,12 +47,30 @@ If Remotion cannot download Chrome Headless Shell in your environment:
 npx remotion render InvitationReel out/mysalon-invitation-reel.mp4 --browser-executable=/path/to/chrome
 ```
 
+## Music
+
+`public/music/afro-theme.mp3` is generated by `scripts/make-music.mjs`: an Afrobeats track at 100 BPM, 20 bars
+(48 s), synthesised from scratch and free to use anywhere. A tuned kick, snare and rim on 2 and 4 with a 3-3-2
+clave, swung hats and shakers, congas, a log-drum bass, Rhodes-style chords, a marimba riff answered by formant
+"vocal chops", warm pads and risers. It follows the story: a sparse, tense Monday night, the messages building, the
+drop when Sara installs MySalon, a breakdown for the booking notification, the groove back for the week, a build and
+a final chord on the end card, then a fade. Mixed with a light sidechain, mono low end, delay, reverb, a soft
+clipper and a lookahead limiter.
+
+```bash
+npm run music
+ffmpeg -i public/music/afro-theme.wav -b:a 192k public/music/afro-theme.mp3
+```
+
+`music` and `musicVolume` are props: set `music` to null for no soundtrack.
+
 ## Editing
 
 The story is a list of scenes in `src/Root.tsx`, validated by `src/schema.ts` and editable in the Studio's props
-panel. Four kinds: `shot` (keyframes mapping frames of the scene to seconds of the ad, held where two keys share a
+panel. Six kinds: `shot` (keyframes mapping frames of the scene to seconds of the ad, held where two keys share a
 second, plus an optional booking counter), `messages` (the message stack with names on a frozen frame),
-`notification` (the booking notification on a frozen frame) and `end` (the result lines, then the brand and the
+`notification` (the booking notification on a frozen frame), `chat` (Nada's WhatsApp: contact, messages, times, the
+system line), `arrival` (the check-in card and loyalty stamps) and `end` (the result lines, then the brand and the
 call to action). Every scene carries its day chips, its captions (frames, lines, `*highlighted*` words, size) and
 its sounds. The reel's length follows the scenes. Colours are in `src/theme.ts`; fonts (Inter, Playfair Display)
 are bundled in `public/fonts`; the sound effects in `public/sfx` are synthesised and free to use.
