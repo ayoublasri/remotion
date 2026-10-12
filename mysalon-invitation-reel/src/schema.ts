@@ -207,6 +207,42 @@ export const bookingSceneSchema = z.object({
   doneLabel: z.string(),
 });
 
+// Sara's week agenda on MySalon, drawn, filling up booking by booking.
+export const agendaSceneSchema = z.object({
+  kind: z.literal("agenda"),
+  ...sceneBase,
+  duration: z.number().describe("Frames"),
+  still: z
+    .string()
+    .describe("Frame of the ad inside public/, from npm run prep"),
+  at: z.number().describe("Frame of the scene when the agenda slides in"),
+  title: z.string(),
+  range: z.string(),
+  days: z
+    .array(z.string())
+    .min(4)
+    .max(7)
+    .describe("Columns, line break with \\n"),
+  todayIndex: z.number(),
+  hourFrom: z.number(),
+  hourTo: z.number(),
+  bookings: z
+    .array(
+      z.object({
+        day: z.number().describe("Column index"),
+        start: z.number().describe("Hour, e.g. 11 or 14.5"),
+        hours: z.number(),
+        client: z.string(),
+        service: z.string(),
+        highlight: z.boolean(),
+        at: z.number().describe("Frame of the scene when it appears"),
+      }),
+    )
+    .min(1)
+    .max(16),
+  counterLabel: z.string(),
+});
+
 // The end card: the result of the story, then the brand and the call to action.
 export const endSceneSchema = z.object({
   kind: z.literal("end"),
@@ -234,6 +270,7 @@ export const sceneSchema = z.discriminatedUnion("kind", [
   arrivalSceneSchema,
   profileSceneSchema,
   bookingSceneSchema,
+  agendaSceneSchema,
   endSceneSchema,
 ]);
 
@@ -257,6 +294,7 @@ export type ChatScene = z.infer<typeof chatSceneSchema>;
 export type ArrivalScene = z.infer<typeof arrivalSceneSchema>;
 export type ProfileScene = z.infer<typeof profileSceneSchema>;
 export type BookingScene = z.infer<typeof bookingSceneSchema>;
+export type AgendaScene = z.infer<typeof agendaSceneSchema>;
 export type EndScene = z.infer<typeof endSceneSchema>;
 export type Scene = z.infer<typeof sceneSchema>;
 export type InvitationReelProps = z.infer<typeof invitationReelSchema>;

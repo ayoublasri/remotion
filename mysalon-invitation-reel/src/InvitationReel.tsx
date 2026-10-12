@@ -15,6 +15,7 @@ import { Sfx, SoundContext } from "./components/Sfx";
 import { StoryChips } from "./components/StoryChip";
 import "./fonts";
 import type { InvitationReelProps, Scene, ShotScene } from "./schema";
+import { AgendaSceneView } from "./scenes/AgendaScene";
 import { ArrivalSceneView } from "./scenes/ArrivalScene";
 import { BookingSceneView } from "./scenes/BookingScene";
 import { ChatSceneView } from "./scenes/ChatScene";
@@ -164,6 +165,8 @@ const SceneView: React.FC<{
       return <ProfileSceneView scene={scene} />;
     case "booking":
       return <BookingSceneView scene={scene} />;
+    case "agenda":
+      return <AgendaSceneView scene={scene} />;
     case "end":
       return <EndCard scene={scene} fadeIn={FADE} />;
   }
