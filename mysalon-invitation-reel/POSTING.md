@@ -60,6 +60,6 @@ Change "24 h" to whatever you really deliver.
 ## What to watch
 
 - **3-second hold rate:** does Sara's Monday night stop salon owners?
-- **Average watch time:** the story is 30 s; above 15 s means they followed it to Nada's booking.
+- **Average watch time:** the story is 45 s; above 25 s means they followed it to Nada's booking.
 - **Saves and sends:** owners sending it to a partner or a colleague.
 - **DMs with INVITATION:** the business result.

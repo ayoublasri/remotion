@@ -1,7 +1,7 @@
 {
   "name": "mysalon-invitation-reel",
   "version": "1.0.0",
-  "description": "Vertical (9:16) 17 s reel for salon owners: the MySalon.ma ad video, slowed, captioned and ending on DM INVITATION (Remotion)",
+  "description": "Vertical (9:16) 45 s story reel for salon owners: the MySalon.ma ad video, slowed, captioned and ending on DM INVITATION (Remotion)",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,7 @@
     "render": "remotion render InvitationReel out/mysalon-invitation-reel.mp4",
     "render:silent": "remotion render InvitationReel out/mysalon-invitation-reel-silent.mp4 --muted",
     "cover": "remotion still InvitationReel out/cover-hook.png --frame=40",
-    "cover:end": "remotion still InvitationReel out/cover-end.png --frame=500",
+    "cover:end": "remotion still InvitationReel out/cover-end.png --frame=1340",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc"

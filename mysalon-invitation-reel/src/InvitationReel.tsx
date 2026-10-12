@@ -27,7 +27,7 @@ const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 export const sceneLength = (scene: Scene) =>
   scene.kind === "shot"
-    ? Math.round(((scene.to - scene.from) / scene.rate) * FPS)
+    ? scene.keys[scene.keys.length - 1].frame
     : scene.duration;
 
 // Where every scene starts, in frames of the reel.
@@ -45,7 +45,8 @@ export const timeline = (props: InvitationReelProps) => {
   return { lengths, starts, total: t };
 };
 
-// A shot of the ad video, slowed down, with a punch-in on the cut.
+// A shot of the ad video between its keyframes (slowed down, held on a
+// frame where the story needs time), with a punch-in on the cut.
 const ShotView: React.FC<{
   readonly scene: ShotScene;
   readonly length: number;
@@ -60,13 +61,36 @@ const ShotView: React.FC<{
   return (
     <AbsoluteFill style={{ overflow: "hidden" }}>
       <AbsoluteFill style={{ scale: String(punch) }}>
-        <OffthreadVideo
-          src={staticFile(video)}
-          trimBefore={Math.round(scene.from * FPS)}
-          playbackRate={scene.rate}
-          muted
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
+        {scene.keys.slice(0, -1).map((key, i) => {
+          const next = scene.keys[i + 1];
+          const frames = next.frame - key.frame;
+          // A hold (same second) keeps the frame; the rate must stay positive.
+          const rate = Math.max(
+            0.001,
+            ((next.second - key.second) * FPS) / frames,
+          );
+          return (
+            <Sequence
+              key={key.frame}
+              from={key.frame}
+              durationInFrames={frames}
+              layout="none"
+            >
+              <OffthreadVideo
+                src={staticFile(video)}
+                trimBefore={Math.round(key.second * FPS)}
+                playbackRate={rate}
+                muted
+                style={{
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            </Sequence>
+          );
+        })}
       </AbsoluteFill>
       {scene.counter ? (
         <Counter

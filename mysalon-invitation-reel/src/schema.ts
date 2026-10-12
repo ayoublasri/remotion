@@ -45,9 +45,17 @@ const sceneBase = {
 export const shotSceneSchema = z.object({
   kind: z.literal("shot"),
   ...sceneBase,
-  from: z.number().describe("Second of the source where the shot starts"),
-  to: z.number().describe("Second of the source where the shot ends"),
-  rate: z.number().min(0.2).max(2).describe("Playback speed"),
+  keys: z
+    .array(
+      z.object({
+        frame: z.number().describe("Frame of the scene"),
+        second: z.number().describe("Second of the ad shown at that frame"),
+      }),
+    )
+    .min(2)
+    .describe(
+      "Keyframes, frames increasing: the ad plays between them at whatever speed joins them, and holds when two keys share a second. The last frame is the scene's length.",
+    ),
   flash: z.boolean().describe("White flash and whoosh on the cut"),
   counter: z
     .object({
