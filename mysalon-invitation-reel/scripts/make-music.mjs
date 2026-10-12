@@ -5,7 +5,8 @@
 // "vocal chops", warm pads and risers. It follows the story: a tense, sparse
 // Monday night, the messages building, the drop when Sara installs MySalon,
 // a breakdown for the booking notification, the groove back for the week,
-// a build and a final chord on the end card.
+// a build and a final chord on the end card. Bright and happy: C major, the
+// I-V-vi-IV loop, a bouncing marimba, claps, open hats and "eh-eh" chops.
 // Mix: light sidechain, mono low end, ping-pong delay, reverb, soft clip and
 // a lookahead limiter.
 //
@@ -23,7 +24,7 @@ const BAR = BEAT * 4;
 const BARS = 20;
 const LENGTH = BARS * BAR;
 const N = Math.ceil(LENGTH * SR);
-const SWING = 0.022;
+const SWING = 0.028;
 
 const bus = () => [new Float32Array(N), new Float32Array(N)];
 const drums = bus();
@@ -62,50 +63,58 @@ const BUILD = 17;
 const END = 18;
 
 const CHORDS = {
-  Dm: [50, 53, 57, 60],
-  Am: [57, 60, 64, 67],
-  F: [53, 57, 60, 64],
-  G: [55, 59, 62, 65],
-  C: [48, 52, 55, 60, 64],
+  C: [55, 60, 64, 67],
+  G: [55, 59, 62, 67],
+  Am: [57, 60, 64, 69],
+  F: [53, 57, 60, 65],
+  Cend: [48, 55, 60, 64, 67, 72],
 };
-const ROOT = { Dm: 38, Am: 33, F: 29, G: 31, C: 36 };
+const ROOT = { C: 36, G: 31, Am: 33, F: 29, Cend: 36 };
+// C major, the I-V-vi-IV loop: bright and happy.
 const PLAN = [
-  "Dm",
-  "Dm",
-  "Am",
-  "Dm",
-  "G",
-  "F",
-  "Am",
-  "Dm",
-  "G",
-  "F",
-  "Am",
-  "Dm",
-  "G",
-  "F",
-  "Am",
-  "Dm",
-  "G",
-  "G",
   "C",
   "C",
+  "F",
+  "F",
+  "G",
+  "C",
+  "G",
+  "Am",
+  "F",
+  "C",
+  "G",
+  "Am",
+  "F",
+  "C",
+  "G",
+  "Am",
+  "F",
+  "G",
+  "Cend",
+  "Cend",
 ];
-// Marimba riff, two bars, C major pentatonic: [sixteenth, midi, velocity].
+// Marimba riff, two bars, C major pentatonic, bouncing on the off-beats:
+// [sixteenth, midi, velocity].
 const RIFF = [
   [
     [0, 79, 0.5],
-    [3, 76, 0.45],
-    [6, 74, 0.45],
-    [10, 72, 0.6],
-    [12, 74, 0.4],
+    [2, 76, 0.4],
+    [3, 79, 0.45],
+    [6, 81, 0.5],
+    [8, 79, 0.45],
+    [10, 76, 0.4],
+    [12, 74, 0.45],
+    [14, 76, 0.4],
   ],
   [
-    [0, 76, 0.5],
+    [0, 84, 0.5],
+    [2, 81, 0.4],
     [3, 79, 0.45],
-    [7, 81, 0.55],
-    [10, 79, 0.45],
-    [13, 76, 0.4],
+    [6, 76, 0.45],
+    [8, 79, 0.45],
+    [10, 81, 0.5],
+    [12, 79, 0.4],
+    [14, 76, 0.4],
   ],
 ];
 
@@ -638,56 +647,69 @@ for (let bar = 0; bar < BARS; bar++) {
   const build2 = bar === BUILD;
   const ending = bar >= END;
 
-  // Kick: afro bounce on 1, the "and" of 2 and the "and" of 3.
+  // Kick: afro bounce on 1, the "and" of 2, a ghost on 3, the "and" of 3.
   if (groove) {
     for (const [s, v] of [
       [0, 1],
       [6, 0.85],
+      [8, 0.55],
       [10, 0.9],
     ]) {
       const t = at16(bar, s);
       if (!silentDrums(t)) kick(t, v);
     }
   } else if (build1) {
-    kick(at(bar, 0), 0.55 + 0.1 * (bar - 2));
-    if (bar >= 3) kick(at16(bar, 10), 0.4);
+    // Four to the floor, growing, into the drop.
+    for (let b = 0; b < 4; b++) kick(at(bar, b), 0.5 + 0.12 * (bar - 2));
+    if (bar >= 3) kick(at16(bar, 6), 0.4);
   }
 
-  // Snare and rim on 2 and 4, the clave (3-3-2) on the rim.
+  // Snare, clap and rim on 2 and 4, the clave (3-3-2) on the rim.
   if (groove) {
     for (const s of [4, 12]) {
       const t = at16(bar, s);
       if (silentDrums(t)) continue;
-      snare(t, 0.55, 0.9);
-      rim(t, 0.45, 0.1);
+      snare(t, 0.5, 1);
+      clap(t, 0.42);
+      rim(t, 0.4, 0.1);
     }
   }
   if (groove || build1) {
     for (const s of [0, 3, 6, 10, 13]) {
       const t = at16(bar, s);
       if (silentDrums(t)) continue;
-      rim(t, build1 ? 0.22 : 0.3, s % 2 ? 0.35 : -0.35);
+      rim(t, build1 ? 0.26 : 0.32, s % 2 ? 0.35 : -0.35);
+    }
+    if (build1) {
+      clap(at(bar, 1), 0.3);
+      clap(at(bar, 3), 0.32);
     }
   }
-  if (intro) rim(at(bar, 2), 0.2, 0.3);
+  if (intro) {
+    rim(at(bar, 2), 0.22, 0.3);
+    clap(at(bar, 3), 0.22);
+  }
 
-  // Hats, shaker, open hat, ride.
+  // Hats, shaker, open hats, ride.
   for (let s = 0; s < 16; s++) {
     const t = at16(bar, s);
     if (ending && bar > END) continue;
     const quiet = intro || (t >= BREAK && t < at(BACK, 0)) || ending;
     if (!quiet && s % 2 === 0)
-      hat(t, s % 8 === 0 ? 0.3 : 0.2, false, s % 4 ? 0.2 : -0.2);
+      hat(t, s % 8 === 0 ? 0.36 : 0.26, false, s % 4 ? 0.2 : -0.2);
+    if (!quiet && second && s % 4 === 3) hat(t, 0.16, false, 0.3);
     if (intro && s % 2) continue;
     shaker(
       t,
-      (quiet ? 0.1 : s % 2 ? 0.2 : 0.12) * (0.85 + rand() * 0.3),
+      (quiet ? 0.12 : s % 2 ? 0.26 : 0.15) * (0.85 + rand() * 0.3),
       s % 2 ? -0.4 : 0.4,
     );
   }
-  if (groove && bar % 2 === 1 && !silentDrums(at16(bar, 14)))
-    hat(at16(bar, 14), 0.22, true, 0.1);
-  if (second) for (let b = 0; b < 4; b++) ride(at(bar, b), 0.06);
+  if (groove && !silentDrums(at16(bar, 14)))
+    hat(at16(bar, 14), 0.26, true, 0.1);
+  if (groove && second && !silentDrums(at16(bar, 6)))
+    hat(at16(bar, 6), 0.18, true, -0.1);
+  if (second) for (let b = 0; b < 4; b++) ride(at(bar, b), 0.08);
 
   // Congas, syncopated, more of them in the second groove.
   if (groove) {
@@ -708,7 +730,7 @@ for (let bar = 0; bar < BARS; bar++) {
     for (const [s, f] of hits) {
       const t = at16(bar, s);
       if (!silentDrums(t))
-        conga(t, f > 300 ? 0.42 : 0.38, f, f > 300 ? 0.35 : -0.35);
+        conga(t, f > 300 ? 0.48 : 0.42, f, f > 300 ? 0.35 : -0.35);
     }
   }
   // Conga fill into the drops.
@@ -730,48 +752,65 @@ for (let bar = 0; bar < BARS; bar++) {
     }
   } else if (build1 && bar >= 3) {
     logDrum(at(bar, 0), root, 0.7);
-    logDrum(at16(bar, 11), root, 0.5);
+    logDrum(at16(bar, 6), root, 0.45);
+    logDrum(at16(bar, 11), root, 0.55);
   } else if (ending && bar === END) {
     logDrum(at(bar, 0), root, 1);
   }
 
-  // Chords: Rhodes and a pad.
+  // Chords: Rhodes and a pad, sparkle plucks on the off-beats later.
   if (intro) {
-    rhodes(at(bar, 0), BAR * 0.9, notes, 0.3);
-    supersaw(at(bar, 0), BAR, notes, 0.011, () => 650);
-  } else if (build1) {
     rhodes(at(bar, 0), BEAT * 1.6, notes, 0.34);
-    rhodes(at16(bar, 12), BEAT * 0.8, notes, 0.26);
+    rhodes(at16(bar, 10), BEAT * 0.6, notes, 0.24);
+    supersaw(at(bar, 0), BAR, notes, 0.012, () => 900);
+    marimba(at16(bar, 6), bar % 2 ? 76 : 79, 0.3, 0.2);
+    marimba(at16(bar, 12), 72, 0.24, -0.2);
+  } else if (build1) {
+    rhodes(at(bar, 0), BEAT * 1.6, notes, 0.36);
+    rhodes(at16(bar, 7), BEAT * 0.45, notes, 0.26);
+    rhodes(at16(bar, 12), BEAT * 0.8, notes, 0.3);
     supersaw(
       at(bar, 0),
       BAR,
       notes,
-      0.013,
-      (t) => 650 * 2.3 ** ((t - at(2, 0)) / (at(DROP, 0) - at(2, 0))),
+      0.014,
+      (t) => 900 * 2.4 ** ((t - at(2, 0)) / (at(DROP, 0) - at(2, 0))),
     );
+    playRiff(bar, 0.3);
   } else if (groove) {
     const brk = silentDrums(at(bar, 0));
-    rhodes(at(bar, 0), BEAT * 1.6, notes, brk ? 0.36 : 0.4);
-    if (!brk) rhodes(at16(bar, 7), BEAT * 0.45, notes, 0.28);
-    rhodes(at16(bar, 12), BEAT * 0.8, notes, brk ? 0.3 : 0.32);
-    supersaw(at(bar, 0), BAR, notes, brk ? 0.012 : 0.016, () =>
-      brk ? 900 : 1500,
+    rhodes(at(bar, 0), BEAT * 1.6, notes, brk ? 0.36 : 0.42);
+    if (!brk) rhodes(at16(bar, 7), BEAT * 0.45, notes, 0.3);
+    rhodes(at16(bar, 12), BEAT * 0.8, notes, brk ? 0.3 : 0.34);
+    supersaw(at(bar, 0), BAR, notes, brk ? 0.012 : 0.018, () =>
+      brk ? 1000 : 2200,
     );
+    if (second && !brk)
+      for (const s of [2, 5, 9, 13])
+        pluck(
+          at16(bar, s),
+          notes[(s + bar) % notes.length] + 12,
+          0.13,
+          s % 2 ? 0.4 : -0.4,
+          1.1,
+        );
   } else if (ending) {
     if (bar === END) {
       rhodes(at(bar, 0), BAR * 2, notes, 0.5);
-      supersaw(at(bar, 0), BAR * 1.8, notes, 0.018, () => 1400, 0.6);
+      supersaw(at(bar, 0), BAR * 1.8, notes, 0.02, () => 1800, 0.6);
     }
   }
 
-  // The marimba riff and the vocal chops answering it.
+  // The marimba riff and the "eh-eh" chops answering it.
   if (groove && !silentDrums(at(bar, 0)) && !build2) {
     playRiff(bar, second ? 0.5 : 0.45);
     if (second && bar % 4 === 2) playRiff(bar, 0.2, 12);
-    if (bar % 2 === 1)
-      voxNote(at16(bar, 14), BEAT * 0.4, 69, second ? 0.16 : 0.13, "e", 0.15);
-    if (second && bar % 2 === 0)
-      voxNote(at16(bar, 6), BEAT * 0.35, 67, 0.13, "o", -0.15);
+    if (bar % 2 === 1) {
+      voxNote(at16(bar, 12), BEAT * 0.3, 72, second ? 0.15 : 0.12, "e", 0.15);
+      voxNote(at16(bar, 14), BEAT * 0.4, 69, second ? 0.17 : 0.14, "e", 0.15);
+    }
+    if (bar % 2 === 0)
+      voxNote(at16(bar, 6), BEAT * 0.35, 67, second ? 0.14 : 0.11, "o", -0.15);
   }
   if (t0Break(bar)) voxNote(at(bar, 1), BEAT * 0.9, 72, 0.14, "o", 0);
   if (build2) {
@@ -789,6 +828,7 @@ for (let bar = 0; bar < BARS; bar++) {
       [3, 84],
     ])
       marimba(at(bar, b), m, 0.42, b % 1 ? 0.3 : -0.3);
+    voxNote(at(bar, 2), BEAT * 0.5, 72, 0.14, "e", 0.1);
   }
   if (bar === END + 1) {
     marimba(at(bar, 0), 84, 0.3, 0.2);
@@ -803,8 +843,8 @@ function t0Break(bar) {
 // Builds and accents.
 riser(at(DROP - 1, 0), BAR, 0.13);
 reverseCrash(at(DROP, 0), 1.2, 0.2);
-crash(at(DROP, 0), 0.26);
-impact(at(DROP, 0), 0.5);
+crash(at(DROP, 0), 0.3);
+impact(at(DROP, 0), 0.6);
 downlifter(at(DROP, 0) + 0.05, 1.4, 0.07);
 riser(at(BACK - 1, 0), BAR, 0.11);
 reverseCrash(at(BACK, 0), 1.2, 0.18);
@@ -925,7 +965,7 @@ const GAIN = {
   bass: 1.35,
   chords: 1.7,
   leads: 2.2,
-  vox: 2.6,
+  vox: 3.6,
   fx: 0.9,
   echo: 0.35,
   wet: wetGain,
@@ -968,7 +1008,7 @@ for (let i = 0; i < N; i++) {
 }
 for (const ch of [L, R]) {
   const air = svf(Float32Array.from(ch), 6500, 0.7, "hp");
-  for (let i = 0; i < N; i++) ch[i] += 0.25 * air[i];
+  for (let i = 0; i < N; i++) ch[i] += 0.32 * air[i];
 }
 // Fade out over the last 1.4 s, so the end card lands in silence.
 const fadeFrom = Math.floor((LENGTH - 1.4) * SR);

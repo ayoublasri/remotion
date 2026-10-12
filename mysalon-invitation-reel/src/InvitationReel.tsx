@@ -16,10 +16,12 @@ import { StoryChips } from "./components/StoryChip";
 import "./fonts";
 import type { InvitationReelProps, Scene, ShotScene } from "./schema";
 import { ArrivalSceneView } from "./scenes/ArrivalScene";
+import { BookingSceneView } from "./scenes/BookingScene";
 import { ChatSceneView } from "./scenes/ChatScene";
 import { EndCard } from "./scenes/EndCard";
 import { MessagesSceneView } from "./scenes/MessagesScene";
 import { NotificationSceneView } from "./scenes/NotificationScene";
+import { ProfileSceneView } from "./scenes/ProfileScene";
 import { INK } from "./theme";
 
 export const FPS = 30;
@@ -158,6 +160,10 @@ const SceneView: React.FC<{
       return <ChatSceneView scene={scene} />;
     case "arrival":
       return <ArrivalSceneView scene={scene} />;
+    case "profile":
+      return <ProfileSceneView scene={scene} />;
+    case "booking":
+      return <BookingSceneView scene={scene} />;
     case "end":
       return <EndCard scene={scene} fadeIn={FADE} />;
   }

@@ -152,6 +152,61 @@ export const arrivalSceneSchema = z.object({
   stampAt: z.number(),
 });
 
+// Sara's Instagram profile, drawn, with the MySalon link and booking button.
+export const profileSceneSchema = z.object({
+  kind: z.literal("profile"),
+  ...sceneBase,
+  duration: z.number().describe("Frames"),
+  still: z
+    .string()
+    .describe("Frame of the ad inside public/, from npm run prep"),
+  at: z.number().describe("Frame of the scene when the card slides in"),
+  name: z.string(),
+  stats: z.array(z.object({ value: z.string(), label: z.string() })).length(3),
+  bio: z.array(z.string()).min(1).max(3),
+  link: z.string(),
+  linkAt: z.number().describe("Frame when the link lights up"),
+  button: z.string(),
+  buttonAt: z.number(),
+  secondary: z.array(z.string()).max(2),
+});
+
+// Nada booking on Sara's MySalon page, drawn: services, day and time, done.
+export const bookingSceneSchema = z.object({
+  kind: z.literal("booking"),
+  ...sceneBase,
+  duration: z.number().describe("Frames"),
+  still: z
+    .string()
+    .describe("Frame of the ad inside public/, from npm run prep"),
+  at: z.number().describe("Frame of the scene when the page slides in"),
+  salon: z.string(),
+  city: z.string(),
+  servicesLabel: z.string(),
+  services: z
+    .array(
+      z.object({ name: z.string(), duration: z.string(), price: z.string() }),
+    )
+    .min(2)
+    .max(4),
+  pickIndex: z.number(),
+  pickAt: z.number(),
+  calendarAt: z.number(),
+  dateLabel: z.string(),
+  days: z.array(z.string()).min(3).max(5).describe("Line break with \\n"),
+  dayIndex: z.number(),
+  slotsLabel: z.string(),
+  slots: z.array(z.string()).min(3).max(5),
+  slotIndex: z.number(),
+  slotAt: z.number(),
+  confirmAt: z.number(),
+  confirmTitle: z.string(),
+  confirmDetail: z.string(),
+  nextLabel: z.string(),
+  confirmLabel: z.string(),
+  doneLabel: z.string(),
+});
+
 // The end card: the result of the story, then the brand and the call to action.
 export const endSceneSchema = z.object({
   kind: z.literal("end"),
@@ -177,6 +232,8 @@ export const sceneSchema = z.discriminatedUnion("kind", [
   notificationSceneSchema,
   chatSceneSchema,
   arrivalSceneSchema,
+  profileSceneSchema,
+  bookingSceneSchema,
   endSceneSchema,
 ]);
 
@@ -198,6 +255,8 @@ export type MessagesScene = z.infer<typeof messagesSceneSchema>;
 export type NotificationScene = z.infer<typeof notificationSceneSchema>;
 export type ChatScene = z.infer<typeof chatSceneSchema>;
 export type ArrivalScene = z.infer<typeof arrivalSceneSchema>;
+export type ProfileScene = z.infer<typeof profileSceneSchema>;
+export type BookingScene = z.infer<typeof bookingSceneSchema>;
 export type EndScene = z.infer<typeof endSceneSchema>;
 export type Scene = z.infer<typeof sceneSchema>;
 export type InvitationReelProps = z.infer<typeof invitationReelSchema>;

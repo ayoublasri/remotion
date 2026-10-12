@@ -1,7 +1,7 @@
 {
   "name": "mysalon-invitation-reel",
   "version": "1.0.0",
-  "description": "Vertical (9:16) 48 s story reel for salon owners: the MySalon.ma ad video, slowed, captioned, with drawn WhatsApp and check-in screens and an Afrobeats soundtrack (Remotion)",
+  "description": "Vertical (9:16) 48 s story reel for salon owners: the MySalon.ma ad video, slowed and captioned, with drawn Instagram, booking, WhatsApp and check-in screens and an Afrobeats soundtrack (Remotion)",
   "private": true,
   "type": "module",
   "scripts": {

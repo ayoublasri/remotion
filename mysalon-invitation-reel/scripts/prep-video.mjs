@@ -86,13 +86,15 @@ if (!done) {
 }
 console.log(`wrote ${output}`);
 
-// Frozen frames of the ad, for the scenes drawn on top of it: the DMs (end
-// of the first shot), the confirmed booking (end of the booking) and the
-// phone in hand (the WhatsApp and check-in scenes).
+// Frozen frames of the ad, for the scenes drawn on top of it: the DMs, the
+// confirmed booking, the phone in hand (WhatsApp and check-in), the
+// Instagram profile and the booking page.
 const stills = [
   ["still-dms.jpg", 2.05],
   ["still-confirm.jpg", 5.4],
   ["still-phone.jpg", 7.7],
+  ["still-profile.jpg", 2.45],
+  ["still-booking.jpg", 4.3],
 ];
 const ffmpeg = candidates.find((c) => c === "ffmpeg" || existsSync(c));
 for (const [name, second] of stills) {
