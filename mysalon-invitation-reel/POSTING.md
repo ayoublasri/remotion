@@ -1,65 +1,62 @@
-# Posting kit: Sara's story
+# Posting "47"
 
-For the MySalon.ma account, aimed at salon owners (coiffeuses, esthéticiennes, nail artists) in Morocco.
+## Files
+
+- `out/mysalon-47.mp4`: the reel with its own music and effects (28.8 s).
+- `out/mysalon-47-silent.mp4`: the same picture without sound, for a trending audio.
+- `out/cover-hook.png`: frame 250, the 47 and « Et toi, combien ce soir ? ». Use it as the cover: it is the question.
+- `out/cover-end.png`: frame 850, the lockup and the call to action, for the feed grid if you prefer the brand up front.
 
 ## Audio
 
-The file carries its own soundtrack, an Afrobeats track made for this cut (it builds when Sara installs MySalon and
-drops to a final chord on the end card), plus the sound effects. Post it as is, with "original audio". If you would
-rather use a trending Instagram sound, render `npm run render:silent` and add the sound in the editor.
+Post with the original audio first: the hit at 4.8 s, the silence under the
+question and the drop on the tap are the film's rhythm, and the effects sit on
+the picture. If a trending Afrobeats sound is doing numbers that week, post
+the silent render with it and keep the original-audio version as the ad
+creative for boosting (promoted reels cannot use most trending sounds).
 
-## Caption
+## Caption (French)
 
-```text
-Lundi, 23h14. Sara, nail artist à Témara, a 47 DM et n'a pas encore dîné 😩
-Mardi, elle installe MySalon : un lien dans sa bio, un QR sur le comptoir.
-Jeudi, Nada réserve sa manucure russe toute seule, samedi 11h. Sara n'a rien eu à faire.
-Un mois plus tard : 0 DM le soir, agenda plein.
+```
+47 DM un mardi soir. Et toi, combien ? 👇
 
-MySalon.ma, fait au Maroc 🇲🇦
-0 commission · 0 paiement en ligne
+Sara, nail artist à Témara, ne répond plus à ses DM le soir : ses clientes
+réservent seules sur son lien MySalon, et son agenda se remplit pendant
+qu'elle travaille.
 
-👉 Pour ouvrir ton salon : écris « INVITATION » en DM.
+0 commission · 0 paiement en ligne · fait au Maroc 🇲🇦
 
-#salondebeauté #coiffeuse #esthéticienne #nailartist #maroc #casablanca #rabat #marrakech #gestionsalon #mysalonma
+Un dernier DM à envoyer : « INVITATION ».
 ```
 
-The first line repeats the on-screen hook. Keep the hashtags to the trade and the cities you serve.
+Hashtags (in a first comment, not the caption): #salondebeauté #nailartist
+#coiffeuse #esthéticienne #maroc #casablanca #rabat #marrakech #tanger
+#entrepreneuremaroc #mysalon
 
-## Pinned first comment
+## The call to action
 
-```text
-Pour ouvrir ton salon sur MySalon : écris INVITATION en DM 📩 On t'installe en 24 h, sans commission.
+The reel ends on « Un dernier DM : INVITATION ». Set up the DM auto-reply for
+the keyword INVITATION before posting (Instagram → Professional dashboard →
+Inbox automations, or Manychat): one message with the sign-up link, the
+0-commission line and a human follow-up within the hour during business
+hours. Pin a comment that repeats it:
+
+```
+Pour ouvrir ton salon sur MySalon : envoie « INVITATION » en DM 💬
 ```
 
-## DM auto-reply for "INVITATION"
+## Why this cut, and what to A/B
 
-```text
-Bienvenue 👋 Pour ouvrir ton salon sur MySalon, envoie-nous : le nom du salon, la ville et ton numéro WhatsApp. On te crée ta page et ton lien de réservation sous 24 h.
-```
-
-Change "24 h" to whatever you really deliver.
-
-## Cover
-
-- **Profile grid:** `out/cover-end.png` (Sara : 0 DM le soir. Agenda plein. MySalon.ma, DM « INVITATION »). The
-  result and the offer in one image, inside the grid's centred crop.
-- `out/cover-hook.png` (the phone with the DMs, "Sara, nail artist à Témara") if you prefer the hook on the grid.
-
-## Publishing
-
-- **When:** Sunday to Tuesday evening (salons plan their week), 20:00–22:00 Morocco time.
-- **Collab post:** invite a partner salon as a collaborator (@oyamuse.ma, @newstarbeauty…) so the reel reaches their
-  salon-owner followers too.
-- **Comments:** reply to every "c'est quoi MySalon ?" with one line and "écris INVITATION en DM".
-- **Stories:** share the reel to your Story with a "Message" sticker; add a poll "Tu gères tes RDV comment ?
-  DM / WhatsApp / agenda papier".
-- **Boost:** objective Messages (Instagram Direct), Morocco, 22–50, interests: beauty salon, hairdresser, nail art,
-  small business owners. Keep the version that brings the most "INVITATION" messages.
+The film is built on one idea: a number. It withholds the brand until the
+tap at 9.6 s and asks the viewer a question at 7.2 s with 2.4 s of silence
+to think. If the 3-second retention is weak, the next cut to test is concept
+A (« Le fil », one line drawing the whole story) with the same beat sheet; if
+retention is fine but saves and shares are low, test the result beat with
+different numbers from a real salon on MySalon.
 
 ## What to watch
 
-- **3-second hold rate:** does Sara's Monday night stop salon owners?
-- **Average watch time:** the story is 48 s; above 25 s means they followed it to Nada's booking.
-- **Saves and sends:** owners sending it to a partner or a colleague.
-- **DMs with INVITATION:** the business result.
+- 3-second hold rate (the torrent should keep it high) and average watch time
+  against 28.8 s.
+- Replays: the question beat is designed to be rewatched.
+- DMs containing INVITATION, and the share of them answered within the hour.

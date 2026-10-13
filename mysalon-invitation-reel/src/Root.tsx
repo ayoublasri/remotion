@@ -1,5 +1,6 @@
 import { Composition } from "remotion";
 import { InvitationReel, timeline } from "./InvitationReel";
+import { FILM_FRAMES, QuaranteSept, quaranteSeptSchema } from "./QuaranteSept";
 import { invitationReelSchema, type InvitationReelProps } from "./schema";
 
 // French typography: no-break spaces before ? and :, and inside « ».
@@ -409,18 +410,35 @@ const defaultProps: InvitationReelProps = {
 
 export const RemotionRoot: React.FC = () => {
   return (
-    <Composition
-      id="InvitationReel"
-      component={InvitationReel}
-      durationInFrames={timeline(defaultProps).total}
-      fps={30}
-      width={1080}
-      height={1920}
-      schema={invitationReelSchema}
-      defaultProps={defaultProps}
-      calculateMetadata={({ props }) => ({
-        durationInFrames: timeline(props).total,
-      })}
-    />
+    <>
+      <Composition
+        id="QuaranteSept"
+        component={QuaranteSept}
+        durationInFrames={FILM_FRAMES}
+        fps={30}
+        width={1080}
+        height={1920}
+        schema={quaranteSeptSchema}
+        defaultProps={{
+          music: "music/47-theme.mp3",
+          sfx: "music/47-sfx.mp3",
+          musicVolume: 0.75,
+          sfxVolume: 0.9,
+        }}
+      />
+      <Composition
+        id="InvitationReel"
+        component={InvitationReel}
+        durationInFrames={timeline(defaultProps).total}
+        fps={30}
+        width={1080}
+        height={1920}
+        schema={invitationReelSchema}
+        defaultProps={defaultProps}
+        calculateMetadata={({ props }) => ({
+          durationInFrames: timeline(props).total,
+        })}
+      />
+    </>
   );
 };

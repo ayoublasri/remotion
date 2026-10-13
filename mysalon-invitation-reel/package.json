@@ -1,20 +1,23 @@
 {
   "name": "mysalon-invitation-reel",
   "version": "1.0.0",
-  "description": "Vertical (9:16) 48 s story reel for salon owners: the MySalon.ma ad video, slowed and captioned, with drawn Instagram, booking, WhatsApp and check-in screens and an Afrobeats soundtrack (Remotion)",
+  "description": "Vertical (9:16) Instagram reels for salon owners on MySalon.ma: \"47\", a 28.8 s one-take built with the onetake method (a number counts the DMs, a tap turns it into a link, a booking and a full week), and the earlier 48 s story reel (Remotion)",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "remotion studio",
     "prep": "node scripts/prep-video.mjs",
-    "render": "remotion render InvitationReel out/mysalon-invitation-reel.mp4",
-    "render:silent": "remotion render InvitationReel out/mysalon-invitation-reel-silent.mp4 --muted",
-    "cover": "remotion still InvitationReel out/cover-hook.png --frame=40",
-    "cover:end": "remotion still InvitationReel out/cover-end.png --frame=1420",
+    "render": "remotion render QuaranteSept out/mysalon-47.mp4",
+    "render:silent": "remotion render QuaranteSept out/mysalon-47-silent.mp4 --muted",
+    "cover": "remotion still QuaranteSept out/cover-hook.png --frame=250",
+    "cover:end": "remotion still QuaranteSept out/cover-end.png --frame=850",
+    "render:story": "remotion render InvitationReel out/mysalon-invitation-reel.mp4",
+    "render:story:silent": "remotion render InvitationReel out/mysalon-invitation-reel-silent.mp4 --muted",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc",
-    "music": "node scripts/make-music.mjs"
+    "music": "node scripts/make-sound.mjs",
+    "music:story": "node scripts/make-music.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.522",

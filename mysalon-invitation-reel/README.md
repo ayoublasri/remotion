@@ -1,78 +1,184 @@
-# MySalon.ma Invitation Reel: Sara's story
+# MySalon.ma reels for salon owners
 
-A 48-second vertical reel (1080 x 1920, 30 fps) for salon owners, built from the 10-second AI-generated MySalon.ma
-ad (`assets/source.mp4`). Instead of a montage, it tells one story with names, days and actions, slowly enough to
-follow, so a scroller understands the product without reading a word of explanation:
+Two Instagram reels (1080 × 1920, 30 fps) built with Remotion for the Moroccan
+booking platform [MySalon.ma](https://mysalon.ma):
 
-| Time    | Chip                              | What happens                                                                                                                                                                                                     |
-| ------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0–5 s   | LUNDI · 23:14                     | The DMs pile up on the salon counter. **Sara, nail artist à Témara.** 47 DM ce soir. Elle n'a pas encore dîné.                                                                                                   |
-| 5–12 s  | LUNDI · 23:16                     | On a frozen frame of the ad, the messages keep arriving with names (Nada, Imane, Salma, Hajar) and the unread badge climbs. Sara répond à tout, entre deux clientes. Tous les soirs.                             |
-| 12–17 s | MARDI                             | Sara installe MySalon : her Instagram profile, drawn, with the link in her bio (mysalon.ma/s/sara-nails) lighting up and a Réserver button; then the QR stand on the counter.                                    |
-| 17–25 s | JEUDI · 14:02                     | Nada ouvre le lien de Sara: her MySalon page, drawn, manucure russe picked, samedi 18 at 11:00, Réservation confirmée. Sara est en pleine pose.                                                                  |
-| 25–29 s | JEUDI · 14:03                     | Sara's phone gets the booking notification. Sara n'a rien eu à faire. 0 DM échangé.                                                                                                                              |
-| 29–34 s | CETTE SEMAINE                     | Sara's week agenda on MySalon, drawn: twelve bookings pop in with names and services (Nada's highlighted) while the counter climbs to +12 réservations.                                                          |
-| 34–43 s | VENDREDI · 20:00 → SAMEDI · 11:02 | Nada's WhatsApp, drawn: the reminder from Sara Nails arrives by itself ("Rappel envoyé automatiquement par MySalon"), she answers "Parfait, à demain !". Then her check-in card and a loyalty stamp, 3/5 to 4/5. |
-| 42–48 s | UN MOIS PLUS TARD                 | **Sara : 0 DM le soir. Agenda plein.** Then MySalon.ma, Fait au Maroc, 0 commission · 0 paiement en ligne, **DM « INVITATION »**, mysalon.ma.                                                                    |
-
-The ad's shots are slowed down (from a 60 fps motion-interpolated copy) and held on a frame wherever the story
-needs time, so nothing stutters and every caption stays two to four seconds; the drawn scenes (the message stack, Sara's Instagram profile, the booking page, the booking notification, the
-week agenda, Nada's WhatsApp, her check-in) grow out of frozen frames of the footage, so the whole thing feels like one film, and every
-word on those screens is real, not AI-garbled. Only two footage shots remain on screen un-drawn: the DMs piling
-up and the QR stand. Every caption, chip and counter sits inside the
-Instagram safe area (`src/layout.ts`). Sound: a synthesised Afrobeats track that follows the story (see below), plus dings for the DMs, pops for each
-message, a chime for the confirmed booking, ticks for the bookings, a whoosh on each cut. `npm run render:silent`
-renders without any sound, if you prefer an Instagram sound.
-
-## Run it
+| composition | file | length | what it is |
+| --- | --- | --- | --- |
+| `QuaranteSept` | `out/mysalon-47.mp4` | 28.8 s | **"47"**, the current reel: one take, made with the onetake method (below) |
+| `InvitationReel` | `out/mysalon-invitation-reel.mp4` | 47.8 s | the earlier story reel (Sara and Nada, drawn screens over the ad footage) |
 
 ```bash
-cd mysalon-invitation-reel
-npm install
-npm run prep           # assets/source.mp4 -> public/video/source-60.mp4 + two frozen frames (needs ffmpeg)
-npm run dev            # Remotion Studio at http://localhost:3000
-npm run render         # -> out/mysalon-invitation-reel.mp4 (with sound effects)
-npm run render:silent  # -> out/mysalon-invitation-reel-silent.mp4
-npm run cover          # the hook frame -> out/cover-hook.png
-npm run cover:end      # the end card -> out/cover-end.png
-npm run music          # regenerate the soundtrack -> public/music/afro-theme.wav (then encode to mp3)
+npm ci
+npm run dev            # Remotion Studio
+npm run music          # synthesise public/music/47-theme.mp3 and 47-sfx.mp3 (needs ffmpeg for the mp3 step)
+npm run render         # out/mysalon-47.mp4, with music and effects
+npm run render:silent  # out/mysalon-47-silent.mp4, to post with a trending sound
+npm run cover          # out/cover-hook.png, frame 250: "Et toi, combien ce soir ?"
+npm run cover:end      # out/cover-end.png, frame 850: the call to action
+npm run render:story   # the earlier story reel (needs `npm run prep` first, see below)
 ```
 
-`npm run prep` motion-interpolates the 24 fps ad to 60 fps and scales it to 1080 x 1920 with ffmpeg's
-`minterpolate`, then extracts the two frozen frames the built scenes use. It uses the `ffmpeg` on your PATH, or the
-one shipped with Remotion (which then only scales).
+## "47" — the film
 
-If Remotion cannot download Chrome Headless Shell in your environment:
+A number counts the DMs a nail artist gets on a Tuesday night, asks the
+viewer theirs, and a tap turns it into a link, a booking, a full week and one
+last DM to send. No footage, no caption pills: typography, a drawn booking
+page and a drawn week, one keyed camera, one continuous take.
+
+### 1 · The previous cut, in numbers
+
+The story reel was the reference to beat. Measured: 47.8 s, ten scenes of
+2.4 to 8.0 s (coefficient of variation of shot length 0.34), a caption on
+every scene, the frame always in motion (slowed footage under popping pills),
+and nine boundaries that were all cross-fades through a blurred still:
+nothing survived a single one of them. Clear, but a slideshow with motion.
+
+### 2 · Three concepts (one picture idea each)
+
+- **A · Le fil.** One teal line is the whole film: the typing caret's
+  underline becomes the thread of the DMs, tangles into a knot of 47, the hand
+  pulls it straight into the link in the bio, it draws the week's grid and ends
+  as the underline of mysalon.ma. Hook: a line drawing itself. Carry: the line.
+  Rules out cards and cuts. Look: paper and one ink.
+- **B · Le chiffre (chosen).** One number is the whole film: it counts the
+  DMs, fills the frame, takes the tap, collapses into the link, and comes back
+  as the claim (0 DM, 12 RDV) before folding into the brand mark. Hook: a bare
+  count climbing with no explanation. Carry: the number, then what it becomes.
+  Rules out footage, pills and any scene the number is not in. Look: a night
+  (deep teal, one mint) that flips to the brand's day (beige, teal ink) at
+  the tap.
+- **C · Le comptoir.** A top-down tabletop: Sara's phone face up on her
+  counter, buzzing itself across the wood with every DM; the hand puts down
+  the QR stand; the camera pulls up until the counter top is the week's grid.
+  Hook: a phone buzzing on wood. Carry: the camera and the phone. Rules out
+  type-led storytelling. Look: tabletop, warm wood, hard light.
+
+B was picked because a number is the most legible object at Instagram size,
+it asks a question by itself ("47 what?"), it becomes the claim without a
+sentence, and it keeps the brand off screen until the solution: curiosity
+first, then clarity, then one call to action.
+
+### 3 · Beat sheet
+
+100 BPM, one bar = 2.4 s, twelve bars. `t` in seconds.
+
+| t | beat | what moves | what is still | what carries |
+| --- | --- | --- | --- | --- |
+| 0.0–2.4 | four DMs arrive on the beat, the number counts 1 → 4 | bubbles from the right, the digits squash on each landing | the ground, the eyebrow | the number |
+| 2.4–4.8 | the torrent: 43 more DMs, 4 → 47, the camera pushes in | the stack, the digits, the camera | the eyebrow | the number |
+| 4.8 | the hit: 47 lands, the camera snaps back and shakes | | | |
+| 4.8–6.0 | dead still on 47 over the pile | nothing | everything | the number (anchored) |
+| 6.0–7.2 | the pile sinks; « DM, un mardi soir. » rises | the stack, one line | the number | the number |
+| 7.2–9.6 | « Et toi, combien ce soir ? » then 2.4 s of nothing | two words rise | the number, the lines | the number |
+| 9.0–9.6 | the fingertip comes in and taps the 47 | the hand | the rest | the hand |
+| 9.6–10.5 | the tap: a beige iris opens the day from the fingertip; the digits collapse into a line that widens into the link chip | the iris, the digits, the chip | | the number → the chip, the hand |
+| 10.5–11.7 | the link types on; Sara's bio pops above it; « Un seul lien. » | type, the bio, a caption | the chip | the chip, the hand |
+| 11.7–12.3 | tap on the link: the chip grows into the page, the bio moves into its header, the link shrinks into the address | the morph | | the chip → the page, the hand |
+| 12.3–15.4 | Nada books: service, day, hour, confirm; the camera chases the hand; « Nada réserve seule. » | the hand, rows, pills, the camera | the page | the hand |
+| 15.4–16.8 | « C'est réservé. » the check pops; 1.2 s still | the check | the page | the check |
+| 16.8–17.4 | the check hops into Saturday 11:00 while the page becomes the week | the check, the grid fading in | the page frame | the check, the page |
+| 17.4–18.0 | the landing: Nada's block, « 1 RDV » | one block | the grid | the check (becomes the tick) |
+| 18.0–19.4 | the burst: eleven blocks on sixteenth notes, « 12 RDV » | blocks, the badge | the grid | the badge |
+| 19.4–21.6 | dead still on the full week; « Sara n'a rien tapé. » | one caption | the week | the badge |
+| 21.6–22.4 | the result: the badge grows into 12, 47 rolls down to 0, the week shrinks to a ghost | the numbers, the page | | the badge → 12, the page |
+| 22.4–24.0 | still: « 0 DM ce soir · 12 RDV cette semaine » | nothing | everything | |
+| 24.0–24.6 | the two numbers and the ghost gather into one point; the lockup pops from it | the gather, the logo | | the cast → the logo |
+| 24.6–27.0 | « Tes DM se vident. Ton agenda se remplit. » · « Un dernier DM : » · INVITATION · mysalon.ma | type rising | the logo | |
+| 27.0–28.8 | dead still on the call to action | nothing | everything | |
+
+Rhythm: the shortest event is a landing 40 ms after the last one, the longest
+hold is 2.4 s (more than 4× apart); about 10.4 s of the 28.8 are dead still
+(36 %), in six rests; two bursts (the torrent, the week). Carry: every
+boundary is crossed by something that survives it and visibly moves or
+scales (the number, the hand, the chip, the check, the badge); there is no
+bare cut. The one iris is opened by the tap that causes it.
+
+### 4 · How it is built
+
+- `src/film/beats.json` is the beat table, in seconds: the 47 landing times,
+  every tap, every rest. The composition and the sound script read the same
+  file, so a retimed beat takes its sound with it.
+- `src/film/motion.ts`: every move is a pure function of film time that
+  returns numbers (`spring`, `impact`, `press`, `popIn`, `wordRise`,
+  `maskRise`, `liftOut`, `typeOn`, `morphRect`, `iris`, `hop`, `gather`,
+  `shake`, `camera`, `path`). Snaps use `expoOut`, settles use springs; no
+  single smootherstep everywhere.
+- `src/film/stage.ts`: the layout in world pixels, the hand's path and
+  presses, the camera keys (push into the torrent on `sineIn`, snap back on
+  the hit, a kick on the tap, a chase through the booking, a follow on the
+  hop), the shakes, and where the operator's hand floats (never in a rest).
+- `src/film/Night.tsx` (ground, bubbles, the big number, two lines),
+  `src/film/Day.tsx` (the iris, the chip, the page, the week, the result, the
+  lockup), `src/film/Hand.tsx` (the fingertip), `src/film/Screen.tsx` (the
+  eyebrow and three captions, outside the camera).
+- `src/film/Shutter.tsx`: a 180° shutter. Moving frames are drawn six times
+  across the half frame before them and summed, so the torrent, the iris and
+  the hop smear instead of stepping. Dead-still holds render once.
+- Everything is deterministic: `frame → picture`, no randomness on the render
+  path, so a fractional shutter sample is as valid as an integer frame.
+
+### 5 · Sound
+
+`scripts/make-sound.mjs` synthesises both tracks from scratch (royalty-free):
+
+- **47-theme.mp3**: Afrobeats at 100 BPM, twelve bars. A low A-minor pad and
+  the clave while the number counts; the torrent (kick four to the floor,
+  riser, snare roll) into the hit at 4.8 s; one breath then near silence for
+  the hold; a heartbeat under the question; the drop in C major on the tap;
+  the full groove through the booking and the week; a build under the result;
+  the final chord under the lockup; a 1.4 s fade. The music ducks under every
+  tap and hit.
+- **47-sfx.mp3**: five materials in the same room as the music (air, glass,
+  wood, bubble, and the music's own sub hits): pops for the first DMs, a
+  whoosh for the iris, two wood hits per tap, a glass chord for the
+  confirmation, eleven glass ticks up a scale for the week, a knock for the
+  logo and the pill. Fewer events than beats; nothing within 40 ms of
+  another sound.
+
+Both files are `public/music/*.mp3`; the WAVs are ignored by git. Render with
+`--muted` to post with a trending sound instead.
+
+### 6 · Safe area
+
+`src/layout.ts` holds the Instagram safe area (x 110–970, y 290–1450, and
+x ≤ 870 in the action-icon band from y 950). The day world is laid out on the
+centre of that column (x = 490); the night number sits on the frame's axis
+above the icon band. Verified frame by frame with guides drawn over stills.
+
+## The onetake method
+
+This film follows the [onetake](https://github.com/berg-1/onetake-motion)
+skill, installed in this repository at `.claude/skills/onetake` (the real
+directory is `.agents/skills/onetake`; the case videos and gifs were left out,
+see `OMITTED-MEDIA.md` there). Its protocol: deconstruct the reference in
+numbers, write three concepts that differ in their central picture idea,
+storyboard as rhythm and carry, build the UI rather than record it, compose
+everything as a pure function of time with an operated camera, render with a
+real shutter, score with one palette in one room, verify before showing.
+
+The skill is licensed PolyForm Noncommercial 1.0.0, which does not permit
+commercial use of its software. This reel is a commercial advertisement, so
+none of the skill's code (`lib/motion.js`, its scripts) is used or copied
+here: the method is applied in Remotion with the project's own move library,
+shutter and sound, and the skill's hard rules are followed by hand (no
+template story, no metronome, no replaced beat, rests, small elements on a
+big ground, visible cause, no particles, deterministic frames).
+
+## The story reel (earlier version)
+
+`InvitationReel` is the 47.8 s story cut kept for comparison: Sara's Monday
+night, the DMs, the link in her bio, Nada booking, the notification, the
+week, the WhatsApp reminder, the check-in, the end card. It plays the slowed
+ad footage (`assets/source.mp4`) under drawn screens. It needs the prepared
+footage:
 
 ```bash
-npx remotion render InvitationReel out/mysalon-invitation-reel.mp4 --browser-executable=/path/to/chrome
+npm run prep           # ffmpeg: 60 fps interpolation + stills into public/video (about 6 minutes)
+npm run music:story    # public/music/afro-theme.wav (convert to mp3 with ffmpeg)
+npm run render:story
 ```
 
-## Music
-
-`public/music/afro-theme.mp3` is generated by `scripts/make-music.mjs`: an Afrobeats track at 100 BPM, 20 bars
-(48 s), synthesised from scratch and free to use anywhere. A tuned kick, snare and rim on 2 and 4 with a 3-3-2
-clave, swung hats and shakers, congas, a log-drum bass, Rhodes-style chords, a marimba riff answered by formant
-"vocal chops", warm pads and risers. It follows the story: a sparse, tense Monday night, the messages building, the
-drop when Sara installs MySalon, a breakdown for the booking notification, the groove back for the week, a build and
-a final chord on the end card, then a fade. Bright and happy by design: C major, the I-V-vi-IV loop, a bouncing marimba riff, claps, open hats and "eh-eh"
-chops. Mixed with a light sidechain, mono low end, delay, reverb, a soft clipper and a lookahead limiter.
-
-```bash
-npm run music
-ffmpeg -i public/music/afro-theme.wav -b:a 192k public/music/afro-theme.mp3
-```
-
-`music` and `musicVolume` are props: set `music` to null for no soundtrack.
-
-## Editing
-
-The story is a list of scenes in `src/Root.tsx`, validated by `src/schema.ts` and editable in the Studio's props
-panel. Nine kinds: `shot` (keyframes mapping frames of the scene to seconds of the ad, held where two keys share a
-second, plus an optional booking counter), `messages` (the message stack with names on a frozen frame), `profile`
-(the Instagram profile card), `booking` (services, day and time, confirmation), `notification` (the booking
-notification), `agenda` (the week agenda filling up), `chat` (Nada's WhatsApp: contact, messages, times, the system line), `arrival` (the check-in card and
-loyalty stamps) and `end` (the result lines, then the brand and the
-call to action). Every scene carries its day chips, its captions (frames, lines, `*highlighted*` words, size) and
-its sounds. The reel's length follows the scenes. Colours are in `src/theme.ts`; fonts (Inter, Playfair Display)
-are bundled in `public/fonts`; the sound effects in `public/sfx` are synthesised and free to use.
+Its scenes are data in `src/Root.tsx` (`defaultProps.scenes`), with nine scene
+kinds (`shot`, `messages`, `profile`, `booking`, `notification`, `agenda`,
+`chat`, `arrival`, `end`) defined in `src/schema.ts`.
