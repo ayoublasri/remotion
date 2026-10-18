@@ -1,0 +1,37 @@
+{
+  "name": "oyamuse-nails-reel",
+  "version": "1.0.0",
+  "description": "Vertical (9:16) 28.8 s silent Instagram reel for OYA MUSE, nails by Safae: six before/after photos as prints on a table, one take, with a call to action to book through the link in bio (Remotion)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render NailsReel out/oyamuse-nails-reel.mp4 --muted",
+    "render:track": "ffmpeg -y -i out/oyamuse-nails-reel.mp4 -f lavfi -i anullsrc=r=48000:cl=stereo -shortest -c:v copy -c:a aac -b:a 96k out/oyamuse-nails-reel-silent-track.mp4",
+    "cover": "remotion still NailsReel out/cover-after.png --frame=330",
+    "cover:end": "remotion still NailsReel out/cover-end.png --frame=840",
+    "build": "remotion bundle",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.522",
+    "@remotion/fonts": "4.0.522",
+    "@remotion/media": "4.0.522",
+    "@remotion/shapes": "4.0.522",
+    "@remotion/transitions": "4.0.522",
+    "@remotion/zod-types": "4.0.522",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.522",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config-flat": "4.0.522",
+    "@types/react": "19.2.7",
+    "@types/web": "0.0.166",
+    "eslint": "9.19.0",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  }
+}
